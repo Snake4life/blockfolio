@@ -47,6 +47,14 @@ const styles = theme => ({
             display: "none"
         }
     },
+    button: {
+        margin: 0,
+        top: "auto",
+        right: 20,
+        bottom: 20,
+        left: "auto",
+        position: "fixed"
+    },
     drawerHeader: theme.mixins.toolbar,
     drawerPaper: {
         width: 250,
@@ -144,7 +152,7 @@ class ResponsiveDrawer extends React.Component {
                             fab
                             color="primary"
                             aria-label="add"
-                            className="{classes.button}"
+                            className={classes.button}
                         >
                             <AddIcon />
                         </Button>
