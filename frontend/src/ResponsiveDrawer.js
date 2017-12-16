@@ -11,7 +11,10 @@ import Hidden from "material-ui/Hidden";
 import Divider from "material-ui/Divider";
 import MenuIcon from "material-ui-icons/Menu";
 import SimpleList from "./MenuList";
-import BasicTable from './BasicTable';
+import BasicTable from "./BasicTable";
+import Button from "material-ui/Button";
+import AddIcon from "material-ui-icons/Add";
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -24,7 +27,7 @@ const styles = theme => ({
         overflow: "hidden"
     },
     table: {
-    minWidth: 700,
+        minWidth: 700
     },
     appFrame: {
         position: "relative",
@@ -135,8 +138,16 @@ class ResponsiveDrawer extends React.Component {
                     </Hidden>
                     <main className={classes.content}>
                         <Typography noWrap>
-                            <BasicTable/>
+                            <BasicTable />
                         </Typography>
+                        <Button
+                            fab
+                            color="primary"
+                            aria-label="add"
+                            className="{classes.button}"
+                        >
+                            <AddIcon />
+                        </Button>
                     </main>
                 </div>
             </div>

@@ -10,23 +10,20 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
   },
-  table: {
-    minWidth: 700,
-  },
+
 });
 
 let id = 0;
-function createData(name, calories, fat, carbs, protein) {
+function createData(currency, price, amount, change) {
   id += 1;
-  return { id, name, calories, fat, carbs, protein };
+  let value=(price*amount);
+  return { id, currency, price, amount, value, change};
+  
 }
 
 const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('ETH', 670, 46, 23.3),
+  createData('BTC', 16243, 0.19, 7.2)
 ];
 
 function BasicTable(props) {
@@ -37,22 +34,22 @@ function BasicTable(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell numeric>Calories</TableCell>
-            <TableCell numeric>Fat (g)</TableCell>
-            <TableCell numeric>Carbs (g)</TableCell>
-            <TableCell numeric>Protein (g)</TableCell>
+            <TableCell numeric>Cryptocurrency</TableCell>
+            <TableCell numeric>Price ($USD)</TableCell>
+            <TableCell numeric>Amount</TableCell>
+            <TableCell numeric>Value</TableCell>
+            <TableCell numeric>Change (24h)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map(n => {
             return (
               <TableRow key={n.id}>
-                <TableCell>{n.name}</TableCell>
-                <TableCell numeric>{n.calories}</TableCell>
-                <TableCell numeric>{n.fat}</TableCell>
-                <TableCell numeric>{n.carbs}</TableCell>
-                <TableCell numeric>{n.protein}</TableCell>
+                <TableCell>{n.currency}</TableCell>
+                <TableCell numeric>{n.price}</TableCell>
+                <TableCell numeric>{n.amount}</TableCell>
+                <TableCell numeric>{n.value}</TableCell>
+                <TableCell numeric>{n.change}</TableCell>
               </TableRow>
             );
           })}
