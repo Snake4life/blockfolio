@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
+import DashboardIcon from "material-ui-icons/Dashboard";
+import InvestmentsIcon from "material-ui-icons/AccountBalance";
 
 const styles = theme => ({
     root: {
@@ -18,10 +20,10 @@ function SimpleList(props) {
         <div className={classes.root}>
             <List>
                 <ListItem button>
-                    <ListItemText primary="Dashboard" />
+                    <DashboardIcon/> <ListItemText primary="Dashboard" />
                 </ListItem>
                 <ListItem button>
-                    <ListItemText primary="My investments" />
+                    <InvestmentsIcon/> <ListItemText primary="My investments" />
                 </ListItem>
             </List>
         </div>
