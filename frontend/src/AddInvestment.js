@@ -5,6 +5,9 @@ import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import { FormControl, FormHelperText } from "material-ui/Form";
 import Select from "material-ui/Select";
+import Button from "material-ui/Button";
+import TextField from "material-ui/TextField";
+import { withRouter } from "react-router-dom";
 
 const styles = theme => ({
     container: {
@@ -17,17 +20,28 @@ const styles = theme => ({
     },
     selectEmpty: {
         marginTop: theme.spacing.unit * 2
+    },
+    button: {},
+    textField: {
+        marginTop: "0px"
     }
 });
 
 class AddInvestment extends React.Component {
     state = {
-        age: "",
-        name: "hai"
+        coin: "BTC",
+        amount: 0
     };
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value });
+    };
+    handleChangeAmount = event => {
+        this.setState({ amount: event.target.value });
+    };
+    handleAdd = () => {
+        this.props.addCoin(this.state.coin, this.state.amount);
+        this.props.history.push("/investments");
     };
     render() {
         const { classes } = this.props;
@@ -35,127 +49,38 @@ class AddInvestment extends React.Component {
         return (
             <form className={classes.container} autoComplete="off">
                 <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-simple">Age</InputLabel>
+                    <InputLabel htmlFor="coin-simple">Coin</InputLabel>
                     <Select
-                        value={this.state.age}
+                        value={this.state.coin}
                         onChange={this.handleChange}
-                        input={<Input name="age" id="age-simple" />}
+                        input={<Input name="coin" id="coin-simple" />}
                     >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        <MenuItem value="BTC">BTC</MenuItem>
+                        <MenuItem value="ETH">ETH</MenuItem>
+                        <MenuItem value="XMR">XMR</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-helper">Age</InputLabel>
-                    <Select
-                        value={this.state.age}
-                        onChange={this.handleChange}
-                        input={<Input name="age" id="age-helper" />}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                    <FormHelperText>Some important helper text</FormHelperText>
+                    <TextField
+                        id="amount"
+                        label="Amount"
+                        value={this.state.amount}
+                        onChange={this.handleChangeAmount}
+                        type="number"
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        margin="normal"
+                    />
                 </FormControl>
-                <FormControl className={classes.formControl}>
-                    <Select
-                        value={this.state.age}
-                        onChange={this.handleChange}
-                        displayEmpty
-                        name="age"
-                        className={classes.selectEmpty}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                    <FormHelperText>Without label</FormHelperText>
-                </FormControl>
-                <FormControl className={classes.formControl} disabled>
-                    <InputLabel htmlFor="name-disabled">Name</InputLabel>
-                    <Select
-                        value={this.state.name}
-                        onChange={this.handleChange}
-                        input={<Input name="name" id="name-disabled" />}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="hai">Hai</MenuItem>
-                        <MenuItem value="olivier">Olivier</MenuItem>
-                        <MenuItem value="kevin">Kevin</MenuItem>
-                    </Select>
-                    <FormHelperText>Disabled</FormHelperText>
-                </FormControl>
-                <FormControl className={classes.formControl} error>
-                    <InputLabel htmlFor="name-error">Name</InputLabel>
-                    <Select
-                        value={this.state.name}
-                        onChange={this.handleChange}
-                        name="name"
-                        renderValue={value => `⚠️  - ${value}`}
-                        input={<Input id="name-error" />}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="hai">Hai</MenuItem>
-                        <MenuItem value="olivier">Olivier</MenuItem>
-                        <MenuItem value="kevin">Kevin</MenuItem>
-                    </Select>
-                    <FormHelperText>Error</FormHelperText>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="name-input">Name</InputLabel>
-                    <Input id="name-input" />
-                    <FormHelperText>Alignment with an input</FormHelperText>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="name-readonly">Name</InputLabel>
-                    <Select
-                        value={this.state.name}
-                        onChange={this.handleChange}
-                        input={
-                            <Input name="name" id="name-readonly" readOnly />
-                        }
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="hai">Hai</MenuItem>
-                        <MenuItem value="olivier">Olivier</MenuItem>
-                        <MenuItem value="kevin">Kevin</MenuItem>
-                    </Select>
-                    <FormHelperText>Read only</FormHelperText>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="age-simple">Age</InputLabel>
-                    <Select
-                        value={this.state.age}
-                        onChange={this.handleChange}
-                        input={<Input name="age" id="age-simple" />}
-                        autoWidth
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                    <FormHelperText>Auto width</FormHelperText>
-                </FormControl>
+                <div>
+                    <FormControl className={classes.formControl}>
+                        <Button raised className={classes.button} onClick={this.handleAdd}>
+                            Add to portfolio
+                        </Button>
+                    </FormControl>
+                </div>
             </form>
         );
     }
@@ -166,4 +91,4 @@ AddInvestment.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(AddInvestment);
+export default withStyles(styles)(withRouter(AddInvestment));

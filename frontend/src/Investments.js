@@ -24,18 +24,39 @@ const styles = theme => ({
 class Investments extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            coins: [
+                {
+                    name: "BTC",
+                    amount: 0.19
+                },
+                {
+                    name: "ETH",
+                    amount: 46
+                }
+            ]
+        };
         this.handleAddButton = this.handleAddButton.bind(this);
-    }
+        this.addCoin = this.addCoin.bind(this);
+    };
+    getPrice(coin) {
+        if(coin=="ETH") return 670;
+        if(coin=="BTC") return 18000;
+        if(coin=="XMR") return 300;
+    };
+    addCoin(coin, amount) {
+        this.state.coins.push({name:coin, amount:amount});
+    };
     handleAddButton() {
         this.props.history.push("/investments/add");
-    }
+    };
     render() {
         const { classes, theme } = this.props;
         return (
             <Switch>
                 <Route exact path="/investments">
                     <div>
-                        <BasicTable />
+                        <BasicTable data={this.state.coins} getPrice={this.getPrice} />
                         <Button
                             fab
                             color="primary"
@@ -47,7 +68,7 @@ class Investments extends React.Component {
                         </Button>
                     </div>
                 </Route>
-                <Route path="/investments/add" component={AddInvestment} />
+                <Route path="/investments/add" component={() => <AddInvestment addCoin={this.addCoin}/>} />
             </Switch>
         );
     }
