@@ -11,11 +11,12 @@ import Hidden from "material-ui/Hidden";
 import Divider from "material-ui/Divider";
 import MenuIcon from "material-ui-icons/Menu";
 import SimpleList from "./MenuList";
-import BasicTable from "./BasicTable";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
 
 
+import { withRouter } from "react-router-dom";
+import { Route, Switch } from "react-router";
+import Dashboard from "./Dashboard";
+import Investments from "./Investments";
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -146,17 +147,23 @@ class ResponsiveDrawer extends React.Component {
                         </Drawer>
                     </Hidden>
                     <main className={classes.content}>
-                        <Typography noWrap>
-                            <BasicTable />
-                        </Typography>
-                        <Button
-                            fab
-                            color="primary"
-                            aria-label="add"
-                            className={classes.button}
-                        >
-                            <AddIcon />
-                        </Button>
+                        
+                        <Switch>
+                            <Route
+                                exact
+                                path="/"
+                                component={() => (
+                                    <Dashboard />
+                                )}
+                            />
+                            <Route
+                                path="/investments"
+                                component={() => (
+                                    <Investments />
+                                )}
+                            />
+                        </Switch>
+                        
                     </main>
                 </div>
             </div>
@@ -169,4 +176,4 @@ ResponsiveDrawer.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withStyles(styles, { withTheme: true })(withRouter(ResponsiveDrawer));

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import "./App.css";
+import { withRouter } from "react-router-dom";
 
 class App extends Component {
     constructor(props) {
@@ -21,4 +22,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default withRouter(App);

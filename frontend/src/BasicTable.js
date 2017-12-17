@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
+import Button from "material-ui/Button";
+import AddIcon from "material-ui-icons/Add";
 
 const styles = theme => ({
   root: {
@@ -18,7 +20,7 @@ function createData(currency, price, amount, change) {
   id += 1;
   let value=(price*amount);
   return { id, currency, price, amount, value, change};
-  
+
 }
 
 const data = [
@@ -55,6 +57,7 @@ function BasicTable(props) {
           })}
         </TableBody>
       </Table>
+      
     </Paper>
   );
 }
