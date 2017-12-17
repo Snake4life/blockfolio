@@ -12,11 +12,12 @@ import Divider from "material-ui/Divider";
 import MenuIcon from "material-ui-icons/Menu";
 import SimpleList from "./MenuList";
 
-
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import Dashboard from "./Dashboard";
 import Investments from "./Investments";
+import AddInvestment from "./AddInvestment";
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -98,6 +99,8 @@ class ResponsiveDrawer extends React.Component {
                 <SimpleList onRequestClose={this.handleDrawerToggle} />
             </div>
         );
+        const DashboardTitle = () => <div>Dashboard</div>;
+        const InvestmentsTitle = () => <div>Investments</div>;
 
         return (
             <div className={classes.root}>
@@ -113,7 +116,17 @@ class ResponsiveDrawer extends React.Component {
                                 <MenuIcon />
                             </IconButton>
                             <Typography type="title" color="inherit" noWrap>
-                                Total value of investments: USD $23453
+                                <Switch>
+                                    <Route
+                                        exact
+                                        path="/"
+                                        component={DashboardTitle}
+                                    />
+                                    <Route
+                                        path="/investments"
+                                        component={InvestmentsTitle}
+                                    />
+                                </Switch>
                             </Typography>
                         </Toolbar>
                     </AppBar>
@@ -147,23 +160,19 @@ class ResponsiveDrawer extends React.Component {
                         </Drawer>
                     </Hidden>
                     <main className={classes.content}>
-                        
                         <Switch>
                             <Route
-                                exact
-                                path="/"
-                                component={() => (
-                                    <Dashboard/>
-                                )}
+                                exact path="/"
+                                component={Dashboard}
                             />
+                            
                             <Route
                                 path="/investments"
-                                component={() => (
-                                    <Investments />
-                                )}
-                            />
+                                component={Investments}
+                            >
+                            </Route>
+                            
                         </Switch>
-                        
                     </main>
                 </div>
             </div>
@@ -176,4 +185,6 @@ ResponsiveDrawer.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(ResponsiveDrawer));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(ResponsiveDrawer)
+);
