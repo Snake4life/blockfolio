@@ -95,7 +95,7 @@ class ResponsiveDrawer extends React.Component {
             <div>
                 <div className={classes.drawerHeader} />
                 <Divider />
-                <SimpleList />
+                <SimpleList onRequestClose={this.handleDrawerToggle} />
             </div>
         );
 
@@ -153,7 +153,7 @@ class ResponsiveDrawer extends React.Component {
                                 exact
                                 path="/"
                                 component={() => (
-                                    <Dashboard />
+                                    <Dashboard/>
                                 )}
                             />
                             <Route

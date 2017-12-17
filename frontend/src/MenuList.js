@@ -23,9 +23,11 @@ class SimpleList extends React.Component {
     };
     handleDashboardClick() {
         this.props.history.push("/");
+        this.props.onRequestClose();
     };
     handleInvestmentsClick() {
         this.props.history.push("/investments");
+        this.props.onRequestClose();
     };
     render() {
     const { classes } = this.props;
