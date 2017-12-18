@@ -25,4 +25,4 @@ Dashboard.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles, { withTheme: true })(Dashboard);

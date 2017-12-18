@@ -5,7 +5,8 @@ import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import Divider from "material-ui/Divider";
 import DashboardIcon from "material-ui-icons/Dashboard";
 import InvestmentsIcon from "material-ui-icons/AccountBalance";
-import { withRouter } from "react-router-dom";
+import MoneyIcon from "material-ui-icons/AttachMoney";
+import { withRouter, Link} from "react-router-dom";
 
 const styles = theme => ({
     root: {
@@ -15,43 +16,40 @@ const styles = theme => ({
         background: theme.palette.background.paper
     },
     list: {
-        height:"100%"
+        height: "100%"
     }
 });
 
-class SimpleList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleDashboardClick = this.handleDashboardClick.bind(this);
-        this.handleInvestmentsClick = this.handleInvestmentsClick.bind(this);
-    };
-    handleDashboardClick() {
-        this.props.history.push("/");
+class MenuList extends React.Component {
+    handleMenuItemClick() {
         this.props.onRequestClose();
-    };
-    handleInvestmentsClick() {
-        this.props.history.push("/investments");
-        this.props.onRequestClose();
-    };
+    }
     render() {
-    const { classes } = this.props;
-    return (
-        <div className={classes.root}>
-            <List className={classes.list}>
-                <ListItem button onClick={this.handleDashboardClick}>
-                    <DashboardIcon/> <ListItemText primary="Dashboard" />
-                </ListItem>
-                <ListItem button onClick={this.handleInvestmentsClick}>
-                    <InvestmentsIcon/> <ListItemText primary="My investments" />
-                </ListItem>
-            </List>
-        </div>
-    );
+        const { classes } = this.props;
+        return (
+            <div className={classes.root}>
+                <List
+                    className={classes.list}
+                    onClick={this.handleMenuItemClick.bind(this)}
+                >
+                    <ListItem button  component={Link} to="/">
+                        <DashboardIcon /> <ListItemText primary="Dashboard" />
+                    </ListItem>
+                    <ListItem button component={Link} to="/currencies">
+                        <MoneyIcon /> <ListItemText primary="Currencies" />
+                    </ListItem>
+                    <ListItem button component={Link} to="/investments">
+                        <InvestmentsIcon />{" "}
+                        <ListItemText primary="My investments" />
+                    </ListItem>
+                </List>
+            </div>
+        );
     }
 }
 
-SimpleList.propTypes = {
+MenuList.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(SimpleList));
+export default withStyles(styles)(withRouter(MenuList));

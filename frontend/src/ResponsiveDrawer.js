@@ -15,8 +15,9 @@ import MenuList from "./MenuList";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import Dashboard from "./Dashboard";
-import Investments from "./Investments";
-import AddInvestment from "./AddInvestment";
+import Investments from "./Investments/Investments";
+import AddInvestment from "./Investments/AddInvestment";
+import Currencies from "./Currencies/Currencies";
 
 const drawerWidth = 240;
 
@@ -24,7 +25,6 @@ const styles = theme => ({
     root: {
         width: "100%",
         height: "100%",
-        //marginTop: theme.spacing.unit * 3,
         marginTop: 0,
         zIndex: 1,
         overflow: "hidden"
@@ -105,6 +105,7 @@ class ResponsiveDrawer extends React.Component {
         );
         const DashboardTitle = () => <div>Dashboard</div>;
         const InvestmentsTitle = () => <div>Investments</div>;
+        const CurrenciesTitle = () => <div>Currencies</div>;
 
         return (
             <div className={classes.root}>
@@ -129,6 +130,10 @@ class ResponsiveDrawer extends React.Component {
                                     <Route
                                         path="/investments"
                                         component={InvestmentsTitle}
+                                    />
+                                    <Route
+                                        path="/currencies"
+                                        component={CurrenciesTitle}
                                     />
                                 </Switch>
                             </Typography>
@@ -174,6 +179,12 @@ class ResponsiveDrawer extends React.Component {
                             <Route
                                 path="/investments"
                                 component={Investments}
+                            >
+                            </Route>
+
+                            <Route
+                                path="/currencies"
+                                component={Currencies}
                             >
                             </Route>
                             

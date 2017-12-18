@@ -8,18 +8,15 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
 
 const styles = theme => ({
     root: {
-
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing.unit,
         overflowX: "auto"
     }
 });
 
-class BasicTable extends React.Component {
+class CurrenciesTable extends React.Component {
 
     render() {
         const { classes } = this.props;
@@ -29,10 +26,8 @@ class BasicTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric>Coin</TableCell>
+                            <TableCell numeric>Currency</TableCell>
                             <TableCell numeric>Price ($USD)</TableCell>
-                            <TableCell numeric>Amount</TableCell>
-                            <TableCell numeric>Value</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -41,8 +36,6 @@ class BasicTable extends React.Component {
                                 <TableRow key={n.id}>
                                     <TableCell>{n.name}</TableCell>
                                     <TableCell numeric>{this.props.getPrice(n.name)}</TableCell>
-                                    <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>{(n.amount * this.props.getPrice(n.name))}</TableCell>
                                 </TableRow>
                             );
                         })}
@@ -53,8 +46,8 @@ class BasicTable extends React.Component {
     }
 }
 
-BasicTable.propTypes = {
+CurrenciesTable.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(BasicTable);
+export default withStyles(styles)(CurrenciesTable);

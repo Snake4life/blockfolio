@@ -1,5 +1,5 @@
 import React from "react";
-import BasicTable from "./BasicTable";
+import InvestmentsTable from "./InvestmentsTable";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import Button from "material-ui/Button";
@@ -7,6 +7,8 @@ import AddIcon from "material-ui-icons/Add";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import AddInvestment from "./AddInvestment";
+import Coin from "../Coin";
+
 const styles = theme => ({
     table: {
         minWidth: 700
@@ -27,10 +29,12 @@ class Investments extends React.Component {
         this.state = {
             coins: [
                 {
+                    id: 0,
                     name: "BTC",
                     amount: 0.19
                 },
                 {
+                    id: 1,
                     name: "ETH",
                     amount: 46
                 }
@@ -56,7 +60,7 @@ class Investments extends React.Component {
             <Switch>
                 <Route exact path="/investments">
                     <div>
-                        <BasicTable data={this.state.coins} getPrice={this.getPrice} />
+                        <InvestmentsTable data={this.state.coins} getPrice={this.getPrice} />
                         <Button
                             fab
                             color="primary"
