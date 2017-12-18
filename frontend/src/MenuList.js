@@ -11,7 +11,11 @@ const styles = theme => ({
     root: {
         width: "100%",
         maxWidth: 360,
+        height: "100%",
         background: theme.palette.background.paper
+    },
+    list: {
+        height:"100%"
     }
 });
 
@@ -33,7 +37,7 @@ class SimpleList extends React.Component {
     const { classes } = this.props;
     return (
         <div className={classes.root}>
-            <List>
+            <List className={classes.list}>
                 <ListItem button onClick={this.handleDashboardClick}>
                     <DashboardIcon/> <ListItemText primary="Dashboard" />
                 </ListItem>

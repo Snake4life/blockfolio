@@ -10,7 +10,7 @@ import IconButton from "material-ui/IconButton";
 import Hidden from "material-ui/Hidden";
 import Divider from "material-ui/Divider";
 import MenuIcon from "material-ui-icons/Menu";
-import SimpleList from "./MenuList";
+import MenuList from "./MenuList";
 
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
@@ -65,7 +65,8 @@ const styles = theme => ({
             width: drawerWidth,
             position: "relative",
             height: "100%"
-        }
+        },
+        height:"100%"
     },
     content: {
         backgroundColor: theme.palette.background.default,
@@ -77,6 +78,9 @@ const styles = theme => ({
             height: "calc(100% - 64px)",
             marginTop: 64
         }
+    },
+    drawer: {
+        height: "100%"
     }
 });
 
@@ -92,11 +96,11 @@ class ResponsiveDrawer extends React.Component {
     render() {
         const { classes, theme } = this.props;
 
-        const drawer = (
+        const drawerContent = (
             <div>
                 <div className={classes.drawerHeader} />
                 <Divider />
-                <SimpleList onRequestClose={this.handleDrawerToggle} />
+                <MenuList onRequestClose={this.handleDrawerToggle} />
             </div>
         );
         const DashboardTitle = () => <div>Dashboard</div>;
@@ -145,7 +149,7 @@ class ResponsiveDrawer extends React.Component {
                                 keepMounted: true // Better open performance on mobile.
                             }}
                         >
-                            {drawer}
+                            {drawerContent}
                         </Drawer>
                     </Hidden>
                     <Hidden mdDown implementation="css">
@@ -155,8 +159,9 @@ class ResponsiveDrawer extends React.Component {
                             classes={{
                                 paper: classes.drawerPaper
                             }}
+                             className={classes.drawer}
                         >
-                            {drawer}
+                            {drawerContent}
                         </Drawer>
                     </Hidden>
                     <main className={classes.content}>
