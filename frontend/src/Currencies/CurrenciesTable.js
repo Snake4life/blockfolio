@@ -13,11 +13,27 @@ const styles = theme => ({
     root: {
         marginTop: theme.spacing.unit,
         overflowX: "auto"
+    },
+    redColor: {
+        color: "#ff0000"
+    },
+    greenColor: {
+        color: "#00aa00"
+    },
+    tableRow: {
+        backgroundColor: "#fafafa"
     }
 });
 
-class CurrenciesTable extends React.Component {
+var formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  // the default value for minimumFractionDigits depends on the currency
+  // and is usually already 2
+});
 
+class CurrenciesTable extends React.Component {
     render() {
         const { classes } = this.props;
 
@@ -27,17 +43,52 @@ class CurrenciesTable extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell numeric>Currency</TableCell>
-                            <TableCell numeric>Price ($USD)</TableCell>
                             <TableCell numeric>Market cap</TableCell>
+                            <TableCell numeric>Price ($USD)</TableCell>
+                            <TableCell numeric>Change 1h</TableCell>
+                            <TableCell numeric>Change 24h</TableCell>
+                            <TableCell numeric>Change 7d</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.data.map(n => {
+                        {this.props.data.map((n, index) => {
                             return (
-                                <TableRow key={n.id}>
+                                <TableRow key={n.id} className={index %2 == 0 ? classes.tableRow : ''}>
                                     <TableCell>{n.name}</TableCell>
-                                    <TableCell numeric>{n.price_usd}</TableCell>
-                                    <TableCell numeric>{n.market_cap_usd}</TableCell>
+                                    <TableCell numeric>
+                                        {formatter.format(n.market_cap_usd)}
+                                    </TableCell>
+                                    <TableCell numeric>{formatter.format(n.price_usd)}</TableCell>
+                                    <TableCell
+                                        numeric
+                                        className={
+                                            n.percent_change_1h > 0
+                                                ? classes.greenColor
+                                                : classes.redColor
+                                        }
+                                    >
+                                        {n.percent_change_1h}
+                                    </TableCell>
+                                    <TableCell
+                                        numeric
+                                        className={
+                                            n.percent_change_24h > 0
+                                                ? classes.greenColor
+                                                : classes.redColor
+                                        }
+                                    >
+                                        {n.percent_change_24h}
+                                    </TableCell>
+                                    <TableCell
+                                        numeric
+                                        className={
+                                            n.percent_change_7d > 0
+                                                ? classes.greenColor
+                                                : classes.redColor
+                                        }
+                                    >
+                                        {n.percent_change_7d}
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}

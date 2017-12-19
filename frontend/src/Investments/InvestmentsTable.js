@@ -18,6 +18,14 @@ const styles = theme => ({
     }
 });
 
+var formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  // the default value for minimumFractionDigits depends on the currency
+  // and is usually already 2
+});
+
 class InvestmentsTable extends React.Component {
 
     render() {
@@ -28,7 +36,7 @@ class InvestmentsTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric>Coin</TableCell>
+                            <TableCell numeric>Currency</TableCell>
                             <TableCell numeric>Price ($USD)</TableCell>
                             <TableCell numeric>Amount</TableCell>
                             <TableCell numeric>Value</TableCell>
@@ -39,9 +47,9 @@ class InvestmentsTable extends React.Component {
                             return (
                                 <TableRow key={n.id}>
                                     <TableCell>{n.name}</TableCell>
-                                    <TableCell numeric>{this.props.getPrice(n.name)}</TableCell>
+                                    <TableCell numeric>{formatter.format(this.props.getPrice(n.name))}</TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>{(n.amount * this.props.getPrice(n.name))}</TableCell>
+                                    <TableCell numeric>{formatter.format(n.amount * this.props.getPrice(n.name))}</TableCell>
                                 </TableRow>
                             );
                         })}

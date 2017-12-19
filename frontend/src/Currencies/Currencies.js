@@ -6,7 +6,6 @@ import AddIcon from "material-ui-icons/Add";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
-import Coin from "../Coin";
 import Typography from "material-ui/Typography";
 
 const styles = theme => ({
@@ -26,23 +25,6 @@ const styles = theme => ({
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            currencies: []
-        };
-    }
-    componentDidMount() {
-        this.getCurrencies();
-    }
-    getCurrencies() {
-        fetch("/api/currencies")
-            .then(res => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
-            })
-            .then(responseJson => {
-                console.log(responseJson);
-                this.setState({ currencies: responseJson });
-            });
     }
 
     render() {
@@ -52,7 +34,7 @@ class Currencies extends React.Component {
                 <Route exact path="/currencies">
                     <div>
                         <CurrenciesTable
-                            data={this.state.currencies}
+                            data={this.props.getCurrencies()}
                         />
                     </div>
                 </Route>

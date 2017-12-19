@@ -7,7 +7,6 @@ import AddIcon from "material-ui-icons/Add";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import AddInvestment from "./AddInvestment";
-import Coin from "../Coin";
 
 const styles = theme => ({
     table: {
@@ -26,30 +25,11 @@ const styles = theme => ({
 class Investments extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            coins: [
-                {
-                    id: 0,
-                    name: "BTC",
-                    amount: 0.19
-                },
-                {
-                    id: 1,
-                    name: "ETH",
-                    amount: 46
-                }
-            ]
-        };
         this.handleAddButton = this.handleAddButton.bind(this);
-        this.addCoin = this.addCoin.bind(this);
+        this.addInvestment = this.addInvestment.bind(this);
     };
-    getPrice(coin) {
-        if(coin=="ETH") return 670;
-        if(coin=="BTC") return 18000;
-        if(coin=="XMR") return 300;
-    };
-    addCoin(coin, amount) {
-        this.state.coins.push({name:coin, amount:amount});
+    addInvestment(coin, amount) {
+        this.state.investments.push({name:coin, amount:amount});
     };
     handleAddButton() {
         this.props.history.push("/investments/add");
@@ -60,7 +40,7 @@ class Investments extends React.Component {
             <Switch>
                 <Route exact path="/investments">
                     <div>
-                        <InvestmentsTable data={this.state.coins} getPrice={this.getPrice} />
+                        <InvestmentsTable data={this.props.getInvestments()} getPrice={this.props.getCurrencyPrice} />
                         <Button
                             fab
                             color="primary"
@@ -72,7 +52,7 @@ class Investments extends React.Component {
                         </Button>
                     </div>
                 </Route>
-                <Route path="/investments/add" component={() => <AddInvestment addCoin={this.addCoin}/>} />
+                <Route path="/investments/add" component={() => <AddInvestment addInvestment={this.addInvestment}/>} />
             </Switch>
         );
     }

@@ -14,7 +14,7 @@ import MenuList from "./MenuList";
 
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
-import Dashboard from "./Dashboard";
+import Dashboard from "./Dashboard/Dashboard";
 import Investments from "./Investments/Investments";
 import AddInvestment from "./Investments/AddInvestment";
 import Currencies from "./Currencies/Currencies";
@@ -106,7 +106,9 @@ class ResponsiveDrawer extends React.Component {
         const DashboardTitle = () => <div>Dashboard</div>;
         const InvestmentsTitle = () => <div>Investments</div>;
         const CurrenciesTitle = () => <div>Currencies</div>;
-
+        const CurrenciesComponent = () => <Currencies getCurrencies={this.props.getCurrencies} />;
+        const DashboardComponent = () => <Dashboard getCurrencies={this.props.getCurrencies} />;
+        const InvestmentsComponent = () => <Investments getInvestments={this.props.getInvestments} getCurrencyPrice={this.props.getCurrencyPrice} />;
         return (
             <div className={classes.root}>
                 <div className={classes.appFrame}>
@@ -173,18 +175,18 @@ class ResponsiveDrawer extends React.Component {
                         <Switch>
                             <Route
                                 exact path="/"
-                                component={Dashboard}
+                                component={DashboardComponent}
                             />
                             
                             <Route
                                 path="/investments"
-                                component={Investments}
+                                component={InvestmentsComponent}
                             >
                             </Route>
 
                             <Route
                                 path="/currencies"
-                                component={Currencies}
+                                component={CurrenciesComponent}
                             >
                             </Route>
                             
