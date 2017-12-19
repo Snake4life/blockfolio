@@ -24,7 +24,7 @@ const drawerWidth = 240;
 const styles = theme => ({
     root: {
         width: "100%",
-        height: "100%",
+        //height: "100vh",
         marginTop: 0,
         zIndex: 1,
         overflow: "hidden"
@@ -66,7 +66,7 @@ const styles = theme => ({
             position: "relative",
             height: "100%"
         },
-        height:"100%"
+        height:"100vh"
     },
     content: {
         backgroundColor: theme.palette.background.default,
@@ -80,7 +80,7 @@ const styles = theme => ({
         }
     },
     drawer: {
-        height: "100%"
+        height: "100vh"
     }
 });
 

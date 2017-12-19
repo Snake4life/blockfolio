@@ -28,6 +28,7 @@ class CurrenciesTable extends React.Component {
                         <TableRow>
                             <TableCell numeric>Currency</TableCell>
                             <TableCell numeric>Price ($USD)</TableCell>
+                            <TableCell numeric>Market cap</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -35,7 +36,8 @@ class CurrenciesTable extends React.Component {
                             return (
                                 <TableRow key={n.id}>
                                     <TableCell>{n.name}</TableCell>
-                                    <TableCell numeric>{this.props.getPrice(n.name)}</TableCell>
+                                    <TableCell numeric>{n.price_usd}</TableCell>
+                                    <TableCell numeric>{n.market_cap_usd}</TableCell>
                                 </TableRow>
                             );
                         })}

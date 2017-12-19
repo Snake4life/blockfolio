@@ -7,8 +7,7 @@ import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
 import Coin from "../Coin";
-import Typography from "material-ui/Typography"
-
+import Typography from "material-ui/Typography";
 
 const styles = theme => ({
     table: {
@@ -24,39 +23,37 @@ const styles = theme => ({
     }
 });
 
-
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            coins: [
-                {
-                    name: "BTC",
-                    amount: 0.19
-                },
-                {
-                    name: "ETH",
-                    amount: 46
-                }
-            ]
+            currencies: []
         };
-    };
-    getPrice(coin) {
-        if(coin=="ETH") return 670;
-        if(coin=="BTC") return 18000;
-        if(coin=="XMR") return 300;
-    };
-    
+    }
+    componentDidMount() {
+        this.getCurrencies();
+    }
+    getCurrencies() {
+        fetch("/api/currencies")
+            .then(res => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
+            })
+            .then(responseJson => {
+                console.log(responseJson);
+                this.setState({ currencies: responseJson });
+            });
+    }
+
     render() {
         const { classes, theme } = this.props;
         return (
             <Switch>
                 <Route exact path="/currencies">
                     <div>
-                        <Typography>
-                        here are a couple of cryptocurrencies
-                        </Typography>
-                        <CurrenciesTable data={this.state.coins} getPrice={this.getPrice}/>
+                        <CurrenciesTable
+                            data={this.state.currencies}
+                        />
                     </div>
                 </Route>
             </Switch>
