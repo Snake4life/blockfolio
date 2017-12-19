@@ -42,6 +42,7 @@ class CurrenciesTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
+                            <TableCell numeric>#</TableCell>
                             <TableCell numeric>Currency</TableCell>
                             <TableCell numeric>Market cap</TableCell>
                             <TableCell numeric>Price ($USD)</TableCell>
@@ -54,6 +55,7 @@ class CurrenciesTable extends React.Component {
                         {this.props.data.map((n, index) => {
                             return (
                                 <TableRow key={n.id} className={index %2 == 0 ? classes.tableRow : ''}>
+                                    <TableCell numeric>{index}</TableCell>
                                     <TableCell>{n.name}</TableCell>
                                     <TableCell numeric>
                                         {formatter.format(n.market_cap_usd)}

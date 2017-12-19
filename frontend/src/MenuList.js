@@ -16,9 +16,6 @@ const styles = theme => ({
         background: theme.palette.background.paper,
 
     },
-    list: {
-        height: "100%"
-    }
 });
 
 class MenuList extends React.Component {
@@ -43,6 +40,7 @@ class MenuList extends React.Component {
                         <InvestmentsIcon />{" "}
                         <ListItemText primary="My investments" />
                     </ListItem>
+                    
                 </List>
             </div>
         );
