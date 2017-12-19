@@ -33,7 +33,7 @@ const styles = theme => ({
         position: "relative",
         display: "flex",
         width: "100%",
-        height: "100vw"
+        height: "100vh"
     },
     appBar: {
         position: "absolute",
@@ -63,17 +63,11 @@ const styles = theme => ({
         width: "100%",
         overflow: "scroll",
         padding: theme.spacing.unit * 3,
-        height: "100%",
         marginTop: 56,
-        paddingBottom: 400,
         [theme.breakpoints.up("sm")]: {
-            height: "calc(100% - 64px)",
             marginTop: 64
         }
     },
-    contentWrapper: {
-        paddingBottom: 400
-    }
 });
 
 class ResponsiveDrawer extends React.Component {
