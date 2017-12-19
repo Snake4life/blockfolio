@@ -28,36 +28,41 @@ const styles = theme => ({
 });
 
 class AddInvestment extends React.Component {
-    state = {
-        coin: "BTC",
-        amount: 0
-    };
-
-    handleChange = event => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            currencyId: "bitcoin",
+            amount: 0
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeAmount = this.handleChangeAmount.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+    }
+    handleChange (event) {
         this.setState({ [event.target.name]: event.target.value });
     };
-    handleChangeAmount = event => {
+    handleChangeAmount (event) {
         this.setState({ amount: event.target.value });
     };
-    handleAdd = () => {
-        this.props.addCoin(this.state.coin, this.state.amount);
+    handleAdd() {
+        this.props.addInvestment(this.state.currencyId, this.state.amount);
         this.props.history.push("/investments");
-    };
+    }
     render() {
         const { classes } = this.props;
 
         return (
             <form className={classes.container} autoComplete="off">
                 <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="coin-simple">Coin</InputLabel>
+                    <InputLabel htmlFor="currency">Currency</InputLabel>
                     <Select
-                        value={this.state.coin}
+                        value={this.state.currencyId}
                         onChange={this.handleChange}
-                        input={<Input name="coin" id="coin-simple" />}
+                        input={<Input name="currency" id="currency" />}
                     >
-                        <MenuItem value="BTC">BTC</MenuItem>
-                        <MenuItem value="ETH">ETH</MenuItem>
-                        <MenuItem value="XMR">XMR</MenuItem>
+                        <MenuItem value="bitcoin">BTC</MenuItem>
+                        <MenuItem value="ethereum">ETH</MenuItem>
+                        <MenuItem value="monero">XMR</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl className={classes.formControl}>
@@ -76,7 +81,11 @@ class AddInvestment extends React.Component {
                 </FormControl>
                 <div>
                     <FormControl className={classes.formControl}>
-                        <Button raised className={classes.button} onClick={this.handleAdd}>
+                        <Button
+                            raised
+                            className={classes.button}
+                            onClick={this.handleAdd}
+                        >
                             Add to portfolio
                         </Button>
                     </FormControl>

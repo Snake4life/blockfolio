@@ -43,13 +43,13 @@ class InvestmentsTable extends React.Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.data.map(n => {
+                        {this.props.data.map((n, index) => {
                             return (
-                                <TableRow key={n.id}>
+                                <TableRow key={index}>
                                     <TableCell>{n.name}</TableCell>
-                                    <TableCell numeric>{formatter.format(this.props.getPrice(n.name))}</TableCell>
+                                    <TableCell numeric>{formatter.format(this.props.getCurrencyPriceById(n.id))}</TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>{formatter.format(n.amount * this.props.getPrice(n.name))}</TableCell>
+                                    <TableCell numeric>{formatter.format(n.amount * this.props.getCurrencyPriceById(n.id))}</TableCell>
                                 </TableRow>
                             );
                         })}

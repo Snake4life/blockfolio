@@ -66,7 +66,7 @@ const styles = theme => ({
             position: "relative",
             height: "100%"
         },
-        height:"100vh"
+        height: "100vh"
     },
     content: {
         backgroundColor: theme.palette.background.default,
@@ -106,9 +106,19 @@ class ResponsiveDrawer extends React.Component {
         const DashboardTitle = () => <div>Dashboard</div>;
         const InvestmentsTitle = () => <div>Investments</div>;
         const CurrenciesTitle = () => <div>Currencies</div>;
-        const CurrenciesComponent = () => <Currencies getCurrencies={this.props.getCurrencies} />;
-        const DashboardComponent = () => <Dashboard getCurrencies={this.props.getCurrencies} />;
-        const InvestmentsComponent = () => <Investments getInvestments={this.props.getInvestments} getCurrencyPrice={this.props.getCurrencyPrice} />;
+        const CurrenciesComponent = () => (
+            <Currencies getCurrencies={this.props.getCurrencies} />
+        );
+        const DashboardComponent = () => (
+            <Dashboard getCurrencies={this.props.getCurrencies} />
+        );
+        const InvestmentsComponent = () => (
+            <Investments
+                getInvestments={this.props.getInvestments}
+                addInvestment={this.props.addInvestment}
+                getCurrencyPriceById={this.props.getCurrencyPriceById}
+            />
+        );
         return (
             <div className={classes.root}>
                 <div className={classes.appFrame}>
@@ -166,7 +176,7 @@ class ResponsiveDrawer extends React.Component {
                             classes={{
                                 paper: classes.drawerPaper
                             }}
-                             className={classes.drawer}
+                            className={classes.drawer}
                         >
                             {drawerContent}
                         </Drawer>
@@ -174,22 +184,20 @@ class ResponsiveDrawer extends React.Component {
                     <main className={classes.content}>
                         <Switch>
                             <Route
-                                exact path="/"
+                                exact
+                                path="/"
                                 component={DashboardComponent}
                             />
-                            
+
                             <Route
                                 path="/investments"
                                 component={InvestmentsComponent}
-                            >
-                            </Route>
+                            />
 
                             <Route
                                 path="/currencies"
                                 component={CurrenciesComponent}
-                            >
-                            </Route>
-                            
+                            />
                         </Switch>
                     </main>
                 </div>

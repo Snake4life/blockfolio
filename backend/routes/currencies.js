@@ -11,6 +11,7 @@ router.get('/', function(req, res, next) {
 
             var coins = data.map(el => {
                 return {
+                    id: el.id,
                     name: el.name,
                     price_usd: el.price_usd,
                     market_cap_usd: el.market_cap_usd,

@@ -22,20 +22,21 @@ class App extends Component {
             currencies: [],
             investments: [
                 {
-                    id: 0,
-                    name: "BTC",
+                    id: "bitcoin",
+                    name: "Bitcoin",
                     amount: 0.19
                 },
                 {
-                    id: 1,
-                    name: "ETH",
+                    id: "ethereum",
+                    name: "Ethereum",
                     amount: 46
                 }
             ]
         };
         this.getCurrencies = this.getCurrencies.bind(this);
         this.getInvestments = this.getInvestments.bind(this);
-        this.getCurrencyPrice = this.getCurrencyPrice.bind(this);
+        this.getCurrencyPriceById = this.getCurrencyPriceById.bind(this);
+        this.addInvestment = this.addInvestment.bind(this);
     }
     componentDidMount() {
         this.fetchCurrencies();
@@ -57,13 +58,13 @@ class App extends Component {
     getInvestments() {
         return this.state.investments;
     }
-    addInvestment(cryptocurrency, amount) {
-        this.state.investments.push({name:cryptocurrency, amount:amount});
+    addInvestment(currencyId, amount) {
+        this.state.investments.push({id:currencyId, amount:amount});
     };
-    getCurrencyPrice(coin) {
-        if(coin=="ETH") return 670;
-        if(coin=="BTC") return 18000;
-        if(coin=="XMR") return 300;
+    getCurrencyPriceById(id) {
+        const currency = this.state.currencies.filter(currency => currency.id == id);
+        console.log(currency);
+        if(currency.length>0) return currency[0].price_usd;
     }
     render() {
         return (
@@ -72,7 +73,8 @@ class App extends Component {
                     <ResponsiveDrawer
                         getCurrencies={this.getCurrencies}
                         getInvestments={this.getInvestments}
-                        getCurrencyPrice={this.getCurrencyPrice}
+                        getCurrencyPriceById={this.getCurrencyPriceById}
+                        addInvestment={this.addInvestment}
                     />
                 </div>
             </MuiThemeProvider>
