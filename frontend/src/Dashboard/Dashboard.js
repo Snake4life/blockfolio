@@ -2,8 +2,10 @@ import React from "react";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import Typography from "material-ui/Typography";
+import SimpleCard from "./SimpleCard";
+
 const styles = theme => ({
-    root: {}
+    root: {},
 });
 
 class Dashboard extends React.Component {
@@ -12,9 +14,8 @@ class Dashboard extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Typography type="title" color="inherit" noWrap>
-                    Dashboard
-                </Typography>
+                    <SimpleCard  style={{ display: 'flex' }}/>
+                    <SimpleCard  style={{ display: 'flex' }}/>
             </div>
         );
     }
