@@ -29,16 +29,22 @@ app.use(express.static(path.join(__dirname, "public")));
 function isAuthenticated(req, res, next) {
     var session = JSON.parse(req.cookies.session);
 
-    console.log(" Checking if the session "+session.session_id+" is still valid...");
+    console.log(
+        " Checking if the session " + session.session_id + " is still valid..."
+    );
 
     Session.getSession(session.session_id)
         .then(session => {
-
             // TODO this is duplicated in User.js, find a common solution so the code does not repeat
             var timestamp = Math.floor(Date.now() / 1000);
             var expires = timestamp + config.session.expires;
 
-            console.log("Setting expiry date of session "+session.session_id+ " to "+expires);
+            console.log(
+                "Setting expiry date of session " +
+                    session.session_id +
+                    " to " +
+                    expires
+            );
 
             Session.extend(session.session_id, expires)
                 .then(session => {
@@ -55,8 +61,10 @@ function isAuthenticated(req, res, next) {
                 .catch(err => {});
             // get the user for this session
         })
-        .catch((err) => {
-            console.log("The session is invalid, error: " + err +  ", returning 401");
+        .catch(err => {
+            console.log(
+                "The session is invalid, error: " + err + ", returning 401"
+            );
             // the session does not exist, return 401 error
             res.sendStatus(401);
         });
