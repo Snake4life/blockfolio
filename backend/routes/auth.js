@@ -15,8 +15,7 @@ router.post("/signIn", (req, res, next) => {
                 .then(json => {
                     res.json({
                         session: json
-                    }
-                        );
+                    });
                 })
                 .catch(err => {
                     res.sendStatus(err);
