@@ -18,6 +18,8 @@ import Dashboard from "./Dashboard/Dashboard";
 import Investments from "./Investments/Investments";
 import AddInvestment from "./Investments/AddInvestment";
 import Currencies from "./Currencies/Currencies";
+import SignIn from "./Profile/SignIn";
+import Profile from "./Profile/Profile";
 
 const drawerWidth = 240;
 
@@ -67,7 +69,7 @@ const styles = theme => ({
         [theme.breakpoints.up("sm")]: {
             marginTop: 64
         }
-    },
+    }
 });
 
 class ResponsiveDrawer extends React.Component {
@@ -92,19 +94,14 @@ class ResponsiveDrawer extends React.Component {
         const DashboardTitle = () => <div>Dashboard</div>;
         const InvestmentsTitle = () => <div>Investments</div>;
         const CurrenciesTitle = () => <div>Currencies</div>;
-        const CurrenciesComponent = () => (
-            <Currencies getCurrencies={this.props.getCurrencies} />
-        );
-        const DashboardComponent = () => (
-            <Dashboard getCurrencies={this.props.getCurrencies} />
-        );
-        const InvestmentsComponent = () => (
-            <Investments
-                getInvestments={this.props.getInvestments}
-                addInvestment={this.props.addInvestment}
-                getCurrencyPriceById={this.props.getCurrencyPriceById}
-            />
-        );
+        const ProfileTitle = () => <div>Profile</div>;
+        const SignInTitle = () => <div>Sign in</div>;
+        const CurrenciesComponent = () => <Currencies />;
+        const DashboardComponent = () => <Dashboard />;
+        const InvestmentsComponent = () => <Investments />;
+        const SignInComponent = () => <SignIn setSession={this.props.setSession} />
+        const ProfileComponent = () => <Profile />
+
         return (
             <div className={classes.root}>
                 <div className={classes.appFrame}>
@@ -120,6 +117,10 @@ class ResponsiveDrawer extends React.Component {
                             </IconButton>
                             <Typography type="title" color="inherit" noWrap>
                                 <Switch>
+                                <Route
+                                       exact path="/profile"
+                                        component={ProfileTitle}
+                                    />
                                     <Route
                                         exact
                                         path="/"
@@ -132,6 +133,10 @@ class ResponsiveDrawer extends React.Component {
                                     <Route
                                         path="/currencies"
                                         component={CurrenciesTitle}
+                                    />
+                                    <Route
+                                        exact path="/profile/signin"
+                                        component={SignInTitle}
                                     />
                                 </Switch>
                             </Typography>
@@ -185,6 +190,17 @@ class ResponsiveDrawer extends React.Component {
                                     path="/currencies"
                                     component={CurrenciesComponent}
                                 />
+
+                                <Route
+                                    exact path="/profile/signin"
+                                    component={SignInComponent}
+                                />
+
+                                <Route
+                                    exact path="/profile"
+                                    component={ProfileComponent}
+                                />
+
                             </Switch>
                         </div>
                     </main>

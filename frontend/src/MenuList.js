@@ -6,6 +6,7 @@ import Divider from "material-ui/Divider";
 import DashboardIcon from "material-ui-icons/Dashboard";
 import InvestmentsIcon from "material-ui-icons/AccountBalance";
 import MoneyIcon from "material-ui-icons/AttachMoney";
+import AccountIcon from "material-ui-icons/AccountBox";
 import { withRouter, Link} from "react-router-dom";
 
 const styles = theme => ({
@@ -30,6 +31,12 @@ class MenuList extends React.Component {
                     className={classes.list}
                     onClick={this.handleMenuItemClick.bind(this)}
                 >
+                <ListItem button  component={Link} to="/profile/signin">
+                        <AccountIcon /> <ListItemText primary="Sign in" />
+                    </ListItem>
+                    <ListItem button  component={Link} to="/profile">
+                        <AccountIcon /> <ListItemText primary="Profile" />
+                    </ListItem>
                     <ListItem button  component={Link} to="/">
                         <DashboardIcon /> <ListItemText primary="Dashboard" />
                     </ListItem>

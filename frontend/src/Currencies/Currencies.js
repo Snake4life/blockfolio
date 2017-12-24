@@ -1,12 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
-import Typography from "material-ui/Typography";
 
 const styles = theme => ({
     table: {
@@ -25,17 +22,39 @@ const styles = theme => ({
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            currencies: []
+        };
+        this.getCurrencies = this.getCurrencies.bind(this);
     }
-
+    componentDidMount() {
+        this.fetchCurrencies();
+    }
+    getCurrencies() {
+        return this.state.currencies;
+    }
+    fetchCurrencies() {
+        fetch("/api/currencies")
+            .then(res => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
+            })
+            .then(responseJson => {
+                this.setState({ currencies: responseJson });
+            })
+            .catch(e => {
+                console.error(
+                    "Unable to fetch currencies from the server: " + e
+                );
+            });
+    }
     render() {
         const { classes, theme } = this.props;
         return (
             <Switch>
                 <Route exact path="/currencies">
                     <div>
-                        <CurrenciesTable
-                            data={this.props.getCurrencies()}
-                        />
+                        <CurrenciesTable data={this.getCurrencies()} />
                     </div>
                 </Route>
             </Switch>

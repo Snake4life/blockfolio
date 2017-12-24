@@ -8,8 +8,7 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
     root: {
@@ -27,6 +26,9 @@ var formatter = new Intl.NumberFormat('en-US', {
 });
 
 class InvestmentsTable extends React.Component {
+    componentDidMount() {
+        console.log(this.props.data);
+    }
 
     render() {
         const { classes } = this.props;
@@ -44,12 +46,13 @@ class InvestmentsTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
+
                             return (
-                                <TableRow key={index}>
-                                    <TableCell>{n.name}</TableCell>
-                                    <TableCell numeric>{formatter.format(this.props.getCurrencyPriceById(n.id))}</TableCell>
+                                <TableRow key={(index+1)}>
+                                    <TableCell><Link to={"/investments/currency/"+n.id}>{n.name}</Link></TableCell>
+                                    <TableCell numeric>{formatter.format(n.price_usd)}</TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>{formatter.format(n.amount * this.props.getCurrencyPriceById(n.id))}</TableCell>
+                                    <TableCell numeric>{formatter.format(n.amount * n.price_usd)}</TableCell>
                                 </TableRow>
                             );
                         })}
