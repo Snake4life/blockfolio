@@ -58,5 +58,39 @@ module.exports = {
                 }
             );
         });
+    },
+    isAuthenticated: function(sessionId) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
+                [sessionId],
+                (err, rows, fields) => {
+                    if(err) {
+                        console.error(err);
+                        reject(500);
+                    }
+                    if(rows.length>0) {
+                        resolve(rows[0]);
+                    } else reject(401);
+                }
+            );
+        });
+    },
+    findOne: function(userId) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                "SELECT * FROM users WHERE user_id = ?",
+                [userId],
+                (err, rows, fields) => {
+                    if(err) {
+                        console.error(err);
+                        reject(500);
+                    }
+                    if(rows.length>0) {
+                        resolve(rows[0]);
+                    } else reject(404);
+                }
+            );
+        });
     }
 };

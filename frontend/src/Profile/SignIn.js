@@ -21,12 +21,17 @@ class SignIn extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
         const { cookies } = this.props;
+        this.state.session = cookies.get("session");
     }
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value
         });
     };
+    componentDidMount() {
+        // redirect to user profile if already signedin
+        if(this.state.session!=undefined) this.props.history.push("/profile");
+    }
     onFormSubmit(e) {
         e.preventDefault();
         this.signIn(
@@ -101,7 +106,6 @@ class SignIn extends React.Component {
                             type="submit"
                             id="submitField"
                             name="submitField"
-                            bsStyle="primary"
                         >
                             Sign in
                         </Button>

@@ -34,7 +34,7 @@ class Currencies extends React.Component {
         return this.state.currencies;
     }
     fetchCurrencies() {
-        fetch("/api/currencies")
+        fetch("/api/currencies", {credentials:"same-origin"})
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();

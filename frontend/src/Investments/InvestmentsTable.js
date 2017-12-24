@@ -17,19 +17,15 @@ const styles = theme => ({
     }
 });
 
-var formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-  // the default value for minimumFractionDigits depends on the currency
-  // and is usually already 2
+var formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2
+    // the default value for minimumFractionDigits depends on the currency
+    // and is usually already 2
 });
 
 class InvestmentsTable extends React.Component {
-    componentDidMount() {
-        console.log(this.props.data);
-    }
-
     render() {
         const { classes } = this.props;
 
@@ -46,13 +42,24 @@ class InvestmentsTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
-
                             return (
-                                <TableRow key={(index+1)}>
-                                    <TableCell><Link to={"/investments/currency/"+n.id}>{n.name}</Link></TableCell>
-                                    <TableCell numeric>{formatter.format(n.price_usd)}</TableCell>
+                                <TableRow key={index + 1}>
+                                    <TableCell>
+                                        <Link
+                                            to={"/investments/currency/" + n.id}
+                                        >
+                                            {n.name}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell numeric>
+                                        {formatter.format(n.price_usd)}
+                                    </TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>{formatter.format(n.amount * n.price_usd)}</TableCell>
+                                    <TableCell numeric>
+                                        {formatter.format(
+                                            n.amount * n.price_usd
+                                        )}
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}

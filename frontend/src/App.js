@@ -16,12 +16,30 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            signedIn: false
+        }
+        this.signIn = this.signIn.bind(this);
+        this.signOut = this.signOut.bind(this);
+        this.isSignedIn = this.isSignedIn.bind(this);
+    }
+    signIn() {
+        this.setState({signedIn: true});
+    }
+    signOut() {
+        this.setState({signedIn: false});
+    }
+    isSignedIn() {
+        return this.state.signedIn;
+    }
     render() {
         return (
             <MuiThemeProvider theme={theme}>
                 <CookiesProvider>
                     <div className="App">
-                        <ResponsiveDrawer />
+                        <ResponsiveDrawer/>
                     </div>
                 </CookiesProvider>
             </MuiThemeProvider>

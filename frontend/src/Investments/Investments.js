@@ -45,14 +45,13 @@ class Investments extends React.Component {
         this.fetchInvestments();
     }
     fetchInvestments() {
-        fetch("/api/investments")
+        fetch("/api/investments", { credentials: "same-origin" })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
                 return res.json();
             })
             .then(responseJson => {
                 this.setState({ investments: responseJson });
-                console.log(responseJson);
             })
             .catch(err => {
                 console.error("Unable to fetch investments"); // show error message
@@ -112,10 +111,7 @@ class Investments extends React.Component {
                     path="/investments/add"
                     component={AddInvestmentComponent}
                 />
-                <Route
-                    path="/investments/currency/:id"
-                    component={Details}
-                />
+                <Route path="/investments/currency/:id" component={Details} />
             </Switch>
         );
     }

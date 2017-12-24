@@ -18,6 +18,7 @@ router.get("/", function(req, res, next) {
             price_usd: 715
         }
     ];
+    console.log(req.user);
     res.json(investments);
 });
 
