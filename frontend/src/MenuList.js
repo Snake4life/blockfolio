@@ -39,12 +39,8 @@ class MenuList extends React.Component {
                         className={classes.list}
                         onClick={this.handleMenuItemClick.bind(this)}
                     >
-                        <ListItem button component={Link} to="/profile">
-                            <AccountIcon /> <ListItemText primary="Profile" />
-                        </ListItem>
                         <ListItem button component={Link} to="/">
-                            <DashboardIcon />{" "}
-                            <ListItemText primary="Dashboard" />
+                            <AccountIcon /> <ListItemText primary="Profile" />
                         </ListItem>
                         <ListItem button component={Link} to="/currencies">
                             <MoneyIcon /> <ListItemText primary="Currencies" />

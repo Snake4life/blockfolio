@@ -4,15 +4,14 @@ var favicon = require("serve-favicon");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
-
 var index = require("./routes/index");
+var config = require("./config");
 var currencies = require("./routes/currencies");
 var investments = require("./routes/investments");
 var auth = require("./routes/auth");
 var profile = require("./routes/profile");
 var Session = require("./Session");
 var User = require("./User");
-
 var app = express();
 
 // view engine setup
@@ -29,21 +28,35 @@ app.use(express.static(path.join(__dirname, "public")));
 
 function isAuthenticated(req, res, next) {
     var session = JSON.parse(req.cookies.session);
-    // check if the session is valid
+
+    console.log(" Checking if the session "+session.session_id+" is still valid...");
+
     Session.getSession(session.session_id)
         .then(session => {
-            // get the user for this session
-            User.findOne(session.user_id)
-                .then(user => {
-                    // add the user to the request object so that it is available for later request handlers
-                    req.user = user;
-                    next();
+
+            // TODO this is duplicated in User.js, find a common solution so the code does not repeat
+            var timestamp = Math.floor(Date.now() / 1000);
+            var expires = timestamp + config.session.expires;
+
+            console.log("Setting expiry date of session "+session.session_id+ " to "+expires);
+
+            Session.extend(session.session_id, expires)
+                .then(session => {
+                    User.findOne(session.user_id)
+                        .then(user => {
+                            // add the user to the request object so that it is available for later request handlers
+                            req.user = user;
+                            next();
+                        })
+                        .catch(err => {
+                            res.sendStatus(err);
+                        });
                 })
-                .catch(err => {
-                    res.sendStatus(err);
-                });
+                .catch(err => {});
+            // get the user for this session
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log("The session is invalid, error: " + err +  ", returning 401");
             // the session does not exist, return 401 error
             res.sendStatus(401);
         });

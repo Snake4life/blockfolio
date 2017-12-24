@@ -175,11 +175,6 @@ class ResponsiveDrawer extends React.Component {
                     <main className={classes.content}>
                         <div className={classes.contentWrapper}>
                             <Switch>
-                                <Route
-                                    exact
-                                    path="/"
-                                    component={DashboardComponent}
-                                />
 
                                 <Route
                                     path="/investments"
@@ -197,7 +192,7 @@ class ResponsiveDrawer extends React.Component {
                                 />
 
                                 <Route
-                                    exact path="/profile"
+                                    exact path="/"
                                     component={ProfileComponent}
                                 />
 
