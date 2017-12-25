@@ -1,7 +1,7 @@
 var express = require("express");
 var path = require("path");
 var favicon = require("serve-favicon");
-var logger = require("morgan");
+var morgan = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 var index = require("./routes/index");
@@ -13,23 +13,27 @@ var profile = require("./routes/profile");
 var Session = require("./Session");
 var User = require("./User");
 var app = express();
-
+var winston = require('winston');
+var logger = require('./logger');
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger("dev"));
+app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+
+
+
 function isAuthenticated(req, res, next) {
     var session = JSON.parse(req.cookies.session);
 
-    console.log(
+    winston.info(
         " Checking if the session " + session.session_id + " is still valid..."
     );
 
@@ -39,7 +43,7 @@ function isAuthenticated(req, res, next) {
             var timestamp = Math.floor(Date.now() / 1000);
             var expires = timestamp + config.session.expires;
 
-            console.log(
+            winston.info(
                 "Setting expiry date of session " +
                     session.session_id +
                     " to " +
@@ -55,6 +59,7 @@ function isAuthenticated(req, res, next) {
                             next();
                         })
                         .catch(err => {
+                            winston.error("Error finding user: "+err);
                             res.sendStatus(err);
                         });
                 })
@@ -62,7 +67,7 @@ function isAuthenticated(req, res, next) {
             // get the user for this session
         })
         .catch(err => {
-            console.log(
+            winston.info(
                 "The session is invalid, error: " + err + ", returning 401"
             );
             // the session does not exist, return 401 error

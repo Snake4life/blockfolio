@@ -2,6 +2,7 @@ var express = require("express");
 var mysql = require("mysql");
 var config = require("./config");
 var crypto = require("crypto");
+var winston = require("./logger");
 
 var connection = mysql.createConnection({
     host: config.db.host,
@@ -19,7 +20,7 @@ module.exports = {
                 [username, password],
                 (err, rows, fields) => {
                     if (err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(500);
                     }
                     if (rows.length > 0) {
@@ -42,7 +43,7 @@ module.exports = {
                 [userId, sessionId, expires],
                 (err, rows, fields) => {
                     if (err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(err);
                     } else {
                         // return the token details to the user
@@ -83,7 +84,7 @@ module.exports = {
                 [userId],
                 (err, rows, fields) => {
                     if(err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(500);
                     }
                     if(rows.length>0) {

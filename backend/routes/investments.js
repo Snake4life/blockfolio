@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-
 /* GET list of supported currencies */
 
 router.get("/", function(req, res, next) {
@@ -18,7 +17,6 @@ router.get("/", function(req, res, next) {
             price_usd: 715
         }
     ];
-    console.log(req.user);
     res.json(investments);
 });
 

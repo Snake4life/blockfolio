@@ -2,6 +2,7 @@ var express = require("express");
 var mysql = require("mysql");
 var config = require("./config");
 var crypto = require("crypto");
+var winston = require("./logger");
 
 var connection = mysql.createConnection({
     host: config.db.host,
@@ -13,21 +14,21 @@ var connection = mysql.createConnection({
 
 module.exports = {
     getSession: function(sessionId) {
-        console.log("getSession(" + sessionId + ")");
+        winston.info("getSession(" + sessionId + ")");
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
                 [sessionId],
                 (err, rows, fields) => {
                     if (err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(500);
                     }
                     if (rows.length > 0) {
-                        console.log("Found session id " + rows[0].session_id);
+                        winston.info("Found session id " + rows[0].session_id);
                         resolve(rows[0]);
                     } else {
-                        console.log("No session found for id " + sessionId);
+                        winston.info("No session found for id " + sessionId);
                         reject(401);
                     }
                 }
@@ -35,14 +36,14 @@ module.exports = {
         });
     },
     extend: function(sessionId, expires) {
-        console.log("setExpires(" + sessionId + "," + expires + ")");
+        winston.info("setExpires(" + sessionId + "," + expires + ")");
         return new Promise((resolve, reject) => {
             connection.query(
                 "UPDATE sessions SET expires = ? WHERE session_id = FROM_UNIXTIME(?)",
                 [expires, sessionId],
                 (err, rows, fields) => {
                     if (err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(500);
                     }
                     else {
