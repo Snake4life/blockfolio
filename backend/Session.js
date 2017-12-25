@@ -2,7 +2,7 @@ var express = require("express");
 var mysql = require("mysql");
 var config = require("./config");
 var crypto = require("crypto");
-var winston = require("./logger");
+var winston = require("winston");
 
 var connection = mysql.createConnection({
     host: config.db.host,
