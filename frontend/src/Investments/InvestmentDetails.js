@@ -4,7 +4,11 @@ import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 
-const styles = theme => ({});
+const styles = () => ({
+    root: {
+
+    }
+});
 
 class InvestmentDetails extends React.Component {
     constructor(props) {
@@ -22,12 +26,12 @@ class InvestmentDetails extends React.Component {
         
     }
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         return (
             <Switch>
                 <Route path="/investments/currency/:currency">
-                    <div>Investment details for {this.props.investmentId}</div>
+                    <div className={classes.root}>Investment details for {this.props.investmentId}</div>
                 </Route>
             </Switch>
         );

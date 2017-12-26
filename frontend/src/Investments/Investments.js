@@ -9,7 +9,7 @@ import { Route, Switch } from "react-router";
 import AddInvestment from "./AddInvestment";
 import InvestmentDetails from "./InvestmentDetails";
 import { withCookies } from "react-cookie";
-const styles = theme => ({
+const styles = () => ({
     table: {
         minWidth: 700
     },
@@ -41,19 +41,13 @@ class Investments extends React.Component {
         this.addInvestment = this.addInvestment.bind(this);
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
-        this.isSignedIn = this.isSignedIn.bind(this);
     }
     componentDidMount() {
-        if(!this.isSignedIn()) this.props.history.push("/profile/signIn");
+        if(!this.props.isSignedIn()) return this.props.history.push("/profile/signIn");
         this.fetchInvestments();
     }
     // TODO pass this function as props
-    isSignedIn() {
-        const { cookies } = this.props;
-        if (cookies.get("session") != undefined) {
-            return true;
-        }
-    }
+
     fetchInvestments() {
         fetch("/api/investments", { credentials: "same-origin" })
             .then(res => {
@@ -75,7 +69,7 @@ class Investments extends React.Component {
     }
     getInvestmentById(id) {
         const investments = this.state.investments.filter(
-            investment => investment.id == id
+            investment => investment.id === id
         );
         if (investments.length > 0) return investments[0];
     }
@@ -86,7 +80,7 @@ class Investments extends React.Component {
         return total;
     }
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         const AddInvestmentComponent = () => (
             <AddInvestment addInvestment={this.addInvestment} />

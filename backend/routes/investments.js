@@ -3,6 +3,9 @@ var router = express.Router();
 /* GET list of supported currencies */
 
 router.get("/", function(req, res, next) {
+        
+    if(req.user==null) return res.sendStatus(401);
+
     var investments = [
         {
             id: "bitcoin",

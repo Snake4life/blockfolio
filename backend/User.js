@@ -23,7 +23,7 @@ module.exports = {
                         winston.error(err);
                         reject(500);
                     }
-                    if (rows.length > 0) {
+                    if (rows !=undefined && rows.length > 0) {
                         resolve(rows[0]);
                     } else reject(401);
                 }
@@ -35,7 +35,7 @@ module.exports = {
             var timestamp = Math.floor(Date.now() / 1000);
             var sessionId = crypto
                 .createHash("md5")
-                .update(timestamp + "ssecret string")
+                .update(timestamp + config.session.secret)
                 .digest("hex");
             var expires = timestamp + config.session.expires;
             connection.query(
@@ -87,7 +87,7 @@ module.exports = {
                         winston.error(err);
                         reject(500);
                     }
-                    if(rows.length>0) {
+                    if(rows !=undefined && rows.length>0) {
                         resolve(rows[0]);
                     } else reject(404);
                 }

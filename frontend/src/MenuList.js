@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import DashboardIcon from "material-ui-icons/Dashboard";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import InvestmentsIcon from "material-ui-icons/AccountBalance";
 import MoneyIcon from "material-ui-icons/AttachMoney";
 import AccountIcon from "material-ui-icons/AccountBox";
@@ -27,7 +25,7 @@ class MenuList extends React.Component {
     // TODO pass this function as props
     isSignedIn() {
         const { cookies } = this.props;
-        if (cookies.get("session") != undefined) {
+        if (cookies.get("session") !== undefined) {
             return true;
         }
     }

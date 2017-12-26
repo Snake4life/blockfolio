@@ -5,6 +5,9 @@ var request = require('request');
 /* GET list of supported currencies */
 
 router.get('/', function(req, res, next) {
+    
+    if(req.user==null) return res.sendStatus(401);
+
     request('https://api.coinmarketcap.com/v1/ticker/', function (error, response, body) {
         try {
             var data = JSON.parse(body);

@@ -2,21 +2,21 @@ import React from "react";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import { withCookies } from "react-cookie";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
 
-const styles = theme => ({
-    root: {},
+const styles = () => ({
+    root: {}
 });
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
-        const { cookies } = this.props;
-        var session = cookies.get("session");
         this.state = {
-            user: {}
-        }
+            user: {
+                username: ""
+            }
+        };
         this.fetchUserData = this.fetchUserData.bind(this);
         this.signOut = this.signOut.bind(this);
     }
@@ -26,32 +26,46 @@ class Profile extends React.Component {
         })
             .then(response => {
                 if (response.ok) return response;
-                else throw "There was an error " + response.error;
+                else throw new Error(response.error);
             })
             .then(response => response.json())
             .then(responseJson => {
-                console.log(responseJson);
+                this.setState({user: responseJson});
             })
             .catch(err => {
                 console.error(err);
             });
     }
     componentDidMount() {
+        if(!this.props.isSignedIn()) return this.props.history.push("/profile/signIn");
         this.fetchUserData();
     }
     signOut() {
+        fetch("/api/auth/signOut", {
+            credentials: "same-origin"
+        })
+            .then(response => {
+                if (response.ok) return response;
+                else throw new Error(response.error);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        // remove cookies
+
         const { cookies } = this.props;
         cookies.remove("session");
         this.props.history.push("/profile/signIn");
     }
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         return (
             <div className={classes.root}>
-                    Your profile here
-                    <Button onClick={this.signOut}>
-                    Sign out </Button>
+                Your profile here<br />
+                Username: {this.state.user.username}<br />
+                <Button onClick={this.signOut}>Sign out </Button>
             </div>
         );
     }
@@ -59,7 +73,8 @@ class Profile extends React.Component {
 
 Profile.propTypes = {
     classes: PropTypes.object.isRequired,
-    theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(withCookies(withRouter(Profile)));
+export default withStyles(styles)(
+    withCookies(withRouter(Profile))
+);

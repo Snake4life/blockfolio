@@ -24,12 +24,12 @@ module.exports = {
                         winston.error(err);
                         reject(500);
                     }
-                    if (rows!=undefined && rows.length > 0) {
+                    if (rows != undefined && rows.length > 0) {
                         winston.info("Found session id " + rows[0].session_id);
                         resolve(rows[0]);
                     } else {
                         winston.info("No session found for id " + sessionId);
-                        reject(401);
+                        reject(404);
                     }
                 }
             );
@@ -45,8 +45,7 @@ module.exports = {
                     if (err) {
                         winston.error(err);
                         reject(500);
-                    }
-                    else {
+                    } else {
                         this.getSession(sessionId)
                             .then(session => {
                                 resolve(session);
@@ -54,6 +53,25 @@ module.exports = {
                             .catch(err => {
                                 reject(err);
                             });
+                    }
+                }
+            );
+        });
+    },
+    terminate: function(sessionId) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                "DELETE FROM sessions WHERE session_id = ?",
+                [sessionId],
+                err => {
+                    if (err) {
+                        winston.error(err);
+                        reject(500);
+                    } else {
+                        winston.info(
+                            "Session " + sessionId + " succesfully terminated."
+                        );
+                        resolve();
                     }
                 }
             );

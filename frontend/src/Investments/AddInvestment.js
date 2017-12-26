@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
-import { FormControl, FormHelperText } from "material-ui/Form";
+import { FormControl } from "material-ui/Form";
 import Select from "material-ui/Select";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
@@ -38,12 +38,12 @@ class AddInvestment extends React.Component {
         this.handleChangeAmount = this.handleChangeAmount.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
     }
-    handleChange (event) {
+    handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
-    };
-    handleChangeAmount (event) {
+    }
+    handleChangeAmount(event) {
         this.setState({ amount: event.target.value });
-    };
+    }
     handleAdd() {
         this.props.addInvestment(this.state.currencyId, this.state.amount);
         this.props.history.push("/investments");

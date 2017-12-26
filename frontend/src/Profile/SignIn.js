@@ -7,7 +7,7 @@ import Button from "material-ui/Button";
 import { withRouter } from "react-router-dom";
 import { withCookies } from "react-cookie";
 
-const styles = theme => ({
+const styles = () => ({
     root: {}
 });
 
@@ -30,7 +30,7 @@ class SignIn extends React.Component {
     };
     componentDidMount() {
         // redirect to user profile if already signedin
-        if(this.state.session!=undefined) this.props.history.push("/profile");
+        if(this.state.session!==undefined) this.props.history.push("/profile");
     }
     onFormSubmit(e) {
         e.preventDefault();
@@ -42,7 +42,7 @@ class SignIn extends React.Component {
                 cookies.set("session", res.session, {
                     path: "/"
                 });
-                this.props.history.push("/profile");
+                this.props.history.push("/");
             },
             err => {
                 this.setState({ error: true });
@@ -63,7 +63,7 @@ class SignIn extends React.Component {
         })
             .then(response => {
                 if (response.ok) return response;
-                else throw "There was an error " + response.error;
+                else throw new Error(response.error);
             })
             .then(response => response.json())
             .then(responseJson => {
@@ -74,7 +74,7 @@ class SignIn extends React.Component {
             });
     }
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
 
         return (
             <div className={classes.root}>

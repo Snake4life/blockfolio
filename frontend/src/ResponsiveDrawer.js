@@ -4,23 +4,19 @@ import { withStyles } from "material-ui/styles";
 import Drawer from "material-ui/Drawer";
 import AppBar from "material-ui/AppBar";
 import Toolbar from "material-ui/Toolbar";
-import List from "material-ui/List";
 import Typography from "material-ui/Typography";
 import IconButton from "material-ui/IconButton";
 import Hidden from "material-ui/Hidden";
 import Divider from "material-ui/Divider";
 import MenuIcon from "material-ui-icons/Menu";
 import MenuList from "./MenuList";
-
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
-import Dashboard from "./Dashboard/Dashboard";
 import Investments from "./Investments/Investments";
-import AddInvestment from "./Investments/AddInvestment";
 import Currencies from "./Currencies/Currencies";
 import SignIn from "./Profile/SignIn";
 import Profile from "./Profile/Profile";
-
+import { withCookies } from "react-cookie";
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -80,7 +76,16 @@ class ResponsiveDrawer extends React.Component {
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
-
+    constructor(props) {
+        super(props);
+        this.isSignedIn = this.isSignedIn.bind(this);
+    }
+    isSignedIn() {
+        const { cookies } = this.props;
+        if (cookies.get("session") !== undefined) {
+            return true;
+        }
+    }
     render() {
         const { classes, theme } = this.props;
 
@@ -91,17 +96,21 @@ class ResponsiveDrawer extends React.Component {
                 <MenuList onRequestClose={this.handleDrawerToggle} />
             </div>
         );
-        const DashboardTitle = () => <div>Dashboard</div>;
         const InvestmentsTitle = () => <div>Investments</div>;
         const CurrenciesTitle = () => <div>Currencies</div>;
         const ProfileTitle = () => <div>Profile</div>;
         const SignInTitle = () => <div>Sign in</div>;
-        const CurrenciesComponent = () => <Currencies />;
-        const DashboardComponent = () => <Dashboard />;
-        const InvestmentsComponent = () => <Investments />;
-        const SignInComponent = () => <SignIn setSession={this.props.setSession} />
-        const ProfileComponent = () => <Profile />
+        const NotFoundTitle = () => <div>Error</div>;
 
+        const CurrenciesComponent = () => (
+            <Currencies isSignedIn={this.isSignedIn} />
+        );
+        const InvestmentsComponent = () => (
+            <Investments isSignedIn={this.isSignedIn} />
+        );
+        const SignInComponent = () => <SignIn />;
+        const ProfileComponent = () => <Profile isSignedIn={this.isSignedIn} />;
+        const NotFoundComponent = () => <div><h2>404</h2>Not found</div>;
         return (
             <div className={classes.root}>
                 <div className={classes.appFrame}>
@@ -117,14 +126,10 @@ class ResponsiveDrawer extends React.Component {
                             </IconButton>
                             <Typography type="title" color="inherit" noWrap>
                                 <Switch>
-                                <Route
-                                       exact path="/profile"
-                                        component={ProfileTitle}
-                                    />
                                     <Route
                                         exact
                                         path="/"
-                                        component={DashboardTitle}
+                                        component={ProfileTitle}
                                     />
                                     <Route
                                         path="/investments"
@@ -135,9 +140,11 @@ class ResponsiveDrawer extends React.Component {
                                         component={CurrenciesTitle}
                                     />
                                     <Route
-                                        exact path="/profile/signin"
+                                        exact
+                                        path="/profile/signin"
                                         component={SignInTitle}
                                     />
+                                    <Route component={NotFoundTitle} />
                                 </Switch>
                             </Typography>
                         </Toolbar>
@@ -145,9 +152,7 @@ class ResponsiveDrawer extends React.Component {
                     <Hidden mdUp>
                         <Drawer
                             type="temporary"
-                            anchor={
-                                theme.direction === "rtl" ? "right" : "left"
-                            }
+                            anchor="left"
                             open={this.state.mobileOpen}
                             classes={{
                                 paper: classes.drawerPaper
@@ -175,7 +180,6 @@ class ResponsiveDrawer extends React.Component {
                     <main className={classes.content}>
                         <div className={classes.contentWrapper}>
                             <Switch>
-
                                 <Route
                                     path="/investments"
                                     component={InvestmentsComponent}
@@ -187,15 +191,17 @@ class ResponsiveDrawer extends React.Component {
                                 />
 
                                 <Route
-                                    exact path="/profile/signin"
+                                    exact
+                                    path="/profile/signin"
                                     component={SignInComponent}
                                 />
 
                                 <Route
-                                    exact path="/"
+                                    exact
+                                    path="/"
                                     component={ProfileComponent}
                                 />
-
+                                <Route component={NotFoundComponent} />
                             </Switch>
                         </div>
                     </main>
@@ -211,5 +217,5 @@ ResponsiveDrawer.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(ResponsiveDrawer)
+    withRouter(withCookies(ResponsiveDrawer))
 );

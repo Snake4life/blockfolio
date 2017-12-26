@@ -54,7 +54,7 @@ class CurrenciesTable extends React.Component {
                     <TableBody>
                         {this.props.data.map((n, index) => {
                             return (
-                                <TableRow key={n.id} className={index %2 == 0 ? classes.tableRow : ''}>
+                                <TableRow key={n.id} className={index %2 === 0 ? classes.tableRow : ''}>
                                     <TableCell numeric>{index+1}</TableCell>
                                     <TableCell>{n.name}</TableCell>
                                     <TableCell numeric>

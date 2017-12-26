@@ -5,17 +5,9 @@ import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
 
-const styles = theme => ({
-    table: {
-        minWidth: 700
-    },
-    button: {
-        margin: 0,
-        top: "auto",
-        right: 20,
-        bottom: 20,
-        left: "auto",
-        position: "fixed"
+const styles = () => ({
+    root: {
+
     }
 });
 
@@ -28,6 +20,7 @@ class Currencies extends React.Component {
         this.getCurrencies = this.getCurrencies.bind(this);
     }
     componentDidMount() {
+        if(!this.props.isSignedIn()) return this.props.history.push("/profile/signIn");
         this.fetchCurrencies();
     }
     getCurrencies() {
@@ -49,11 +42,11 @@ class Currencies extends React.Component {
             });
     }
     render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
         return (
             <Switch>
                 <Route exact path="/currencies">
-                    <div>
+                    <div className={classes.root}>
                         <CurrenciesTable data={this.getCurrencies()} />
                     </div>
                 </Route>
