@@ -31,6 +31,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 function isAuthenticated(req, res, next) {
+    winston.info("Checking if the user is authenticated");
+
+    if(req.cookies.session == undefined) {
+        winston.info("No session specified in the cookie");
+        return res.sendStatus(401);
+        
+    }
+
     var session = JSON.parse(req.cookies.session);
 
     winston.info(
@@ -39,6 +47,7 @@ function isAuthenticated(req, res, next) {
 
     Session.getSession(session.session_id)
         .then(session => {
+
             // TODO this is duplicated in User.js, find a common solution so the code does not repeat
             var timestamp = Math.floor(Date.now() / 1000);
             var expires = timestamp + config.session.expires;

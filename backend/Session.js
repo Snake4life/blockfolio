@@ -24,7 +24,7 @@ module.exports = {
                         winston.error(err);
                         reject(500);
                     }
-                    if (rows.length > 0) {
+                    if (rows!=undefined && rows.length > 0) {
                         winston.info("Found session id " + rows[0].session_id);
                         resolve(rows[0]);
                     } else {

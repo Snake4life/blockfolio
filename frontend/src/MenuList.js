@@ -24,6 +24,7 @@ class MenuList extends React.Component {
         this.props.onRequestClose();
         this.isSignedIn = this.isSignedIn.bind(this);
     }
+    // TODO pass this function as props
     isSignedIn() {
         const { cookies } = this.props;
         if (cookies.get("session") != undefined) {

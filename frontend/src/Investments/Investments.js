@@ -8,6 +8,7 @@ import { withRouter, Link } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import AddInvestment from "./AddInvestment";
 import InvestmentDetails from "./InvestmentDetails";
+import { withCookies } from "react-cookie";
 const styles = theme => ({
     table: {
         minWidth: 700
@@ -40,9 +41,18 @@ class Investments extends React.Component {
         this.addInvestment = this.addInvestment.bind(this);
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
+        this.isSignedIn = this.isSignedIn.bind(this);
     }
     componentDidMount() {
+        if(!this.isSignedIn()) this.props.history.push("/profile/signIn");
         this.fetchInvestments();
+    }
+    // TODO pass this function as props
+    isSignedIn() {
+        const { cookies } = this.props;
+        if (cookies.get("session") != undefined) {
+            return true;
+        }
     }
     fetchInvestments() {
         fetch("/api/investments", { credentials: "same-origin" })
@@ -121,4 +131,4 @@ Investments.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(Investments));
+export default withStyles(styles)(withRouter(withCookies(Investments)));
