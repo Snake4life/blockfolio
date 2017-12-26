@@ -30,14 +30,15 @@ class Profile extends React.Component {
             })
             .then(response => response.json())
             .then(responseJson => {
-                this.setState({user: responseJson});
+                this.setState({ user: responseJson });
             })
             .catch(err => {
                 console.error(err);
             });
     }
     componentDidMount() {
-        if(!this.props.isSignedIn()) return this.props.history.push("/profile/signIn");
+        if (!this.props.isSignedIn())
+            return this.props.history.push("/profile/signIn");
         this.fetchUserData();
     }
     signOut() {
@@ -48,15 +49,16 @@ class Profile extends React.Component {
                 if (response.ok) return response;
                 else throw new Error(response.error);
             })
+            .then(response => {
+                const { cookies } = this.props;
+                cookies.remove("session");
+                this.props.history.push("/profile/signIn");
+            })
             .catch(err => {
                 console.error(err);
             });
 
         // remove cookies
-
-        const { cookies } = this.props;
-        cookies.remove("session");
-        this.props.history.push("/profile/signIn");
     }
     render() {
         const { classes } = this.props;
@@ -64,7 +66,8 @@ class Profile extends React.Component {
         return (
             <div className={classes.root}>
                 Your profile here<br />
-                Username: {this.state.user.username}<br />
+                Username: {this.state.user.username}
+                <br />
                 <Button onClick={this.signOut}>Sign out </Button>
             </div>
         );
@@ -72,9 +75,7 @@ class Profile extends React.Component {
 }
 
 Profile.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(
-    withCookies(withRouter(Profile))
-);
+export default withStyles(styles)(withCookies(withRouter(Profile)));

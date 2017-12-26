@@ -51,17 +51,18 @@ router.get("/signOut", (req, res, next) => {
         winston.error("No session to sign out");
         res.sendStatus(401);
     } else {
-        Session.terminate(req.cookies.session.session_id)
+        var session = JSON.parse(req.cookies.session);
+        Session.terminate(session.session_id)
             .then(() => {
                 winston.info(
-                    "Session " + req.cookies.session.session_id + " signed out."
+                    "Session " + session.session_id + " signed out."
                 );
                 res.sendStatus(200);
             })
             .catch(err => {
                 winston.error(
                     "There was an error signing out session " +
-                        req.cookies.session.session_id +
+                        session.session_id +
                         ": " +
                         err
                 );
