@@ -1,35 +1,25 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var request = require('request');
+var request = require("request");
+var Currency = require("../Currency");
+var winston = require("winston");
 
-/* GET list of supported currencies */
+router.get("/list", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
 
-router.get('/', function(req, res, next) {
-    
-    if(req.user==null) return res.sendStatus(401);
+    winston.info("Getting a list of all currencies");
 
-    request('https://api.coinmarketcap.com/v1/ticker/', function (error, response, body) {
-        try {
-            var data = JSON.parse(body);
+    // TODO update the list from coinmarketcap API in the background
 
-            var coins = data.map(el => {
-                return {
-                    id: el.id,
-                    name: el.name,
-                    price_usd: el.price_usd,
-                    market_cap_usd: el.market_cap_usd,
-                    percent_change_24h: el.percent_change_24h,
-                    percent_change_7d: el.percent_change_7d,
-                    percent_change_1h: el.percent_change_1h
-                }
-            });
-
-            res.send(coins);
-
-        } catch(e) {
+    Currency.getAll()
+        .then(response => {
+            winston.info(response);
+            res.json(response);
+        })
+        .catch(e => {
+            winston.error("Error getting currencies. " + e);
             res.sendStatus(500);
-        }        
-    });
+        });
 });
 
 module.exports = router;

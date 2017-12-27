@@ -85,7 +85,7 @@ module.exports = {
                 (err, rows, fields) => {
                     if(err) {
                         winston.error(err);
-                        reject(500);
+                        reject(err);
                     }
                     if(rows !=undefined && rows.length>0) {
                         resolve(rows[0]);
