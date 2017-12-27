@@ -53,7 +53,7 @@ module.exports = function(req, res, next) {
                 });
         })
         .catch(err => {
-            winston.info("The session is invalid, error: " + err);
+            winston.info("Error getting session. "+err);
             req.user = null;
             next();
         });

@@ -75,7 +75,7 @@ class Investments extends React.Component {
     }
     calculateTotal() {
         var total = Object.keys(this.state.investments)
-            .map((key, index) => this.state.investments[key].price_usd)
+            .map((key, index) => this.state.investments[key].price_usd*this.state.investments[key].amount)
             .reduce((total, num) => total + num, 0);
         return total;
     }
@@ -95,10 +95,10 @@ class Investments extends React.Component {
                 <Route exact path="/investments">
                     <div>
                         <InvestmentsTable data={this.getInvestments()} />
-                        <div>
+                        <h2>
                             Total value of investments:{" "}
                             {formatter.format(this.calculateTotal())}
-                        </div>
+                        </h2>
                         <Button
                             fab
                             color="primary"

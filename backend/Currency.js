@@ -1,16 +1,7 @@
 var express = require("express");
-var mysql = require("mysql");
-var config = require("./config");
+var mysql = require("./mysql-connection");
 var winston = require("winston");
 var request = require("request");
-
-var connection = mysql.createConnection({
-    host: config.db.host,
-    user: config.db.user,
-    password: config.db.password,
-    database: config.db.database,
-    port: 3306
-});
 
 module.exports = {
     insert: function(data) {
@@ -28,7 +19,7 @@ module.exports = {
                         var data = JSON.parse(body);
 
                         var coins = data.map(el => {
-                            connection.query(
+                            mysql.query(
                                 "REPLACE INTO currencies (currency_id, name, symbol, rank, price_usd, price_btc, 24h_volume_usd, market_cap_usd, available_supply, total_supply, max_supply, percent_change_1h, percent_change_24h, percent_change_7d, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                                 [
                                     el.id,
@@ -51,14 +42,17 @@ module.exports = {
                                     if (err) {
                                         winston.error(err);
                                         reject(err);
+                                        return;
                                     }
                                 }
                             );
                         });
                         resolve();
+                        return;
                     } catch (err) {
                         winston.error(err);
                         reject(err);
+                        return;
                     }
                 }
             );
@@ -66,17 +60,22 @@ module.exports = {
     },
     findOne: function(currencyId) {
         return new Promise((resolve, reject) => {
-            connection.query(
+            mysql.query(
                 "SELECT * FROM currencies WHERE currency_id = ?",
                 [currencyId],
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(err);
                         reject(err);
+                        returnl
                     }
                     if (rows != undefined && rows.length > 0) {
                         resolve(rows[0]);
-                    } else reject(404);
+                        return;
+                    } else {
+                        reject(404);
+                        return;
+                    }
                 }
             );
         });
@@ -84,13 +83,17 @@ module.exports = {
     getAll: function() {
         return new Promise((resolve, reject) => {
             winston.info("QUerying database for currencies");
-            connection.query(
+            mysql.query(
                 "SELECT * FROM currencies ORDER BY rank ASC LIMIT 10",
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(err);
                         reject(err);
-                    } else resolve(rows);
+                        return;
+                    } else {
+                        resolve(rows);
+                        return;
+                    }
                 }
             );
         });

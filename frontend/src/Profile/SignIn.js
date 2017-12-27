@@ -6,6 +6,7 @@ import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 import { withRouter } from "react-router-dom";
 import { withCookies } from "react-cookie";
+import reactReferer from "react-referer";
 
 const styles = () => ({
     root: {}
@@ -30,7 +31,8 @@ class SignIn extends React.Component {
     };
     componentDidMount() {
         // redirect to user profile if already signedin
-        if(this.state.session!==undefined) this.props.history.push("/profile");
+        if (this.state.session !== undefined)
+            this.props.history.push("/profile");
     }
     onFormSubmit(e) {
         e.preventDefault();
@@ -78,9 +80,6 @@ class SignIn extends React.Component {
 
         return (
             <div className={classes.root}>
-                <div>
-                    <h2>Login</h2>
-                </div>
                 <form onSubmit={this.onFormSubmit}>
                     <FormControl className={classes.formControl}>
                         <TextField

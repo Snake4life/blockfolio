@@ -14,6 +14,9 @@ var authenticate = require("./authenticate");
 var app = express();
 var winston = require("winston");
 var logger = require("./logger");
+var mysql = require("./mysql-connection");
+
+
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -26,8 +29,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-
 
 app.use("/api", index);
 app.use("/api/auth", authenticate, auth);

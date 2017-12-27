@@ -22,10 +22,15 @@ module.exports = {
                     if (err) {
                         winston.error(err);
                         reject(500);
+                        return;
                     }
                     if (rows !=undefined && rows.length > 0) {
                         resolve(rows[0]);
-                    } else reject(401);
+                        return;
+                    } else {
+                        reject(401);
+                        return;
+                    }
                 }
             );
         });
@@ -45,6 +50,7 @@ module.exports = {
                     if (err) {
                         winston.error(err);
                         reject(err);
+                        return;
                     } else {
                         // return the token details to the user
                         var json = {
@@ -55,6 +61,7 @@ module.exports = {
                         // send JSON back with token details
 
                         resolve(json);
+                        return;
                     }
                 }
             );
@@ -67,12 +74,17 @@ module.exports = {
                 [sessionId],
                 (err, rows, fields) => {
                     if(err) {
-                        console.error(err);
+                        winston.error(err);
                         reject(500);
+                        return;
                     }
                     if(rows.length>0) {
                         resolve(rows[0]);
-                    } else reject(401);
+                        return;
+                    } else {
+                        reject(401);
+                        return;
+                    }
                 }
             );
         });
@@ -86,10 +98,15 @@ module.exports = {
                     if(err) {
                         winston.error(err);
                         reject(err);
+                        return;
                     }
                     if(rows !=undefined && rows.length>0) {
                         resolve(rows[0]);
-                    } else reject(404);
+                        return;
+                    } else {
+                        reject(404);
+                        return;
+                    }
                 }
             );
         });

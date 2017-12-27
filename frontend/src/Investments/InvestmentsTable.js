@@ -46,7 +46,7 @@ class InvestmentsTable extends React.Component {
                                 <TableRow key={index + 1}>
                                     <TableCell>
                                         <Link
-                                            to={"/investments/currency/" + n.id}
+                                            to={"/investments/currency/" + n.currency_id}
                                         >
                                             {n.name}
                                         </Link>
