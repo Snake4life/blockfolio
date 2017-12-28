@@ -4,6 +4,7 @@ import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
+import CurrencyDetails from "./CurrencyDetails";
 
 const styles = () => ({
     root: {
@@ -43,6 +44,11 @@ class Currencies extends React.Component {
     }
     render() {
         const { classes } = this.props;
+
+        const Details = props => {
+            return <CurrencyDetails currencyId={props.match.params.currencyId} />;
+        };
+
         return (
             <Switch>
                 <Route exact path="/currencies">
@@ -50,6 +56,7 @@ class Currencies extends React.Component {
                         <CurrenciesTable data={this.getCurrencies()} />
                     </div>
                 </Route>
+                <Route path="/currencies/:currencyId" component={Details} />
             </Switch>
         );
     }

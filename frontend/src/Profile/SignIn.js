@@ -6,7 +6,6 @@ import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 import { withRouter } from "react-router-dom";
 import { withCookies } from "react-cookie";
-import reactReferer from "react-referer";
 
 const styles = () => ({
     root: {}

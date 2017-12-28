@@ -8,6 +8,7 @@ import Select from "material-ui/Select";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import { withRouter } from "react-router-dom";
+import CurrencyAutosuggest from "../CurrencyAutosuggest";
 
 const styles = theme => ({
     container: {
@@ -32,11 +33,18 @@ class AddInvestment extends React.Component {
         super(props);
         this.state = {
             currencyId: "bitcoin",
-            amount: 0
+            amount: 0,
+            currencies: [
+            {
+                currency_id: "bitcoin",
+                name: "Bitcoin"
+            },
+            { currency_id: "ethereum", name: "Ethereum"}]
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeAmount = this.handleChangeAmount.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
+        this.fetchCurrencies = this.fetchCurrencies.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
@@ -48,6 +56,25 @@ class AddInvestment extends React.Component {
         this.props.addInvestment(this.state.currencyId, this.state.amount);
         this.props.history.push("/investments");
     }
+    componentDidMount() {
+        this.fetchCurrencies();
+    }
+    fetchCurrencies() {
+        fetch("/api/currencies/list", { credentials: "same-origin" })
+            .then(res => {
+                if (!res.ok) throw Error(res.statusText);
+                return res.json();
+            })
+            .then(responseJson => {
+                this.setState({ currencies: responseJson });
+                console.log(this.state.currencies.length);
+            })
+            .catch(e => {
+                console.error(
+                    "Unable to fetch currencies from the server: " + e
+                );
+            });
+    }
     render() {
         const { classes } = this.props;
 
@@ -55,15 +82,8 @@ class AddInvestment extends React.Component {
             <form className={classes.container} autoComplete="off">
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="currency">Currency</InputLabel>
-                    <Select
-                        value={this.state.currencyId}
-                        onChange={this.handleChange}
-                        input={<Input name="currency" id="currency" />}
-                    >
-                        <MenuItem value="bitcoin">BTC</MenuItem>
-                        <MenuItem value="ethereum">ETH</MenuItem>
-                        <MenuItem value="monero">XMR</MenuItem>
-                    </Select>
+                    <CurrencyAutosuggest />
+                    
                 </FormControl>
                 <FormControl className={classes.formControl}>
                     <TextField
@@ -100,4 +120,4 @@ AddInvestment.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(AddInvestment));
+export default withStyles(styles, { withTheme: true })(withRouter(AddInvestment));

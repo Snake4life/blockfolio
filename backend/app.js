@@ -16,7 +16,7 @@ var winston = require("winston");
 var logger = require("./logger");
 var mysql = require("./mysql-connection");
 
-
+var Currency = require("./Currency");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

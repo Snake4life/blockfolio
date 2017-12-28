@@ -13,7 +13,7 @@ module.exports = {
                     return reject(err);
                 }
                 else {
-                    winston.info("Retrieved investments. Rows: "+rows);
+                    winston.info("Retrieved investments: "+rows.length+" row(s).");
                     return resolve(rows);
                 }
             });

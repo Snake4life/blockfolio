@@ -31,6 +31,14 @@ var formatter = new Intl.NumberFormat("en-US", {
     // and is usually already 2
 });
 
+var formatter_pln = new Intl.NumberFormat("pl-PL", {
+    style: "currency",
+    currency: "PLN",
+    minimumFractionDigits: 2
+    // the default value for minimumFractionDigits depends on the currency
+    // and is usually already 2
+});
+
 class Investments extends React.Component {
     constructor(props) {
         super(props);
@@ -97,7 +105,7 @@ class Investments extends React.Component {
                         <InvestmentsTable data={this.getInvestments()} />
                         <h2>
                             Total value of investments:{" "}
-                            {formatter.format(this.calculateTotal())}
+                            {formatter.format(this.calculateTotal())} ({formatter_pln.format(this.calculateTotal()*3.52)})
                         </h2>
                         <Button
                             fab

@@ -8,7 +8,8 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-
+import humanDate from "human-date";
+import { Link } from "react-router-dom";
 const styles = theme => ({
     root: {
         marginTop: theme.spacing.unit,
@@ -49,14 +50,20 @@ class CurrenciesTable extends React.Component {
                             <TableCell numeric>Change 1h</TableCell>
                             <TableCell numeric>Change 24h</TableCell>
                             <TableCell numeric>Change 7d</TableCell>
+                            <TableCell>Last updated</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
+                            const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
                             return (
                                 <TableRow key={n.id} className={index %2 === 0 ? classes.tableRow : ''}>
                                     <TableCell numeric>{index+1}</TableCell>
-                                    <TableCell>{n.name}</TableCell>
+                                    <TableCell><Link
+                                            to={"/currencies/" + n.currency_id}
+                                        >
+                                            {n.name}
+                                        </Link></TableCell>
                                     <TableCell numeric>
                                         {formatter.format(n.market_cap_usd)}
                                     </TableCell>
@@ -91,6 +98,7 @@ class CurrenciesTable extends React.Component {
                                     >
                                         {n.percent_change_7d}
                                     </TableCell>
+                                    <TableCell>{last_updated}</TableCell>
                                 </TableRow>
                             );
                         })}

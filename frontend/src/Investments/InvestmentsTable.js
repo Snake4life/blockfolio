@@ -9,6 +9,7 @@ import Table, {
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
 import { Link } from "react-router-dom";
+import humanDate from  'human-date';
 
 const styles = theme => ({
     root: {
@@ -38,10 +39,12 @@ class InvestmentsTable extends React.Component {
                             <TableCell numeric>Price ($USD)</TableCell>
                             <TableCell numeric>Amount</TableCell>
                             <TableCell numeric>Value</TableCell>
+                            <TableCell>Last updated</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
+                            const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
                             return (
                                 <TableRow key={index + 1}>
                                     <TableCell>
@@ -59,6 +62,9 @@ class InvestmentsTable extends React.Component {
                                         {formatter.format(
                                             n.amount * n.price_usd
                                         )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {last_updated}
                                     </TableCell>
                                 </TableRow>
                             );

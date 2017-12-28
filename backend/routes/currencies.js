@@ -22,4 +22,20 @@ router.get("/list", function(req, res, next) {
         });
 });
 
+router.get("/:currencyId", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
+
+    winston.info("Fetching currency details for "+req.params.currencyId);
+
+    Currency.fetchOne(req.params.currencyId)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            winston.error("Unable to retrieve investments. "+err);
+        });
+
+    //res.json(investments);
+});
+
 module.exports = router;
