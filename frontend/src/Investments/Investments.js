@@ -46,7 +46,10 @@ class Investments extends React.Component {
     // TODO pass this function as props
 
     fetchInvestments() {
-        fetch("/api/investments", { credentials: "same-origin" })
+        fetch("/api/investments", { credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            } })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
                 return res.json();

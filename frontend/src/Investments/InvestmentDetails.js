@@ -35,7 +35,10 @@ class InvestmentDetails extends React.Component {
     fetchInvestment() {
         console.log("Fetching investment...");
         fetch("/api/investments/details/" + this.props.currencyId, {
-            credentials: "same-origin"
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
         })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
