@@ -9,6 +9,9 @@ import { Route, Switch } from "react-router";
 import AddInvestment from "./AddInvestment";
 import InvestmentDetails from "./InvestmentDetails";
 import { withCookies } from "react-cookie";
+import currencyFormatter from "../currencyFormatter";
+import { LinearProgress } from "material-ui/Progress";
+
 const styles = () => ({
     table: {
         minWidth: 700
@@ -23,27 +26,12 @@ const styles = () => ({
     }
 });
 
-var formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2
-    // the default value for minimumFractionDigits depends on the currency
-    // and is usually already 2
-});
-
-var formatter_pln = new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
-    minimumFractionDigits: 2
-    // the default value for minimumFractionDigits depends on the currency
-    // and is usually already 2
-});
-
 class Investments extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            investments: []
+            investments: [],
+            loading: true
         };
         this.getInvestments = this.getInvestments.bind(this);
         this.addInvestment = this.addInvestment.bind(this);
@@ -51,7 +39,8 @@ class Investments extends React.Component {
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
     componentDidMount() {
-        if(!this.props.isSignedIn()) return this.props.history.push("/profile/signIn");
+        if (!this.props.isSignedIn())
+            return this.props.history.push("/profile/signIn");
         this.fetchInvestments();
     }
     // TODO pass this function as props
@@ -63,7 +52,7 @@ class Investments extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
-                this.setState({ investments: responseJson });
+                this.setState({ investments: responseJson, loading: false });
             })
             .catch(err => {
                 console.error("Unable to fetch investments"); // show error message
@@ -83,7 +72,11 @@ class Investments extends React.Component {
     }
     calculateTotal() {
         var total = Object.keys(this.state.investments)
-            .map((key, index) => this.state.investments[key].price_usd*this.state.investments[key].amount)
+            .map(
+                (key, index) =>
+                    this.state.investments[key].price_usd *
+                    this.state.investments[key].amount
+            )
             .reduce((total, num) => total + num, 0);
         return total;
     }
@@ -95,17 +88,25 @@ class Investments extends React.Component {
         );
 
         const Details = props => {
-            return <InvestmentDetails investmentId={props.match.params.id} />;
+            return (
+                <InvestmentDetails currencyId={props.match.params.currencyId} />
+            );
         };
 
         return (
             <Switch>
                 <Route exact path="/investments">
-                    <div>
-                        <InvestmentsTable data={this.getInvestments()} />
+                    <div className={classes.root}>
+                        {this.state.loading ? <LinearProgress /> : <InvestmentsTable data={this.getInvestments()} />}
+                        
                         <h2>
                             Total value of investments:{" "}
-                            {formatter.format(this.calculateTotal())} ({formatter_pln.format(this.calculateTotal()*3.52)})
+                            {currencyFormatter("USD").format(
+                                this.calculateTotal()
+                            )}{" "}
+                            ({currencyFormatter("PLN").format(
+                                this.calculateTotal() * 3.52
+                            )})
                         </h2>
                         <Button
                             fab
@@ -120,10 +121,15 @@ class Investments extends React.Component {
                     </div>
                 </Route>
                 <Route
+                    exact
                     path="/investments/add"
                     component={AddInvestmentComponent}
                 />
-                <Route path="/investments/currency/:id" component={Details} />
+                <Route
+                    exact
+                    path="/investments/details/:currencyId"
+                    component={Details}
+                />
             </Switch>
         );
     }

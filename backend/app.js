@@ -9,7 +9,6 @@ var config = require("./config");
 var currencies = require("./routes/currencies");
 var investments = require("./routes/investments");
 var auth = require("./routes/auth");
-var profile = require("./routes/profile");
 var authenticate = require("./authenticate");
 var app = express();
 var winston = require("winston");
@@ -32,7 +31,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", index);
 app.use("/api/auth", authenticate, auth);
-app.use("/api/profile", authenticate, profile);
 app.use("/api/currencies", authenticate, currencies);
 app.use("/api/investments", authenticate, investments);
 

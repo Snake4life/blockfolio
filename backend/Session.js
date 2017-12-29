@@ -33,7 +33,7 @@ module.exports = {
         winston.info("setExpires(" + sessionId + "," + expires + ")");
         return new Promise((resolve, reject) => {
             mysql.query(
-                "UPDATE sessions SET expires = ? WHERE session_id = FROM_UNIXTIME(?)",
+                "UPDATE sessions SET expires = FROM_UNIXTIME(?) WHERE session_id = ?",
                 [expires, sessionId],
                 (err, rows, fields) => {
                     if (err) {

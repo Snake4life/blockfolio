@@ -4,24 +4,31 @@ import PropTypes from "prop-types";
 import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
+import humanDate from "human-date";
+import LinearIndeterminate from "../LinearIndeterminate";
+import { LinearProgress } from 'material-ui/Progress';
 
 const styles = () => ({
-    root: {}
+    root: {width:"100%"}
 });
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            fetched: false,
             user: {
                 username: ""
+            },
+            session: {
+                expires: ""
             }
         };
         this.fetchUserData = this.fetchUserData.bind(this);
         this.signOut = this.signOut.bind(this);
     }
     fetchUserData() {
-        fetch("/api/profile", {
+        fetch("/api/auth/info", {
             credentials: "same-origin"
         })
             .then(response => {
@@ -30,7 +37,11 @@ class Profile extends React.Component {
             })
             .then(response => response.json())
             .then(responseJson => {
-                this.setState({ user: responseJson });
+                this.setState({
+                    user: responseJson.user,
+                    session: responseJson.session,
+                    fetched:true
+                });
             })
             .catch(err => {
                 console.error(err);
@@ -65,10 +76,16 @@ class Profile extends React.Component {
 
         return (
             <div className={classes.root}>
-                Your profile here<br />
-                Username: {this.state.user.username}
+                {this.state.fetched ? "" : <LinearProgress/>}
+                <h2>Welcome, {this.state.user.username}</h2>
+                Your session expires:{" "}
+                {humanDate.relativeTime(this.state.session.expires)}
                 <br />
-                <Button onClick={this.signOut}>Sign out </Button>
+                <p>
+                    <Button onClick={this.signOut} raised>
+                        Sign out{" "}
+                    </Button>
+                </p>
             </div>
         );
     }

@@ -10,6 +10,7 @@ import Table, {
 import Paper from "material-ui/Paper";
 import { Link } from "react-router-dom";
 import humanDate from  'human-date';
+import currencyFormatter from "../currencyFormatter";
 
 const styles = theme => ({
     root: {
@@ -25,14 +26,6 @@ const styles = theme => ({
     tableRow: {
         backgroundColor: "#fafafa"
     }
-});
-
-var formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2
-    // the default value for minimumFractionDigits depends on the currency
-    // and is usually already 2
 });
 
 class InvestmentsTable extends React.Component {
@@ -61,17 +54,17 @@ class InvestmentsTable extends React.Component {
                                 <TableRow key={index + 1} className={index %2 === 0 ? classes.tableRow : ''}>
                                     <TableCell>
                                         <Link
-                                            to={"/investments/currency/" + n.currency_id}
+                                            to={"/investments/details/" + n.currency_id}
                                         >
                                             {n.name}
                                         </Link>
                                     </TableCell>
                                     <TableCell numeric>
-                                        {formatter.format(n.price_usd)}
+                                        {currencyFormatter("USD").format(n.price_usd)}
                                     </TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
                                     <TableCell numeric>
-                                        {formatter.format(
+                                        {currencyFormatter("USD").format(
                                             n.amount * n.price_usd
                                         )}
                                     </TableCell>

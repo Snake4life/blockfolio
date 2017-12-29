@@ -78,4 +78,16 @@ router.get("/extend", (req, res, next) => {
     res.send(200);
 });
 
+router.get("/info", (req, res, next) => {
+    if (req.user == null) return res.sendStatus(401);
+    try {
+        res.json({
+            user: req.user,
+            session: req.session
+        });
+    } catch (err) {
+        winston.error(err);
+    }
+});
+
 module.exports = router;

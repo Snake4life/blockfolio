@@ -10,6 +10,8 @@ import Table, {
 import Paper from "material-ui/Paper";
 import humanDate from "human-date";
 import { Link } from "react-router-dom";
+import currencyFormatter from "../currencyFormatter";
+
 const styles = theme => ({
     root: {
         marginTop: theme.spacing.unit,
@@ -24,14 +26,6 @@ const styles = theme => ({
     tableRow: {
         backgroundColor: "#fafafa"
     }
-});
-
-var formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-  // the default value for minimumFractionDigits depends on the currency
-  // and is usually already 2
 });
 
 class CurrenciesTable extends React.Component {
@@ -55,19 +49,33 @@ class CurrenciesTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
-                            const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
+                            const last_updated = humanDate.relativeTime(
+                                new Date(n.last_updated * 1000).toString()
+                            );
                             return (
-                                <TableRow key={n.id} className={index %2 === 0 ? classes.tableRow : ''}>
-                                    <TableCell numeric>{index+1}</TableCell>
-                                    <TableCell><Link
-                                            to={"/currencies/" + n.currency_id}
+                                <TableRow
+                                    key={n.currency_id}
+                                    className={
+                                        index % 2 === 0 ? classes.tableRow : ""
+                                    }
+                                >
+                                    <TableCell numeric>{index + 1}</TableCell>
+                                    <TableCell>
+                                        <Link
+                                            to={
+                                                "/currencies/details/" +
+                                                n.currency_id
+                                            }
                                         >
                                             {n.name}
-                                        </Link></TableCell>
-                                    <TableCell numeric>
-                                        {formatter.format(n.market_cap_usd)}
+                                        </Link>
                                     </TableCell>
-                                    <TableCell numeric>{formatter.format(n.price_usd)}</TableCell>
+                                    <TableCell numeric>
+                                        {currencyFormatter("USD").format(n.market_cap_usd)}
+                                    </TableCell>
+                                    <TableCell numeric>
+                                        {currencyFormatter("USD").format(n.price_usd)}
+                                    </TableCell>
                                     <TableCell
                                         numeric
                                         className={

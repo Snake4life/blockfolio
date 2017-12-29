@@ -9,8 +9,8 @@ module.exports = function(req, res, next) {
     if (req.cookies.session == undefined) {
         winston.info("No session specified in the cookie");
         req.user = null;
+        req.session = null;
         return next();
-        //return res.sendStatus(401);
     }
 
     var session = JSON.parse(req.cookies.session);
@@ -21,6 +21,7 @@ module.exports = function(req, res, next) {
 
     Session.getSession(session.session_id)
         .then(session => {
+
             // TODO redundancy; this is duplicated in User.js, find a common solution so the code does not repeat
             var timestamp = Math.floor(Date.now() / 1000);
             var expires = timestamp + config.session.expires;
@@ -34,6 +35,8 @@ module.exports = function(req, res, next) {
 
             Session.extend(session.session_id, expires)
                 .then(session => {
+                    req.session = session;
+
                     User.findOne(session.user_id)
                         .then(user => {
                             // add the user to the request object so that it is available for later request handlers
@@ -49,12 +52,14 @@ module.exports = function(req, res, next) {
                 .catch(err => {
                     winston.error("Error extending session: " + err);
                     req.user = null;
+                    req.session = null;
                     next();
                 });
         })
         .catch(err => {
             winston.info("Error getting session. "+err);
             req.user = null;
+            req.session = null;
             next();
         });
 };

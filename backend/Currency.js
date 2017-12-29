@@ -136,7 +136,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("QUerying database for currencies");
             mysql.query(
-                "SELECT * FROM currencies ORDER BY rank ASC LIMIT 10",
+                "SELECT * FROM currencies ORDER BY rank ASC LIMIT 20",
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(err);
