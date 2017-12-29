@@ -29,7 +29,12 @@ class Currencies extends React.Component {
         return this.state.currencies;
     }
     fetchCurrencies() {
-        fetch("/api/currencies/list", { credentials: "same-origin" })
+        fetch("/api/currencies/list", {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        })
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
@@ -56,8 +61,11 @@ class Currencies extends React.Component {
             <Switch>
                 <Route exact path="/currencies">
                     <div className={classes.root}>
-                        {this.state.loading ? <LinearProgress /> : <CurrenciesTable data={this.getCurrencies()} /> }
-                        
+                        {this.state.loading ? (
+                            <LinearProgress />
+                        ) : (
+                            <CurrenciesTable data={this.getCurrencies()} />
+                        )}
                     </div>
                 </Route>
                 <Route
