@@ -5,7 +5,6 @@ import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
 import humanDate from "human-date";
-import LinearIndeterminate from "../LinearIndeterminate";
 import { LinearProgress } from 'material-ui/Progress';
 
 const styles = () => ({
