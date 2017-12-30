@@ -34,7 +34,6 @@ class Investments extends React.Component {
             loading: true
         };
         this.getInvestments = this.getInvestments.bind(this);
-        this.addInvestment = this.addInvestment.bind(this);
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
@@ -64,9 +63,6 @@ class Investments extends React.Component {
     getInvestments() {
         return this.state.investments;
     }
-    addInvestment(currencyId, amount) {
-        this.state.investments.push({ id: currencyId, amount: amount });
-    }
     getInvestmentById(id) {
         const investments = this.state.investments.filter(
             investment => investment.id === id
@@ -87,7 +83,7 @@ class Investments extends React.Component {
         const { classes } = this.props;
 
         const AddInvestmentComponent = () => (
-            <AddInvestment addInvestment={this.addInvestment} />
+            <AddInvestment/>
         );
 
         const Details = props => {

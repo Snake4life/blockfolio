@@ -40,7 +40,7 @@ class AddInvestment extends React.Component {
             amount: 0,
             currencies: [],
             loading: true,
-            isValid: false,
+            isValid: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeAmount = this.handleChangeAmount.bind(this);
@@ -56,8 +56,31 @@ class AddInvestment extends React.Component {
         this.setState({ amount: event.target.value });
     }
     handleAdd() {
-        this.props.addInvestment(this.state.currencyId, this.state.amount);
-        this.props.history.push("/investments");
+        this.setState({loading: true});
+        fetch("/api/investments/add", {
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({ 
+                currencyId: this.state.currencyId,
+                amount: this.state.amount
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw Error(res.statusText);
+                
+                this.setState({ loading: false });
+                this.props.history.push("/investments");
+            })
+            .catch(e => {
+                console.error(
+                    "Unable to add investment: " + e
+                );
+            });
+        
     }
     componentDidMount() {
         this.fetchCurrencies();
@@ -78,7 +101,6 @@ class AddInvestment extends React.Component {
             });
     }
     fetchInvestments() {
-
         fetch("/api/investments", {
             credentials: "same-origin",
             headers: {
@@ -100,7 +122,7 @@ class AddInvestment extends React.Component {
         this.state.currencyId = currency;
     }
     isValid() {
-        if(this.state.currencyId != "" && this.state.amount > 0 ) {
+        if (this.state.currencyId != "" && this.state.amount > 0) {
             return true;
         }
         return false;
@@ -113,7 +135,6 @@ class AddInvestment extends React.Component {
                 {this.state.loading ? <LinearProgress /> : ""}
                 <form className={classes.container} autoComplete="off">
                     <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="currency">Currency</InputLabel>
                         <CurrencyAutosuggest
                             currencies={this.state.currencies}
                             handleChange={this.handleCurrencyChange}

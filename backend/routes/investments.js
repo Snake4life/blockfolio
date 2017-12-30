@@ -34,4 +34,18 @@ router.get("/details/:currencyId", function(req, res, next) {
     //res.json(investments);
 });
 
+router.post("/add", function(req, res, next) {
+    if(req.user == null) return res.sendStatus(401);
+
+    winston.info("Adding investment of "+req.body.currencyId+" with amount "+req.body.amount + " for user "+req.user.user_id);
+    
+    Investment.add(req.user.user_id, req.body.currencyId, req.body.amount).then(response => {
+        winston.info("Succesfully added investment.");
+    }).catch(err => {
+        winston.error("Unable to add investment. "+err);
+    });
+
+    res.sendStatus(200);
+});
+
 module.exports = router;
