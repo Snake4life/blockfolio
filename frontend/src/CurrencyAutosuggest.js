@@ -6,42 +6,42 @@ import Paper from "material-ui/Paper";
 import { MenuItem } from "material-ui/Menu";
 import { withStyles } from "material-ui/styles";
 
-const suggestions = [
-    { label: "Afghanistan" },
-    { label: "Aland Islands" },
-    { label: "Albania" },
-    { label: "Algeria" },
-    { label: "American Samoa" },
-    { label: "Andorra" },
-    { label: "Angola" },
-    { label: "Anguilla" },
-    { label: "Antarctica" },
-    { label: "Antigua and Barbuda" },
-    { label: "Argentina" },
-    { label: "Armenia" },
-    { label: "Aruba" },
-    { label: "Australia" },
-    { label: "Austria" },
-    { label: "Azerbaijan" },
-    { label: "Bahamas" },
-    { label: "Bahrain" },
-    { label: "Bangladesh" },
-    { label: "Barbados" },
-    { label: "Belarus" },
-    { label: "Belgium" },
-    { label: "Belize" },
-    { label: "Benin" },
-    { label: "Bermuda" },
-    { label: "Bhutan" },
-    { label: "Bolivia, Plurinational State of" },
-    { label: "Bonaire, Sint Eustatius and Saba" },
-    { label: "Bosnia and Herzegovina" },
-    { label: "Botswana" },
-    { label: "Bouvet Island" },
-    { label: "Brazil" },
-    { label: "British Indian Ocean Territory" },
-    { label: "Brunei Darussalam" }
-];
+// const suggestions = [
+//     { label: "Afghanistan" },
+//     { label: "Aland Islands" },
+//     { label: "Albania" },
+//     { label: "Algeria" },
+//     { label: "American Samoa" },
+//     { label: "Andorra" },
+//     { label: "Angola" },
+//     { label: "Anguilla" },
+//     { label: "Antarctica" },
+//     { label: "Antigua and Barbuda" },
+//     { label: "Argentina" },
+//     { label: "Armenia" },
+//     { label: "Aruba" },
+//     { label: "Australia" },
+//     { label: "Austria" },
+//     { label: "Azerbaijan" },
+//     { label: "Bahamas" },
+//     { label: "Bahrain" },
+//     { label: "Bangladesh" },
+//     { label: "Barbados" },
+//     { label: "Belarus" },
+//     { label: "Belgium" },
+//     { label: "Belize" },
+//     { label: "Benin" },
+//     { label: "Bermuda" },
+//     { label: "Bhutan" },
+//     { label: "Bolivia, Plurinational State of" },
+//     { label: "Bonaire, Sint Eustatius and Saba" },
+//     { label: "Bosnia and Herzegovina" },
+//     { label: "Botswana" },
+//     { label: "Bouvet Island" },
+//     { label: "Brazil" },
+//     { label: "British Indian Ocean Territory" },
+//     { label: "Brunei Darussalam" },
+// ];
 
 function renderInput(inputProps) {
     const { classes, autoFocus, value, ref, ...other } = inputProps;
@@ -64,7 +64,7 @@ function renderInput(inputProps) {
 
 function renderSuggestion(params) {
     const {
-        suggestion,
+        currency,
         index,
         itemProps,
         theme,
@@ -72,12 +72,12 @@ function renderSuggestion(params) {
         selectedItem
     } = params;
     const isHighlighted = highlightedIndex === index;
-    const isSelected = selectedItem === suggestion.label;
+    const isSelected = selectedItem === currency.name;
 
     return (
         <MenuItem
             {...itemProps}
-            key={suggestion.label}
+            key={currency.currency_id}
             selected={isHighlighted}
             component="div"
             style={{
@@ -86,7 +86,7 @@ function renderSuggestion(params) {
                     : theme.typography.fontWeightRegular
             }}
         >
-            {suggestion.label}
+            {currency.name}
         </MenuItem>
     );
 }
@@ -101,13 +101,13 @@ function renderSuggestionsContainer(options) {
     );
 }
 
-function getSuggestions(inputValue) {
+function getSuggestions(currencies, inputValue) {
     let count = 0;
 
-    return suggestions.filter(suggestion => {
+    return currencies.filter(currency => {
         const keep =
             (!inputValue ||
-                suggestion.label
+                currency.name
                     .toLowerCase()
                     .includes(inputValue.toLowerCase())) &&
             count < 5;
@@ -131,10 +131,10 @@ const styles = {
 };
 
 function CurrencyAutosuggest(props) {
-    const { classes, theme } = props;
+    const { classes, theme, currencies } = props;
 
     return (
-        <Downshift
+        <Downshift onChange={props.handleChange}
             render={({
                 getInputProps,
                 getItemProps,
@@ -147,20 +147,20 @@ function CurrencyAutosuggest(props) {
                     {renderInput(
                         getInputProps({
                             classes,
-                            placeholder: "Search a country (start with a)",
+                            placeholder: "Search for currencty",
                             id: "integration-downshift"
                         })
                     )}
                     {isOpen
                         ? renderSuggestionsContainer({
-                              children: getSuggestions(inputValue).map(
-                                  (suggestion, index) =>
+                              children: getSuggestions(currencies, inputValue).map(
+                                  (currency, index) =>
                                       renderSuggestion({
-                                          suggestion,
+                                          currency,
                                           index,
                                           theme,
                                           itemProps: getItemProps({
-                                              item: suggestion.label
+                                              item: currency.currency_id
                                           }),
                                           highlightedIndex,
                                           selectedItem

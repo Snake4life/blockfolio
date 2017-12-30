@@ -9,8 +9,12 @@ import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import { withRouter } from "react-router-dom";
 import CurrencyAutosuggest from "../CurrencyAutosuggest";
+import { LinearProgress } from "material-ui/Progress";
 
 const styles = theme => ({
+    root: {
+        width: "100%"
+    },
     container: {
         display: "flex",
         flexWrap: "wrap"
@@ -32,19 +36,18 @@ class AddInvestment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currencyId: "bitcoin",
+            currencyId: "",
             amount: 0,
-            currencies: [
-            {
-                currency_id: "bitcoin",
-                name: "Bitcoin"
-            },
-            { currency_id: "ethereum", name: "Ethereum"}]
+            currencies: [],
+            loading: true,
+            isValid: false,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeAmount = this.handleChangeAmount.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
+        this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
+        this.isValid = this.isValid.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
@@ -66,8 +69,7 @@ class AddInvestment extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
-                this.setState({ currencies: responseJson });
-                console.log(this.state.currencies.length);
+                this.setState({ currencies: responseJson, loading: false });
             })
             .catch(e => {
                 console.error(
@@ -75,42 +77,76 @@ class AddInvestment extends React.Component {
                 );
             });
     }
+    fetchInvestments() {
+
+        fetch("/api/investments", {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw Error(res.status);
+                return res.json();
+            })
+            .then(responseJson => {
+                this.setState({ investments: responseJson, loading: false });
+            })
+            .catch(err => {
+                console.error("Unable to fetch investments"); // show error message
+            });
+    }
+    handleCurrencyChange(currency) {
+        this.state.currencyId = currency;
+    }
+    isValid() {
+        if(this.state.currencyId != "" && this.state.amount > 0 ) {
+            return true;
+        }
+        return false;
+    }
     render() {
         const { classes } = this.props;
 
         return (
-            <form className={classes.container} autoComplete="off">
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="currency">Currency</InputLabel>
-                    <CurrencyAutosuggest />
-                    
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                    <TextField
-                        id="amount"
-                        label="Amount"
-                        value={this.state.amount}
-                        onChange={this.handleChangeAmount}
-                        type="number"
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        margin="normal"
-                    />
-                </FormControl>
-                <div>
+            <div className={classes.root}>
+                {this.state.loading ? <LinearProgress /> : ""}
+                <form className={classes.container} autoComplete="off">
                     <FormControl className={classes.formControl}>
-                        <Button
-                            raised
-                            className={classes.button}
-                            onClick={this.handleAdd}
-                        >
-                            Add to portfolio
-                        </Button>
+                        <InputLabel htmlFor="currency">Currency</InputLabel>
+                        <CurrencyAutosuggest
+                            currencies={this.state.currencies}
+                            handleChange={this.handleCurrencyChange}
+                        />
                     </FormControl>
-                </div>
-            </form>
+                    <FormControl className={classes.formControl}>
+                        <TextField
+                            id="amount"
+                            label="Amount"
+                            value={this.state.amount}
+                            onChange={this.handleChangeAmount}
+                            type="number"
+                            className={classes.textField}
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            margin="normal"
+                        />
+                    </FormControl>
+                    <div>
+                        <FormControl className={classes.formControl}>
+                            <Button
+                                raised
+                                className={classes.button}
+                                onClick={this.handleAdd}
+                                disabled={!this.isValid()}
+                            >
+                                Add to portfolio
+                            </Button>
+                        </FormControl>
+                    </div>
+                </form>
+            </div>
         );
     }
 }
@@ -120,4 +156,6 @@ AddInvestment.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(AddInvestment));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(AddInvestment)
+);
