@@ -27,6 +27,7 @@ class InvestmentDetails extends React.Component {
             investment: {},
             loading: true
         };
+        this.deleteInvestment = this.deleteInvestment.bind(this);
     }
     componentDidMount() {
         console.log("Component did mount");
@@ -51,6 +52,22 @@ class InvestmentDetails extends React.Component {
                 console.error("Unable to fetch investment"); // show error message
             });
     }
+    deleteInvestment() {
+        this.setState({loading:true});
+        fetch("/api/investments/delete/" + this.state.investment.investment_id, {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw Error(res.status);
+                return this.props.history.push("/investments");
+            })
+            .catch(err => {
+                console.error("Unable to delete investment");
+            });
+    }
     render() {
         const { classes } = this.props;
 
@@ -65,6 +82,7 @@ class InvestmentDetails extends React.Component {
                         this.state.investment.price_usd
                     )}
                 </p>
+                <Button id="delete" onClick={this.deleteInvestment} raised disabled={this.state.loading}>Delete investment</Button>
                 <Button
                     fab
                     color="primary"

@@ -35,13 +35,14 @@ const styles = theme => ({
 class AddInvestment extends React.Component {
     constructor(props) {
         super(props);
+        var date = new Date();
         this.state = {
             currencyId: "",
             amount: 0,
             currencies: [],
             loading: true,
             isValid: false,
-            date: ""
+            date: date.toString()
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -58,7 +59,7 @@ class AddInvestment extends React.Component {
         this.setState({ amount: event.target.value });
     }
     handleAdd() {
-        
+
         this.setState({ loading: true });
         fetch("/api/investments/add", {
             credentials: "same-origin",
@@ -70,7 +71,7 @@ class AddInvestment extends React.Component {
             body: JSON.stringify({
                 currencyId: this.state.currencyId,
                 amount: this.state.amount,
-                date: this.state.date
+                date: this.getDefaultDate()
             })
         })
             .then(res => {
@@ -86,6 +87,10 @@ class AddInvestment extends React.Component {
     }
     componentDidMount() {
         this.fetchCurrencies();
+    }
+    getDefaultDate() {
+        var date = new Date();
+        return date.toString();
     }
     fetchCurrencies() {
         fetch("/api/currencies/list", { credentials: "same-origin" })
@@ -166,8 +171,8 @@ class AddInvestment extends React.Component {
                             type="date"
                             className={classes.textField}
                             onChange={this.handleDateChange}
-                            label="Date of trade"
-                            defaultValue="2017-05-24"
+                            label="Date of the trade"
+                            defaultValue={this.getDefaultDate()}
                             InputLabelProps={{
                                 shrink: true
                             }}
