@@ -7,13 +7,13 @@ var winston = require("winston");
 router.get("/list", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
 
-    winston.info("Getting a list of all currencies");
+    winston.debug("Getting a list of all currencies");
 
     // TODO update the list from coinmarketcap API in the background
 
     Currency.getAll()
         .then(response => {
-            winston.info(response);
+            winston.info("Got a list of "+response.length+" currencies,");
             res.json(response);
         })
         .catch(e => {
@@ -25,7 +25,7 @@ router.get("/list", function(req, res, next) {
 router.get("/:currencyId", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
 
-    winston.info("Fetching currency details for "+req.params.currencyId);
+    winston.debug("Getting currency details for "+req.params.currencyId);
 
     Currency.fetchOne(req.params.currencyId)
         .then(response => {

@@ -15,7 +15,7 @@ module.exports = function(req, res, next) {
 
     var session = JSON.parse(req.cookies.session);
 
-    winston.info(
+    winston.debug(
         " Checking if the session " + session.session_id + " is still valid..."
     );
 
@@ -26,7 +26,7 @@ module.exports = function(req, res, next) {
             var timestamp = Math.floor(Date.now() / 1000);
             var expires = timestamp + config.session.expires;
 
-            winston.info(
+            winston.debug(
                 "Setting expiry date of session " +
                     session.session_id +
                     " to " +
@@ -57,7 +57,7 @@ module.exports = function(req, res, next) {
                 });
         })
         .catch(err => {
-            winston.info("Error getting session. "+err);
+            winston.error("Error getting session. "+err);
             req.user = null;
             req.session = null;
             next();

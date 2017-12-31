@@ -14,7 +14,7 @@ router.post("/signIn", (req, res, next) => {
 
     User.authenticate(username, password)
         .then(row => {
-            winston.info(
+            winston.debug(
                 "User authenticated, generating a new session token for user_id " +
                     row.user_id
             );
@@ -30,7 +30,7 @@ router.post("/signIn", (req, res, next) => {
                     });
                 })
                 .catch(err => {
-                    winston.error(
+                    winston.debug(
                         "There was an error creating new session: " + err
                     );
 

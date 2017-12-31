@@ -5,7 +5,7 @@ var mysql = require("./mysql-connection");
 
 module.exports = {
     getSession: function(sessionId) {
-        winston.info("getSession(" + sessionId + ")");
+        winston.debug("Session.getSession(" + sessionId + ")");
         return new Promise((resolve, reject) => {
             mysql.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
@@ -17,11 +17,11 @@ module.exports = {
                         return;
                     }
                     if (rows != undefined && rows.length > 0) {
-                        winston.info("Found session id " + rows[0].session_id);
+                        winston.debug("Found session id " + rows[0].session_id);
                         resolve(rows[0]);
                         return;
                     } else {
-                        winston.info("No session found for id " + sessionId);
+                        winston.warning("No session found for id " + sessionId);
                         reject(404);
                         return;
                     }
@@ -30,7 +30,7 @@ module.exports = {
         });
     },
     extend: function(sessionId, expires) {
-        winston.info("setExpires(" + sessionId + "," + expires + ")");
+        winston.debug("Session.setExpires(" + sessionId + "," + expires + ")");
         return new Promise((resolve, reject) => {
             mysql.query(
                 "UPDATE sessions SET expires = FROM_UNIXTIME(?) WHERE session_id = ?",
@@ -56,6 +56,7 @@ module.exports = {
         });
     },
     terminate: function(sessionId) {
+        winston.debug("Session.terminate("+sessionId+")");
         return new Promise((resolve, reject) => {
             mysql.query(
                 "DELETE FROM sessions WHERE session_id = ?",

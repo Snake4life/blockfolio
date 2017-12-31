@@ -4,13 +4,7 @@ var winston = require("winston");
 var request = require("request");
 
 module.exports = {
-    insert: function(data) {
-        return new Promise((resolve, reject) => {
-            winston.info("Inserting/updating currencies for " + data.id);
-        });
-    },
-
-    fetch() {
+    fetchAll() {
         return new Promise((resolve, reject) => {
             request(
                 "https://api.coinmarketcap.com/v1/ticker/?limit=0",
@@ -62,7 +56,7 @@ module.exports = {
     fetchOne: function(currencyId) {
         return new Promise((resolve, reject) => {
             
-            winston.info("Querying coinmarketcap API...");
+            winston.info("Querying coinmarketcap API for currency details...");
 
             request(
                 "https://api.coinmarketcap.com/v1/ticker/" + currencyId,
@@ -134,9 +128,9 @@ module.exports = {
     },
     getAll: function() {
         return new Promise((resolve, reject) => {
-            winston.info("QUerying database for currencies");
+            winston.debug("Querying database for the list of currencies.");
             mysql.query(
-                "SELECT * FROM currencies ORDER BY rank ASC LIMIT 20",
+                "SELECT * FROM currencies ORDER BY rank ASC",
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(err);

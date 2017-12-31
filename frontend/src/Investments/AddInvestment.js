@@ -8,7 +8,7 @@ import Select from "material-ui/Select";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import { withRouter } from "react-router-dom";
-import CurrencyAutosuggest from "../CurrencyAutosuggest";
+import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import { LinearProgress } from "material-ui/Progress";
 
 const styles = theme => ({
