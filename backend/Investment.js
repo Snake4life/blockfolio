@@ -55,20 +55,32 @@ module.exports = {
         });
     },
 
-    add: function(userId, currencyId, amount) {
+    add: function(userId, currencyId, amount, date) {
         return new Promise((resolve, reject) => {
-            winston.info("Adding investment of "+amount+" amount of "+currencyId+" for user "+userId);
+            winston.info(
+                "Adding investment of " +
+                    amount +
+                    " amount of " +
+                    currencyId +
+                    " for user " +
+                    userId + 
+                    " date " + 
+                    date
+            );
 
-            mysql.query("INSERT INTO investments (user_id, currency_id, amount) VALUES (?, ?, ?)", [userId, currencyId, amount], (err, rows, fields)=>{
-                if(err) {
-                    winston.error("Error while adding investment. "+err);
-                    return reject(err);
+            mysql.query(
+                "INSERT INTO investments (user_id, currency_id, amount, date) VALUES (?, ?, ?, ?)",
+                [userId, currencyId, amount, date],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error("Error while adding investment. " + err);
+                        return reject(err);
+                    } else {
+                        winston.info("Added investment.");
+                        return resolve();
+                    }
                 }
-                else {
-                    winston.info("Added investment.");
-                    return resolve();
-                }
-            });
+            );
         });
     }
 };

@@ -41,6 +41,7 @@ class InvestmentsTable extends React.Component {
                             <TableCell numeric>Price ($USD)</TableCell>
                             <TableCell numeric>Amount</TableCell>
                             <TableCell numeric>Value</TableCell>
+                            <TableCell>Date</TableCell>
                             <TableCell>Change 1h</TableCell>
                             <TableCell>Change 24h</TableCell>
                             <TableCell>Change 7d</TableCell>
@@ -50,6 +51,8 @@ class InvestmentsTable extends React.Component {
                     <TableBody>
                         {this.props.data.map((n, index) => {
                             const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
+                            const date = humanDate.relativeTime(n.date);
+
                             return (
                                 <TableRow key={index + 1} className={index %2 === 0 ? classes.tableRow : ''}>
                                     <TableCell>
@@ -67,6 +70,9 @@ class InvestmentsTable extends React.Component {
                                         {currencyFormatter("USD").format(
                                             n.amount * n.price_usd
                                         )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {(n.date)}
                                     </TableCell>
                                     <TableCell
                                         numeric

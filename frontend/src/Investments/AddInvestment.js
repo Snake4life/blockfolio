@@ -40,23 +40,26 @@ class AddInvestment extends React.Component {
             amount: 0,
             currencies: [],
             loading: true,
-            isValid: false
+            isValid: false,
+            date: ""
         };
         this.handleChange = this.handleChange.bind(this);
-        this.handleChangeAmount = this.handleChangeAmount.bind(this);
+        this.handleAmountChange = this.handleAmountChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
         this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
         this.isValid = this.isValid.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
-    handleChangeAmount(event) {
+    handleAmountChange(event) {
         this.setState({ amount: event.target.value });
     }
     handleAdd() {
-        this.setState({loading: true});
+        
+        this.setState({ loading: true });
         fetch("/api/investments/add", {
             credentials: "same-origin",
             headers: {
@@ -64,14 +67,14 @@ class AddInvestment extends React.Component {
                 "Content-Type": "application/json"
             },
             method: "POST",
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 currencyId: this.state.currencyId,
-                amount: this.state.amount
+                amount: this.state.amount,
+                date: this.state.date
             })
         })
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
-                
                 this.setState({ loading: false });
                 this.props.history.push("/investments");
             })
@@ -80,7 +83,6 @@ class AddInvestment extends React.Component {
                     "Unable to add investment: " + e
                 );
             });
-        
     }
     componentDidMount() {
         this.fetchCurrencies();
@@ -121,8 +123,11 @@ class AddInvestment extends React.Component {
     handleCurrencyChange(currency) {
         this.state.currencyId = currency;
     }
+    handleDateChange(event) {
+        this.setState({date: event.target.value});
+    }
     isValid() {
-        if (this.state.currencyId != "" && this.state.amount > 0) {
+        if (this.state.currencyId && this.state.amount !== 0) {
             return true;
         }
         return false;
@@ -145,13 +150,27 @@ class AddInvestment extends React.Component {
                             id="amount"
                             label="Amount"
                             value={this.state.amount}
-                            onChange={this.handleChangeAmount}
+                            onChange={this.handleAmountChange}
                             type="number"
                             className={classes.textField}
                             InputLabelProps={{
                                 shrink: true
                             }}
                             margin="normal"
+                        />
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                        <TextField
+                            id="date"
+                            
+                            type="date"
+                            className={classes.textField}
+                            onChange={this.handleDateChange}
+                            label="Date of trade"
+                            defaultValue="2017-05-24"
+                            InputLabelProps={{
+                                shrink: true
+                            }}
                         />
                     </FormControl>
                     <div>
