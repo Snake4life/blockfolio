@@ -35,14 +35,13 @@ const styles = theme => ({
 class AddInvestment extends React.Component {
     constructor(props) {
         super(props);
-        var date = new Date();
         this.state = {
             currencyId: "",
             amount: 0,
             currencies: [],
             loading: true,
             isValid: false,
-            date: date.toString()
+            date: this.getDefaultDate()
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -71,7 +70,7 @@ class AddInvestment extends React.Component {
             body: JSON.stringify({
                 currencyId: this.state.currencyId,
                 amount: this.state.amount,
-                date: this.getDefaultDate()
+                date: this.state.date
             })
         })
             .then(res => {
@@ -89,8 +88,8 @@ class AddInvestment extends React.Component {
         this.fetchCurrencies();
     }
     getDefaultDate() {
-        var date = new Date();
-        return date.toString();
+        var m = new Date();
+        return m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
     }
     fetchCurrencies() {
         fetch("/api/currencies/list", { credentials: "same-origin" })
@@ -129,6 +128,7 @@ class AddInvestment extends React.Component {
         this.state.currencyId = currency;
     }
     handleDateChange(event) {
+
         this.setState({date: event.target.value});
     }
     isValid() {

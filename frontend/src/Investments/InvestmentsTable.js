@@ -52,7 +52,7 @@ class InvestmentsTable extends React.Component {
                         {this.props.data.map((n, index) => {
                             const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
                             var m = new Date(n.date);
-                            const date = m.getUTCFullYear() +"/"+ (m.getUTCMonth()+1) +"/"+ m.getUTCDate();
+                            const date = m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
 
                             return (
                                 <TableRow key={index + 1} className={index %2 === 0 ? classes.tableRow : ''}>
