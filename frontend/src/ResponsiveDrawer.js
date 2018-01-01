@@ -18,7 +18,7 @@ import SignIn from "./Profile/SignIn";
 import Profile from "./Profile/Profile";
 import { withCookies } from "react-cookie";
 import AddInvestment from "./Investments/AddInvestment";
-import InvestmentDetails from "./Investments/InvestmentDetails";
+import InvestmentsDetails from "./Investments/InvestmentsDetails";
 import CurrencyDetails from "./Currencies/CurrencyDetails";
 
 const drawerWidth = 240;
@@ -204,7 +204,7 @@ class ResponsiveDrawer extends React.Component {
                                 <Route
                                     exact
                                     path="/investments/details/:currencyId"
-                                    component={InvestmentDetails}
+                                    component={InvestmentsDetails}
                                 />
                                 <Route
                                     exact

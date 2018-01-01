@@ -8,10 +8,12 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-import { Link } from "react-router-dom";
-import humanDate from  'human-date';
+import { Link, withRouter } from "react-router-dom";
+import humanDate from "human-date";
 import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
+import Button from "material-ui/Button";
+import DeleteIcon from "material-ui-icons/Delete";
 
 const styles = theme => ({
     root: {
@@ -30,6 +32,29 @@ const styles = theme => ({
 });
 
 class InvestmentsTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.deleteInvestment = this.deleteInvestment.bind(this);
+    }
+    deleteInvestment(investment_id) {
+        fetch(
+            "/api/investments/delete/" + investment_id,
+            {
+                credentials: "same-origin",
+                headers: {
+                    "Cache-Control": "no-cache"
+                }
+            }
+        )
+            .then(res => {
+                if (!res.ok) throw Error(res.status);
+                return this.props.history.push("/investments");
+            })
+            .catch(err => {
+                console.error("Unable to delete investment: "+err);
+            });
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -51,19 +76,31 @@ class InvestmentsTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
-                            const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
-                            
+                            const last_updated = humanDate.relativeTime(
+                                new Date(n.last_updated * 1000).toString()
+                            );
+
                             return (
-                                <TableRow key={index + 1} className={index %2 === 0 ? classes.tableRow : ''}>
+                                <TableRow
+                                    key={index + 1}
+                                    className={
+                                        index % 2 === 0 ? classes.tableRow : ""
+                                    }
+                                >
                                     <TableCell>
                                         <Link
-                                            to={"/investments/details/" + n.currency_id}
+                                            to={
+                                                "/investments/details/" +
+                                                n.currency_id
+                                            }
                                         >
                                             {n.name}
                                         </Link>
                                     </TableCell>
                                     <TableCell numeric>
-                                        {currencyFormatter("USD").format(n.price_usd)}
+                                        {currencyFormatter("USD").format(
+                                            n.price_usd
+                                        )}
                                     </TableCell>
                                     <TableCell numeric>{n.amount}</TableCell>
                                     <TableCell numeric>
@@ -104,8 +141,16 @@ class InvestmentsTable extends React.Component {
                                     >
                                         {n.percent_change_7d}
                                     </TableCell>
+                                    <TableCell>{last_updated}</TableCell>
                                     <TableCell>
-                                        {last_updated}
+                                        <Button
+                                            id="delete"
+                                            fab mini
+                                            onClick={() => {this.deleteInvestment(n.investment_id)}}
+                                            raised
+                                        >
+                                            <DeleteIcon/>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             );
@@ -121,4 +166,4 @@ InvestmentsTable.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(InvestmentsTable);
+export default withStyles(styles)(withRouter(InvestmentsTable));

@@ -30,7 +30,7 @@ module.exports = {
     getByUserAndCurrency: function(userId, currencyId) {
         return new Promise((resolve, reject) => {
             winston.info(
-                "Getting investment of " + currencyId + " for user " + userId
+                "Getting investments of " + currencyId + " for user " + userId
             );
             mysql.query(
                 "SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ? ORDER BY investments.date",
@@ -43,10 +43,10 @@ module.exports = {
                         return reject(err);
                     } else {
                         if (rows.length > 0) {
-                            winston.info("Retrieved investment.");
-                            return resolve(rows[0]);
+                            winston.info("Retrieved investments.");
+                            return resolve(rows);
                         } else {
-                            winston.info("Investment not found.");
+                            winston.info("No investments found.");
                             return resolve(404);
                         }
                     }

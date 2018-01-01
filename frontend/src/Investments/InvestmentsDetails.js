@@ -8,7 +8,7 @@ import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
-
+import InvestmentsTable from "./InvestmentsTable";
 const styles = () => ({
     root: {},
     button: {
@@ -21,14 +21,13 @@ const styles = () => ({
     }
 });
 
-class InvestmentDetails extends React.Component {
+class InvestmentsDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             investments: {},
             loading: true
         };
-        this.deleteInvestment = this.deleteInvestment.bind(this);
     }
     componentDidMount() {
         this.fetchInvestment();
@@ -56,50 +55,14 @@ class InvestmentDetails extends React.Component {
                 console.error("Unable to fetch investment"); // show error message
             });
     }
-    deleteInvestment() {
-        this.setState({ loading: true });
-        fetch(
-            "/api/investments/delete/" + this.state.investment.investment_id,
-            {
-                credentials: "same-origin",
-                headers: {
-                    "Cache-Control": "no-cache"
-                }
-            }
-        )
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return this.props.history.push("/investments");
-            })
-            .catch(err => {
-                console.error("Unable to delete investment");
-            });
-    }
     render() {
         const { classes } = this.props;
 
         const render = (
             <div className={classes.root}>
-                <h2>{this.state.investments[0].name}</h2>
-                <p>Amount: {this.state.investment.amount}</p>
-                <p>
-                    Price:{" "}
-                    {currencyFormatter("USD").format(
-                        this.state.investment.price_usd
-                    )}
-                </p>
-                <p>
-                    Date of the trade:{" "}
-                    {dateformat(this.state.investment.date, "isoDate")}
-                </p>
-                <Button
-                    id="delete"
-                    onClick={this.deleteInvestment}
-                    raised
-                    disabled={this.state.loading}
-                >
-                    Delete investment
-                </Button>
+                <h2>{this.props.match.params.currencyId}</h2>
+                <p>Trades: {this.state.investments.length}</p>
+                <InvestmentsTable data={this.state.investments}/>
             </div>
         );
 
@@ -113,8 +76,8 @@ class InvestmentDetails extends React.Component {
     }
 }
 
-InvestmentDetails.propTypes = {
+InvestmentsDetails.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(InvestmentDetails));
+export default withStyles(styles)(withRouter(InvestmentsDetails));
