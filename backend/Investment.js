@@ -33,7 +33,7 @@ module.exports = {
                 "Getting investment of " + currencyId + " for user " + userId
             );
             mysql.query(
-                "SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ?",
+                "SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ? ORDER BY investments.date",
                 [userId, currencyId],
                 (err, rows, fields) => {
                     if (err) {

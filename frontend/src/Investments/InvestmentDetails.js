@@ -7,6 +7,7 @@ import EditIcon from "material-ui-icons/Edit";
 import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
+import dateformat from "dateformat";
 
 const styles = () => ({
     root: {},
@@ -81,17 +82,8 @@ class InvestmentDetails extends React.Component {
                         this.state.investment.price_usd
                     )}
                 </p>
+                <p>Date of the trade: {dateformat(this.state.investment.date, "isoDate")}</p>
                 <Button id="delete" onClick={this.deleteInvestment} raised disabled={this.state.loading}>Delete investment</Button>
-                <Button
-                    fab
-                    color="primary"
-                    aria-label="add"
-                    className={classes.button}
-                    component={Link}
-                    to={"/investments/edit/" + this.props.match.params.currencyId}
-                >
-                    <EditIcon />
-                </Button>
             </div>
         );
     }

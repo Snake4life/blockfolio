@@ -11,6 +11,7 @@ import Paper from "material-ui/Paper";
 import { Link } from "react-router-dom";
 import humanDate from  'human-date';
 import currencyFormatter from "../currencyFormatter";
+import dateformat from "dateformat";
 
 const styles = theme => ({
     root: {
@@ -51,9 +52,7 @@ class InvestmentsTable extends React.Component {
                     <TableBody>
                         {this.props.data.map((n, index) => {
                             const last_updated = humanDate.relativeTime(new Date(n.last_updated*1000).toString());
-                            var m = new Date(n.date);
-                            const date = m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
-
+                            
                             return (
                                 <TableRow key={index + 1} className={index %2 === 0 ? classes.tableRow : ''}>
                                     <TableCell>
@@ -73,7 +72,7 @@ class InvestmentsTable extends React.Component {
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        {date}
+                                        {dateformat(n.date, "isoDate")}
                                     </TableCell>
                                     <TableCell
                                         numeric
