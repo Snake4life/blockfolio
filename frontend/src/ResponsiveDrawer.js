@@ -17,6 +17,8 @@ import Currencies from "./Currencies/Currencies";
 import SignIn from "./Profile/SignIn";
 import Profile from "./Profile/Profile";
 import { withCookies } from "react-cookie";
+import AddInvestment from "./Investments/AddInvestment";
+import InvestmentDetails from "./Investments/InvestmentDetails";
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -108,9 +110,24 @@ class ResponsiveDrawer extends React.Component {
         const InvestmentsComponent = () => (
             <Investments isSignedIn={this.isSignedIn} />
         );
+
+        const AddInvestmentComponent = () => (
+            <AddInvestment />
+        );
         const SignInComponent = () => <SignIn />;
         const ProfileComponent = () => <Profile isSignedIn={this.isSignedIn} />;
-        const NotFoundComponent = () => <div><h2>404</h2>Not found</div>;
+        const NotFoundComponent = () => (
+            <div>
+                <h2>404</h2>Not found
+            </div>
+        );
+
+        const Details = props => {
+            return (
+                <InvestmentDetails currencyId={props.match.params.currencyId} />
+            );
+        };
+
         return (
             <div className={classes.root}>
                 <div className={classes.appFrame}>
@@ -181,10 +198,19 @@ class ResponsiveDrawer extends React.Component {
                         <div className={classes.contentWrapper}>
                             <Switch>
                                 <Route
-                                    path="/investments"
+                                    exact path="/investments"
                                     component={InvestmentsComponent}
                                 />
-
+                                <Route
+                                    exact
+                                    path="/investments/add"
+                                    component={AddInvestmentComponent}
+                                />
+                                <Route
+                                    exact
+                                    path="/investments/details/:currencyId"
+                                    component={Details}
+                                />
                                 <Route
                                     path="/currencies"
                                     component={CurrenciesComponent}

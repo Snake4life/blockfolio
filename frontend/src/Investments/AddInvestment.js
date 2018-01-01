@@ -10,7 +10,7 @@ import TextField from "material-ui/TextField";
 import { withRouter } from "react-router-dom";
 import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import { LinearProgress } from "material-ui/Progress";
-
+import currentDate from "current-date";
 const styles = theme => ({
     root: {
         width: "100%"
@@ -41,7 +41,7 @@ class AddInvestment extends React.Component {
             currencies: [],
             loading: true,
             isValid: false,
-            date: this.getDefaultDate()
+            date: currentDate("date")
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -58,7 +58,6 @@ class AddInvestment extends React.Component {
         this.setState({ amount: event.target.value });
     }
     handleAdd() {
-
         this.setState({ loading: true });
         fetch("/api/investments/add", {
             credentials: "same-origin",
@@ -79,17 +78,11 @@ class AddInvestment extends React.Component {
                 this.props.history.push("/investments");
             })
             .catch(e => {
-                console.error(
-                    "Unable to add investment: " + e
-                );
+                console.error("Unable to add investment: " + e);
             });
     }
     componentDidMount() {
         this.fetchCurrencies();
-    }
-    getDefaultDate() {
-        var m = new Date();
-        return m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
     }
     fetchCurrencies() {
         fetch("/api/currencies/list", { credentials: "same-origin" })
@@ -125,16 +118,18 @@ class AddInvestment extends React.Component {
             });
     }
     handleCurrencyChange(currency) {
-        this.state.currencyId = currency;
+        this.setState({currencyId: currency});
     }
     handleDateChange(event) {
-
-        this.setState({date: event.target.value});
+        console.log(event.target.value);
+        this.setState({ date: event.target.value });
     }
     isValid() {
-        if (this.state.currencyId && this.state.amount !== 0) {
+        if (this.state.currencyId && this.state.amount != 0) {
+            console.log("return true, currencyId:" +this.state.currencyId + ", amount:"+this.state.amount);
             return true;
         }
+        console.log("return false z");
         return false;
     }
     render() {
@@ -167,12 +162,11 @@ class AddInvestment extends React.Component {
                     <FormControl className={classes.formControl}>
                         <TextField
                             id="date"
-                            
                             type="date"
                             className={classes.textField}
                             onChange={this.handleDateChange}
                             label="Date of the trade"
-                            defaultValue={this.getDefaultDate()}
+                            defaultValue={currentDate("date")}
                             InputLabelProps={{
                                 shrink: true
                             }}

@@ -1734,6 +1734,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   dependencies:
     cssom "0.3.x"
 
+current-date@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/current-date/-/current-date-0.1.1.tgz#ad046f0caea7c6e646d7907f669b273e4c3b39ca"
+
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"

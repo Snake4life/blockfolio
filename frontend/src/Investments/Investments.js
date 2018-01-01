@@ -6,8 +6,6 @@ import Button from "material-ui/Button";
 import AddIcon from "material-ui-icons/Add";
 import { withRouter, Link } from "react-router-dom";
 import { Route, Switch } from "react-router";
-import AddInvestment from "./AddInvestment";
-import InvestmentDetails from "./InvestmentDetails";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
@@ -45,10 +43,12 @@ class Investments extends React.Component {
     // TODO pass this function as props
 
     fetchInvestments() {
-        fetch("/api/investments", { credentials: "same-origin",
+        fetch("/api/investments", {
+            credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
-            } })
+            }
+        })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
                 return res.json();
@@ -82,54 +82,33 @@ class Investments extends React.Component {
     render() {
         const { classes } = this.props;
 
-        const AddInvestmentComponent = () => (
-            <AddInvestment/>
-        );
-
-        const Details = props => {
-            return (
-                <InvestmentDetails currencyId={props.match.params.currencyId} />
-            );
-        };
+        
 
         return (
-            <Switch>
-                <Route exact path="/investments">
-                    <div className={classes.root}>
-                        {this.state.loading ? <LinearProgress /> : <InvestmentsTable data={this.getInvestments()} />}
-                        
-                        <h2>
-                            Total value of investments:{" "}
-                            {currencyFormatter("USD").format(
-                                this.calculateTotal()
-                            )}{" "}
-                            ({currencyFormatter("PLN").format(
-                                this.calculateTotal() * 3.52
-                            )})
-                        </h2>
-                        <Button
-                            fab
-                            color="primary"
-                            aria-label="add"
-                            className={classes.button}
-                            component={Link}
-                            to="/investments/add"
-                        >
-                            <AddIcon />
-                        </Button>
-                    </div>
-                </Route>
-                <Route
-                    exact
-                    path="/investments/add"
-                    component={AddInvestmentComponent}
-                />
-                <Route
-                    exact
-                    path="/investments/details/:currencyId"
-                    component={Details}
-                />
-            </Switch>
+            <div className={classes.root}>
+                {this.state.loading ? (
+                    <LinearProgress />
+                ) : (
+                    <InvestmentsTable data={this.getInvestments()} />
+                )}
+
+                <h2>
+                    Total value of investments:{" "}
+                    {currencyFormatter("USD").format(this.calculateTotal())} ({currencyFormatter(
+                        "PLN"
+                    ).format(this.calculateTotal() * 3.52)})
+                </h2>
+                <Button
+                    fab
+                    color="primary"
+                    aria-label="add"
+                    className={classes.button}
+                    component={Link}
+                    to="/investments/add"
+                >
+                    <AddIcon />
+                </Button>
+            </div>
         );
     }
 }
