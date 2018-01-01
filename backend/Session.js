@@ -21,7 +21,7 @@ module.exports = {
                         resolve(rows[0]);
                         return;
                     } else {
-                        winston.warning("No session found for id " + sessionId);
+                        winston.warn("No session found for id " + sessionId);
                         reject(404);
                         return;
                     }

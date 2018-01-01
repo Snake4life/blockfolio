@@ -4,7 +4,7 @@ import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
-import CurrencyDetails from "./CurrencyDetails";
+
 import { LinearProgress } from "material-ui/Progress";
 
 const styles = () => ({
@@ -51,28 +51,16 @@ class Currencies extends React.Component {
     render() {
         const { classes } = this.props;
 
-        const Details = props => {
-            return (
-                <CurrencyDetails currencyId={props.match.params.currencyId} />
-            );
-        };
+
 
         return (
-            <Switch>
-                <Route exact path="/currencies">
-                    <div className={classes.root}>
-                        {this.state.loading ? (
-                            <LinearProgress />
-                        ) : (
-                            <CurrenciesTable data={this.getCurrencies()} />
-                        )}
-                    </div>
-                </Route>
-                <Route
-                    path="/currencies/details/:currencyId"
-                    component={Details}
-                />
-            </Switch>
+            <div className={classes.root}>
+                {this.state.loading ? (
+                    <LinearProgress />
+                ) : (
+                    <CurrenciesTable data={this.getCurrencies()} />
+                )}
+            </div>
         );
     }
 }

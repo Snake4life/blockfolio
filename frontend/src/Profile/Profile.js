@@ -15,7 +15,7 @@ class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fetched: false,
+            loading: true,
             user: {
                 username: ""
             },
@@ -39,7 +39,7 @@ class Profile extends React.Component {
                 this.setState({
                     user: responseJson.user,
                     session: responseJson.session,
-                    fetched:true
+                    loading:false
                 });
             })
             .catch(err => {
@@ -75,13 +75,13 @@ class Profile extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.state.fetched ? "" : <LinearProgress/>}
+                {this.state.loading ? <LinearProgress/> : ""}
                 <h2>Welcome, {this.state.user.username}</h2>
                 Your session expires:{" "}
                 {humanDate.relativeTime(this.state.session.expires)}
                 <br />
                 <p>
-                    <Button onClick={this.signOut} raised>
+                    <Button onClick={this.signOut} raised disabled={this.state.loading}>
                         Sign out{" "}
                     </Button>
                 </p>

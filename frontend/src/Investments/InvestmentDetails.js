@@ -30,12 +30,11 @@ class InvestmentDetails extends React.Component {
         this.deleteInvestment = this.deleteInvestment.bind(this);
     }
     componentDidMount() {
-        console.log("Component did mount");
         this.fetchInvestment();
     }
     fetchInvestment() {
         console.log("Fetching investment...");
-        fetch("/api/investments/details/" + this.props.currencyId, {
+        fetch("/api/investments/details/" + this.props.match.params.currencyId, {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
@@ -89,7 +88,7 @@ class InvestmentDetails extends React.Component {
                     aria-label="add"
                     className={classes.button}
                     component={Link}
-                    to={"/investments/edit/" + this.props.currencyId}
+                    to={"/investments/edit/" + this.props.match.params.currencyId}
                 >
                     <EditIcon />
                 </Button>
