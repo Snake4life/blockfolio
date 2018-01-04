@@ -20,6 +20,7 @@ import { withCookies } from "react-cookie";
 import AddInvestment from "./Investments/AddInvestment";
 import InvestmentsDetails from "./Investments/InvestmentsDetails";
 import CurrencyDetails from "./Currencies/CurrencyDetails";
+import { LinearProgress } from "material-ui/Progress";
 
 const drawerWidth = 240;
 
@@ -73,16 +74,20 @@ const styles = theme => ({
 });
 
 class ResponsiveDrawer extends React.Component {
-    state = {
-        mobileOpen: false
-    };
-
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
     constructor(props) {
         super(props);
         this.isSignedIn = this.isSignedIn.bind(this);
+        this.setLoading = this.setLoading.bind(this);
+        this.state = {
+            mobileOpen: false,
+            loading:false
+        }
+    }
+    setLoading(loading) {
+        this.setState({loading:loading});
     }
     isSignedIn() {
         const { cookies } = this.props;
@@ -107,7 +112,7 @@ class ResponsiveDrawer extends React.Component {
         const NotFoundTitle = () => <div>Error</div>;
 
         const CurrenciesComponent = () => (
-            <Currencies isSignedIn={this.isSignedIn} />
+            <Currencies isSignedIn={this.isSignedIn} setLoading={this.setLoading} />
         );
         const InvestmentsComponent = () => (
             <Investments isSignedIn={this.isSignedIn} />
@@ -124,6 +129,7 @@ class ResponsiveDrawer extends React.Component {
 
         return (
             <div className={classes.root}>
+                {this.state.loading ? <LinearProgress/> : ""}
                 <div className={classes.appFrame}>
                     <AppBar className={classes.appBar}>
                         <Toolbar>

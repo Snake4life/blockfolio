@@ -8,7 +8,9 @@ import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
-import InvestmentsTable from "./InvestmentsTable";
+import InvestmentsDetailsTable from "./InvestmentsDetailsTable";
+import InvestmentChart from "./InvestmentChart";
+
 const styles = () => ({
     root: {},
     button: {
@@ -62,7 +64,8 @@ class InvestmentsDetails extends React.Component {
             <div className={classes.root}>
                 <h2>{this.props.match.params.currencyId}</h2>
                 <p>Trades: {this.state.investments.length}</p>
-                <InvestmentsTable data={this.state.investments}/>
+                <InvestmentsDetailsTable data={this.state.investments}/>
+                <InvestmentChart/>
             </div>
         );
 

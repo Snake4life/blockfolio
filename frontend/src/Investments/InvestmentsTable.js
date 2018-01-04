@@ -56,7 +56,7 @@ class InvestmentsTable extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, theme } = this.props;
 
         return (
             <Paper className={classes.root}>
@@ -72,6 +72,7 @@ class InvestmentsTable extends React.Component {
                             <TableCell>Change 24h</TableCell>
                             <TableCell>Change 7d</TableCell>
                             <TableCell>Last updated</TableCell>
+                            <TableCell>Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -148,6 +149,7 @@ class InvestmentsTable extends React.Component {
                                             fab mini
                                             onClick={() => {this.deleteInvestment(n.investment_id)}}
                                             raised
+                                            color="primary"
                                         >
                                             <DeleteIcon/>
                                         </Button>
@@ -163,7 +165,8 @@ class InvestmentsTable extends React.Component {
 }
 
 InvestmentsTable.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(InvestmentsTable));
+export default withStyles(styles, { withTheme: true })(withRouter(InvestmentsTable));

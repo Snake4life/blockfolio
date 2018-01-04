@@ -19,6 +19,7 @@ class Currencies extends React.Component {
             loading: true
         };
         this.getCurrencies = this.getCurrencies.bind(this);
+        this.fetchCurrencies = this.fetchCurrencies.bind(this);
     }
     componentDidMount() {
         if (!this.props.isSignedIn())

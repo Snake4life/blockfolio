@@ -5,13 +5,18 @@ import "./App.css";
 import { withRouter } from "react-router-dom";
 import { createMuiTheme } from "material-ui/styles";
 import blue from "material-ui/colors/blue";
-import orange from "material-ui/colors/orange";
+import green from "material-ui/colors/green";
+import red from "material-ui/colors/red";
 import { CookiesProvider } from "react-cookie";
 
 const theme = createMuiTheme({
     palette: {
-        primary: orange,
-        secondary: blue
+        primary: blue,
+        secondary: {
+            ...green,
+            A400: "#00e677"
+        },
+        error: red
     }
 });
 
@@ -21,7 +26,7 @@ class App extends Component {
             <MuiThemeProvider theme={theme}>
                 <CookiesProvider>
                     <div className="App">
-                        <ResponsiveDrawer/>
+                        <ResponsiveDrawer />
                     </div>
                 </CookiesProvider>
             </MuiThemeProvider>

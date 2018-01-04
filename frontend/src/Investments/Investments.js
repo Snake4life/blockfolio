@@ -96,7 +96,7 @@ class Investments extends React.Component {
                     Total value of investments:{" "}
                     {currencyFormatter("USD").format(this.calculateTotal())} ({currencyFormatter(
                         "PLN"
-                    ).format(this.calculateTotal() * 3.52)})
+                    ).format(this.calculateTotal() * 3.45)})
                 </h2>
                 <Button
                     fab

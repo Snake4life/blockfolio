@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "chart.js": "^2.7.1",
     "current-date": "^0.1.1",
     "dateformat": "^3.0.2",
     "downshift": "^1.22.5",

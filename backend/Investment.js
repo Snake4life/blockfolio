@@ -8,7 +8,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
             mysql.query(
-                "SELECT * FROM `investments`  LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE user_id = ?",
+                "SELECT * FROM `investments`  LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
                 [userId],
                 (err, rows, fields) => {
                     if (err) {
