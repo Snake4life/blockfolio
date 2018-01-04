@@ -7,7 +7,7 @@ var Session = require("../Session");
 var winston = require("winston");
 
 router.post("/signIn", (req, res, next) => {
-    var username = req.body.username;
+    var username = req.body.username.toLowerCase();
     var password = req.body.password;
 
     winston.info("Signing in user " + username);
