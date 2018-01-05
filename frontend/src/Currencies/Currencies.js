@@ -14,6 +14,7 @@ const styles = () => ({
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
+        console.log("Currencies constructor");
         this.state = {
             currencies: [],
             loading: true
@@ -30,6 +31,7 @@ class Currencies extends React.Component {
         return this.state.currencies;
     }
     fetchCurrencies() {
+        this.props.setLoading(true);
         fetch("/api/currencies/list", {
             credentials: "same-origin",
             headers: {
@@ -41,6 +43,7 @@ class Currencies extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
+                this.props.setLoading(false);
                 this.setState({ currencies: responseJson, loading: false });
             })
             .catch(e => {
@@ -52,12 +55,10 @@ class Currencies extends React.Component {
     render() {
         const { classes } = this.props;
 
-
-
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    <LinearProgress />
+                    ""
                 ) : (
                     <CurrenciesTable data={this.getCurrencies()} />
                 )}

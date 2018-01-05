@@ -73,7 +73,7 @@ const styles = theme => ({
     }
 });
 
-class ResponsiveDrawer extends React.Component {
+class ResponsiveDrawer extends React.PureComponent {
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
@@ -115,12 +115,13 @@ class ResponsiveDrawer extends React.Component {
             <Currencies isSignedIn={this.isSignedIn} setLoading={this.setLoading} />
         );
         const InvestmentsComponent = () => (
-            <Investments isSignedIn={this.isSignedIn} />
+            <Investments isSignedIn={this.isSignedIn} setLoading={this.setLoading} />
         );
+
 
         const AddInvestmentComponent = () => <AddInvestment />;
         const SignInComponent = () => <SignIn />;
-        const ProfileComponent = () => <Profile isSignedIn={this.isSignedIn} />;
+        const ProfileComponent = () => <Profile isSignedIn={this.isSignedIn} setLoading={this.setLoading} />;
         const NotFoundComponent = () => (
             <div>
                 <h2>404</h2>Not found
@@ -200,12 +201,12 @@ class ResponsiveDrawer extends React.Component {
                                 <Route
                                     exact
                                     path="/investments"
-                                    component={InvestmentsComponent}
+                                    render={InvestmentsComponent}
                                 />
                                 <Route
                                     exact
                                     path="/investments/add"
-                                    component={AddInvestmentComponent}
+                                    render={AddInvestmentComponent}
                                 />
                                 <Route
                                     exact
@@ -215,7 +216,7 @@ class ResponsiveDrawer extends React.Component {
                                 <Route
                                     exact
                                     path="/currencies"
-                                    component={CurrenciesComponent}
+                                    render={CurrenciesComponent}
                                 />
                                 <Route
                                     exact
@@ -225,13 +226,13 @@ class ResponsiveDrawer extends React.Component {
                                 <Route
                                     exact
                                     path="/profile/signin"
-                                    component={SignInComponent}
+                                    render={SignInComponent}
                                 />
 
                                 <Route
                                     exact
                                     path="/"
-                                    component={ProfileComponent}
+                                    render={ProfileComponent}
                                 />
                                 <Route component={NotFoundComponent} />
                             </Switch>

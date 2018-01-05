@@ -43,6 +43,7 @@ class Investments extends React.Component {
     // TODO pass this function as props
 
     fetchInvestments() {
+        this.props.setLoading(true);
         fetch("/api/investments", {
             credentials: "same-origin",
             headers: {
@@ -54,9 +55,11 @@ class Investments extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
+                this.props.setLoading(false);
                 this.setState({ investments: responseJson, loading: false });
             })
             .catch(err => {
+                this.props.setLoading(false);
                 console.error("Unable to fetch investments"); // show error message
             });
     }
@@ -87,7 +90,7 @@ class Investments extends React.Component {
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    <LinearProgress />
+                    ""
                 ) : (
                     <InvestmentsTable data={this.getInvestments()} />
                 )}

@@ -5,10 +5,10 @@ import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
 import humanDate from "human-date";
-import { LinearProgress } from 'material-ui/Progress';
+import { LinearProgress } from "material-ui/Progress";
 
 const styles = () => ({
-    root: {width:"100%"}
+    root: { width: "100%" }
 });
 
 class Profile extends React.Component {
@@ -27,6 +27,7 @@ class Profile extends React.Component {
         this.signOut = this.signOut.bind(this);
     }
     fetchUserData() {
+        this.props.setLoading(true);
         fetch("/api/auth/info", {
             credentials: "same-origin"
         })
@@ -36,10 +37,11 @@ class Profile extends React.Component {
             })
             .then(response => response.json())
             .then(responseJson => {
+                this.props.setLoading(false);
                 this.setState({
                     user: responseJson.user,
                     session: responseJson.session,
-                    loading:false
+                    loading: false
                 });
             })
             .catch(err => {
@@ -75,16 +77,25 @@ class Profile extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? <LinearProgress/> : ""}
-                <h2>Welcome, {this.state.user.username}</h2>
-                Your session expires:{" "}
-                {humanDate.relativeTime(this.state.session.expires)}
-                <br />
-                <p>
-                    <Button onClick={this.signOut} raised disabled={this.state.loading}>
-                        Sign out{" "}
-                    </Button>
-                </p>
+                {this.state.loading ? (
+                    ""
+                ) : (
+                    <div>
+                        <h2>Welcome, {this.state.user.username}</h2>
+                        Your session expires:{" "}
+                        {humanDate.relativeTime(this.state.session.expires)}
+                        <br />
+                        <p>
+                            <Button
+                                onClick={this.signOut}
+                                raised
+                                disabled={this.state.loading}
+                            >
+                                Sign out{" "}
+                            </Button>
+                        </p>
+                    </div>
+                )}
             </div>
         );
     }
