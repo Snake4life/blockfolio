@@ -54,6 +54,7 @@ class Profile extends React.Component {
         this.fetchUserData();
     }
     signOut() {
+        this.props.setLoading(true);
         fetch("/api/auth/signOut", {
             credentials: "same-origin"
         })
@@ -62,11 +63,13 @@ class Profile extends React.Component {
                 else throw new Error(response.error);
             })
             .then(response => {
+                this.props.setLoading(false);
                 const { cookies } = this.props;
                 cookies.remove("session");
                 this.props.history.push("/profile/signIn");
             })
             .catch(err => {
+                this.props.setLoading(false);
                 console.error(err);
             });
 

@@ -37,21 +37,18 @@ class InvestmentsTable extends React.Component {
         this.deleteInvestment = this.deleteInvestment.bind(this);
     }
     deleteInvestment(investment_id) {
-        fetch(
-            "/api/investments/delete/" + investment_id,
-            {
-                credentials: "same-origin",
-                headers: {
-                    "Cache-Control": "no-cache"
-                }
+        fetch("/api/investments/delete/" + investment_id, {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
             }
-        )
+        })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
                 return this.props.history.push("/investments");
             })
             .catch(err => {
-                console.error("Unable to delete investment: "+err);
+                console.error("Unable to delete investment: " + err);
             });
     }
 
@@ -63,16 +60,24 @@ class InvestmentsTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric>Currency</TableCell>
-                            <TableCell numeric>Price ($USD)</TableCell>
-                            <TableCell numeric>Amount</TableCell>
-                            <TableCell numeric>Value</TableCell>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Change 1h</TableCell>
-                            <TableCell>Change 24h</TableCell>
-                            <TableCell>Change 7d</TableCell>
-                            <TableCell>Last updated</TableCell>
-                            <TableCell>Delete</TableCell>
+                            <TableCell padding="dense">#ID</TableCell>
+                            <TableCell numeric padding="dense">
+                                Currency
+                            </TableCell>
+                            <TableCell numeric padding="dense">
+                                Price ($USD)
+                            </TableCell>
+                            <TableCell numeric padding="dense">
+                                Amount
+                            </TableCell>
+                            <TableCell numeric padding="dense">
+                                Value
+                            </TableCell>
+                            <TableCell padding="dense">Date</TableCell>
+                            <TableCell padding="dense">Change 1h</TableCell>
+                            <TableCell padding="dense">Change 24h</TableCell>
+                            <TableCell padding="dense">Change 7d</TableCell>
+                            <TableCell padding="dense">Last updated</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -83,12 +88,23 @@ class InvestmentsTable extends React.Component {
 
                             return (
                                 <TableRow
+                                    hover="true"
                                     key={index + 1}
                                     className={
                                         index % 2 === 0 ? classes.tableRow : ""
                                     }
                                 >
-                                    <TableCell>
+                                    <TableCell padding="dense">
+                                        <Link
+                                            to={
+                                                "/investments/investment/" +
+                                                n.investment_id
+                                            }
+                                        >
+                                            {n.investment_id}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell padding="dense">
                                         <Link
                                             to={
                                                 "/investments/details/" +
@@ -98,22 +114,25 @@ class InvestmentsTable extends React.Component {
                                             {n.name}
                                         </Link>
                                     </TableCell>
-                                    <TableCell numeric>
+                                    <TableCell numeric padding="dense">
                                         {currencyFormatter("USD").format(
                                             n.price_usd
                                         )}
                                     </TableCell>
-                                    <TableCell numeric>{n.amount}</TableCell>
-                                    <TableCell numeric>
+                                    <TableCell numeric padding="dense">
+                                        {n.amount}
+                                    </TableCell>
+                                    <TableCell numeric padding="dense">
                                         {currencyFormatter("USD").format(
                                             n.amount * n.price_usd
                                         )}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell padding="dense">
                                         {dateformat(n.date, "isoDate")}
                                     </TableCell>
                                     <TableCell
                                         numeric
+                                        padding="dense"
                                         className={
                                             n.percent_change_1h > 0
                                                 ? classes.greenColor
@@ -124,6 +143,7 @@ class InvestmentsTable extends React.Component {
                                     </TableCell>
                                     <TableCell
                                         numeric
+                                        padding="dense"
                                         className={
                                             n.percent_change_24h > 0
                                                 ? classes.greenColor
@@ -134,6 +154,7 @@ class InvestmentsTable extends React.Component {
                                     </TableCell>
                                     <TableCell
                                         numeric
+                                        padding="dense"
                                         className={
                                             n.percent_change_7d > 0
                                                 ? classes.greenColor
@@ -143,17 +164,6 @@ class InvestmentsTable extends React.Component {
                                         {n.percent_change_7d}
                                     </TableCell>
                                     <TableCell>{last_updated}</TableCell>
-                                    <TableCell>
-                                        <Button
-                                            id="delete"
-                                            fab mini
-                                            onClick={() => {this.deleteInvestment(n.investment_id)}}
-                                            raised
-                                            color="primary"
-                                        >
-                                            <DeleteIcon/>
-                                        </Button>
-                                    </TableCell>
                                 </TableRow>
                             );
                         })}
@@ -169,4 +179,6 @@ InvestmentsTable.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(InvestmentsTable));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(InvestmentsTable)
+);

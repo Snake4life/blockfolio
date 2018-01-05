@@ -4,7 +4,7 @@ import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 import CurrenciesTable from "./CurrenciesTable";
-
+import LoadingMessage from "../LoadingMessage";
 import { LinearProgress } from "material-ui/Progress";
 
 const styles = () => ({
@@ -14,7 +14,6 @@ const styles = () => ({
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
-        console.log("Currencies constructor");
         this.state = {
             currencies: [],
             loading: true
@@ -58,7 +57,7 @@ class Currencies extends React.Component {
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    ""
+                    <LoadingMessage/>
                 ) : (
                     <CurrenciesTable data={this.getCurrencies()} />
                 )}

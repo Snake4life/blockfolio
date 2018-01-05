@@ -9,6 +9,7 @@ import { Route, Switch } from "react-router";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
+import LoadingMessage from "../LoadingMessage";
 
 const styles = () => ({
     table: {
@@ -85,32 +86,34 @@ class Investments extends React.Component {
     render() {
         const { classes } = this.props;
 
-        
-
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    ""
+                    <LoadingMessage />
                 ) : (
-                    <InvestmentsTable data={this.getInvestments()} />
+                    <div>
+                        <InvestmentsTable data={this.getInvestments()} />
+                        <h2>
+                            Total value of investments:{" "}
+                            {currencyFormatter("USD").format(
+                                this.calculateTotal()
+                            )}{" "}
+                            ({currencyFormatter("PLN").format(
+                                this.calculateTotal() * 3.45
+                            )})
+                        </h2>
+                        <Button
+                            fab
+                            color="primary"
+                            aria-label="add"
+                            className={classes.button}
+                            component={Link}
+                            to="/investments/add"
+                        >
+                            <AddIcon />
+                        </Button>
+                    </div>
                 )}
-
-                <h2>
-                    Total value of investments:{" "}
-                    {currencyFormatter("USD").format(this.calculateTotal())} ({currencyFormatter(
-                        "PLN"
-                    ).format(this.calculateTotal() * 3.45)})
-                </h2>
-                <Button
-                    fab
-                    color="primary"
-                    aria-label="add"
-                    className={classes.button}
-                    component={Link}
-                    to="/investments/add"
-                >
-                    <AddIcon />
-                </Button>
             </div>
         );
     }

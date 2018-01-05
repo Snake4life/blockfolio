@@ -30,8 +30,22 @@ router.get("/details/:currencyId", function(req, res, next) {
         .catch(err => {
             winston.error("Unable to retrieve investments. "+err);
         });
+});
 
-    //res.json(investments);
+router.get("/investment/:investmentId", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
+
+    winston.info("Fetching currency details for "+req.params.investmentId);
+
+    Investment.getByUserAndInvestment(req.user.user_id, req.params.investmentId)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            winston.error("Unable to retrieve investment. "+err);
+            res.sendStatus(404);
+        });
+
 });
 
 router.get("/delete/:investmentId", function(req, res, next) {
@@ -44,10 +58,10 @@ router.get("/delete/:investmentId", function(req, res, next) {
             res.sendStatus(200);
         })
         .catch(err => {
-            winston.error("Unable to retrieve investments. "+err);
+            winston.error("Unable to delete investment. "+err);
+            res.sendStatus(500);
         });
 
-    //res.json(investments);
 });
 
 router.post("/add", function(req, res, next) {

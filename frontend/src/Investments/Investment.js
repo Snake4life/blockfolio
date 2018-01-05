@@ -8,6 +8,7 @@ import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
+import LoadingMessage from "../LoadingMessage";
 
 const styles = () => ({
     root: {},
@@ -21,11 +22,11 @@ const styles = () => ({
     }
 });
 
-class InvestmentDetails extends React.Component {
+class Investment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            investments: {},
+            investment: {},
             loading: true
         };
         this.deleteInvestment = this.deleteInvestment.bind(this);
@@ -34,9 +35,10 @@ class InvestmentDetails extends React.Component {
         this.fetchInvestment();
     }
     fetchInvestment() {
-        console.log("Fetching investment...");
+        this.props.setLoading(true);
         fetch(
-            "/api/investments/details/" + this.props.match.params.currencyId,
+            "/api/investments/investment/" +
+                this.props.match.params.investmentId,
             {
                 credentials: "same-origin",
                 headers: {
@@ -49,10 +51,11 @@ class InvestmentDetails extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
-                console.log(responseJson);
-                this.setState({ investments: responseJson, loading: false });
+                this.props.setLoading(false);
+                this.setState({ investment: responseJson, loading: false });
             })
             .catch(err => {
+                this.props.setLoading(false);
                 console.error("Unable to fetch investment"); // show error message
             });
     }
@@ -80,41 +83,40 @@ class InvestmentDetails extends React.Component {
 
         const render = (
             <div className={classes.root}>
-                <h2>{this.state.investments[0].name}</h2>
-                <p>Amount: {this.state.investment.amount}</p>
-                <p>
-                    Price:{" "}
-                    {currencyFormatter("USD").format(
-                        this.state.investment.price_usd
-                    )}
-                </p>
-                <p>
-                    Date of the trade:{" "}
-                    {dateformat(this.state.investment.date, "isoDate")}
-                </p>
-                <Button
-                    id="delete"
-                    onClick={this.deleteInvestment}
-                    raised
-                    disabled={this.state.loading}
-                >
-                    Delete investment
-                </Button>
+                {this.props.isLoading() ? (
+                    <LoadingMessage/>
+                ) : (
+                    <div>
+                        <h2>{this.state.investment.name}</h2>
+                        <p>Amount: {this.state.investment.amount}</p>
+                        <p>
+                            Price:{" "}
+                            {currencyFormatter("USD").format(
+                                this.state.investment.price_usd
+                            )}
+                        </p>
+                        <p>
+                            Date of the trade:{" "}
+                            {this.state.investment.date ? dateformat(this.state.investment.date, "isoDate") : ""}
+                        </p>
+                        <Button
+                            id="delete"
+                            onClick={this.deleteInvestment}
+                            raised
+                            disabled={this.state.loading}
+                        >
+                            Delete investment
+                        </Button>
+                    </div>
+                )}
             </div>
         );
-
-        if (this.state.loading)
-            return (
-                <div className={classes.root}>
-                    <LinearProgress />
-                </div>
-            );
         return render;
     }
 }
 
-InvestmentDetails.propTypes = {
+Investment.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(InvestmentDetails));
+export default withStyles(styles)(withRouter(Investment));

@@ -47,11 +47,34 @@ module.exports = {
                             return resolve(rows);
                         } else {
                             winston.info("No investments found.");
-                            return resolve(404);
+                            return reject(404);
                         }
                     }
                 }
             );
+        });
+    },
+
+    getByUserAndInvestment: function(userId, investmentId) {
+        return new Promise((resolve, reject) => {
+            winston.info("Getting investment "+investmentId+" for user "+userId);
+
+            mysql.query("SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investment_id = ?", [userId, investmentId], (err, rows, fields)=>{
+                if(err) {
+                    winston.error("Error while retrieving investment. "+err);
+                    return reject(err);
+                }
+                else {
+                    if(rows.length > 0) {
+                        winston.info("Retrieved investment "+investmentId);
+                        return resolve(rows[0]);
+                    }
+                    else {
+                        winston.info("No investment found with id "+investmentId + " for user "+userId);
+                        return reject(404);
+                    }
+                }
+            });
         });
     },
 

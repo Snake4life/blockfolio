@@ -51,6 +51,7 @@ class SignIn extends React.Component {
         );
     }
     signIn(credentials, successCallback, errorCallback) {
+        this.props.setLoading(true);
         fetch("/api/auth/signIn", {
             method: "POST",
             headers: {
@@ -68,9 +69,11 @@ class SignIn extends React.Component {
             })
             .then(response => response.json())
             .then(responseJson => {
+                this.props.setLoading(false);
                 successCallback(responseJson);
             })
             .catch(err => {
+                this.props.setLoading(false);
                 errorCallback(err);
             });
     }

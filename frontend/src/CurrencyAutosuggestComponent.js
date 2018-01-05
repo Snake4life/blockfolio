@@ -9,7 +9,6 @@ import { withStyles } from "material-ui/styles";
 const styles = {
     container: {
         flexGrow: 1,
-        height: 200
     },
     textField: {
         width: "100%",

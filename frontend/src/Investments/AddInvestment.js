@@ -11,6 +11,8 @@ import { withRouter } from "react-router-dom";
 import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import { LinearProgress } from "material-ui/Progress";
 import currentDate from "current-date";
+import LoadingMessage from "../LoadingMessage";
+
 const styles = theme => ({
     root: {
         width: "100%"
@@ -58,7 +60,7 @@ class AddInvestment extends React.Component {
         this.setState({ amount: event.target.value });
     }
     handleAdd() {
-        this.setState({ loading: true });
+        this.props.setLoading(true);
         fetch("/api/investments/add", {
             credentials: "same-origin",
             headers: {
@@ -74,7 +76,7 @@ class AddInvestment extends React.Component {
         })
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
-                this.setState({ loading: false });
+                this.props.setLoading(true);
                 this.props.history.push("/investments");
             })
             .catch(e => {
@@ -85,15 +87,18 @@ class AddInvestment extends React.Component {
         this.fetchCurrencies();
     }
     fetchCurrencies() {
+        this.props.setLoading(true);
         fetch("/api/currencies/list", { credentials: "same-origin" })
             .then(res => {
                 if (!res.ok) throw Error(res.statusText);
                 return res.json();
             })
             .then(responseJson => {
+                this.props.setLoading(false);
                 this.setState({ currencies: responseJson, loading: false });
             })
             .catch(e => {
+                this.props.setLoading(false);
                 console.error(
                     "Unable to fetch currencies from the server: " + e
                 );
@@ -118,7 +123,7 @@ class AddInvestment extends React.Component {
             });
     }
     handleCurrencyChange(currency) {
-        this.setState({currencyId: currency});
+        this.setState({ currencyId: currency });
     }
     handleDateChange(event) {
         console.log(event.target.value);
@@ -126,7 +131,12 @@ class AddInvestment extends React.Component {
     }
     isValid() {
         if (this.state.currencyId && this.state.amount != 0) {
-            console.log("return true, currencyId:" +this.state.currencyId + ", amount:"+this.state.amount);
+            console.log(
+                "return true, currencyId:" +
+                    this.state.currencyId +
+                    ", amount:" +
+                    this.state.amount
+            );
             return true;
         }
         console.log("return false z");
@@ -137,54 +147,59 @@ class AddInvestment extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? <LinearProgress /> : ""}
-                <form className={classes.container} autoComplete="off">
-                    <FormControl className={classes.formControl}>
-                        <CurrencyAutosuggest
-                            currencies={this.state.currencies}
-                            handleChange={this.handleCurrencyChange}
-                        />
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                        <TextField
-                            id="amount"
-                            label="Amount"
-                            value={this.state.amount}
-                            onChange={this.handleAmountChange}
-                            type="number"
-                            className={classes.textField}
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            margin="normal"
-                        />
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                        <TextField
-                            id="date"
-                            type="date"
-                            className={classes.textField}
-                            onChange={this.handleDateChange}
-                            label="Date of the trade"
-                            defaultValue={currentDate("date")}
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                        />
-                    </FormControl>
+                {this.props.isLoading() ? (
+                    <LoadingMessage />
+                ) : (
                     <div>
-                        <FormControl className={classes.formControl}>
-                            <Button
-                                raised
-                                className={classes.button}
-                                onClick={this.handleAdd}
-                                disabled={!this.isValid()}
-                            >
-                                Add to portfolio
-                            </Button>
-                        </FormControl>
+                        <form className={classes.container} autoComplete="off">
+                            <FormControl className={classes.formControl}>
+                                <CurrencyAutosuggest
+                                    currencies={this.state.currencies}
+                                    handleChange={this.handleCurrencyChange}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <TextField
+                                    id="amount"
+                                    label="Amount"
+                                    value={this.state.amount}
+                                    onChange={this.handleAmountChange}
+                                    type="number"
+                                    className={classes.textField}
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
+                                    margin="normal"
+                                />
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <TextField
+                                    id="date"
+                                    type="date"
+                                    className={classes.textField}
+                                    onChange={this.handleDateChange}
+                                    label="Date of the trade"
+                                    defaultValue={currentDate("date")}
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
+                                />
+                            </FormControl>
+                            <div>
+                                <FormControl className={classes.formControl}>
+                                    <Button
+                                        raised
+                                        className={classes.button}
+                                        onClick={this.handleAdd}
+                                        disabled={!this.isValid()}
+                                    >
+                                        Add to portfolio
+                                    </Button>
+                                </FormControl>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                )}
             </div>
         );
     }

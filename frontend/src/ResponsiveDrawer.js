@@ -21,7 +21,7 @@ import AddInvestment from "./Investments/AddInvestment";
 import InvestmentsDetails from "./Investments/InvestmentsDetails";
 import CurrencyDetails from "./Currencies/CurrencyDetails";
 import { LinearProgress } from "material-ui/Progress";
-
+import Investment from "./Investments/Investment";
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -81,13 +81,17 @@ class ResponsiveDrawer extends React.PureComponent {
         super(props);
         this.isSignedIn = this.isSignedIn.bind(this);
         this.setLoading = this.setLoading.bind(this);
+        this.isLoading = this.isLoading.bind(this);
         this.state = {
             mobileOpen: false,
-            loading:false
-        }
+            loading: false,
+        };
     }
     setLoading(loading) {
-        this.setState({loading:loading});
+        this.setState({ loading: loading });
+    }
+    isLoading() {
+        return this.state.loading;
     }
     isSignedIn() {
         const { cookies } = this.props;
@@ -109,19 +113,67 @@ class ResponsiveDrawer extends React.PureComponent {
         const CurrenciesTitle = () => <div>Currencies</div>;
         const ProfileTitle = () => <div>Profile</div>;
         const SignInTitle = () => <div>Sign in</div>;
-        const NotFoundTitle = () => <div>Error</div>;
+        const ErrorTitle = () => <div>Error</div>;
 
         const CurrenciesComponent = () => (
-            <Currencies isSignedIn={this.isSignedIn} setLoading={this.setLoading} />
+            <Currencies
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
         );
         const InvestmentsComponent = () => (
-            <Investments isSignedIn={this.isSignedIn} setLoading={this.setLoading} />
+            <Investments
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
         );
 
+        const InvestmentComponent = () => (
+            <Investment
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
+        );
 
-        const AddInvestmentComponent = () => <AddInvestment />;
-        const SignInComponent = () => <SignIn />;
-        const ProfileComponent = () => <Profile isSignedIn={this.isSignedIn} setLoading={this.setLoading} />;
+        const InvestmentsDetailsComponent = () => (
+            <InvestmentsDetails
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
+        );
+
+        const AddInvestmentComponent = () => (
+            <AddInvestment
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
+        );
+        const SignInComponent = () => (
+            <SignIn
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
+        );
+        const ProfileComponent = () => (
+            <Profile
+                isSignedIn={this.isSignedIn}
+                setLoading={this.setLoading}
+                isLoading={this.isLoading}
+                
+            />
+        );
         const NotFoundComponent = () => (
             <div>
                 <h2>404</h2>Not found
@@ -130,7 +182,7 @@ class ResponsiveDrawer extends React.PureComponent {
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? <LinearProgress/> : ""}
+                {this.state.loading ? <LinearProgress /> : ""}
                 <div className={classes.appFrame}>
                     <AppBar className={classes.appBar}>
                         <Toolbar>
@@ -162,7 +214,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                         path="/profile/signin"
                                         component={SignInTitle}
                                     />
-                                    <Route component={NotFoundTitle} />
+                                    <Route component={ErrorTitle} />
                                 </Switch>
                             </Typography>
                         </Toolbar>
@@ -211,7 +263,12 @@ class ResponsiveDrawer extends React.PureComponent {
                                 <Route
                                     exact
                                     path="/investments/details/:currencyId"
-                                    component={InvestmentsDetails}
+                                    render={InvestmentsDetailsComponent}
+                                />
+                                <Route
+                                    exact
+                                    path="/investments/investment/:investmentId"
+                                    render={InvestmentComponent}
                                 />
                                 <Route
                                     exact
@@ -219,7 +276,6 @@ class ResponsiveDrawer extends React.PureComponent {
                                     render={CurrenciesComponent}
                                 />
                                 <Route
-                                    exact
                                     path="/currencies/details/:currencyId"
                                     component={CurrencyDetails}
                                 />
