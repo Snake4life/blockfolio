@@ -106,7 +106,7 @@ fetchAll()
             });
             return;
         });
-        return;
+        connection.end();
     })
     .catch(err => {
         console.error(err);
