@@ -54,10 +54,13 @@ function fetchPrices() {
                 }
                 for(el in rows) {
                     fsyms.push(rows[el].symbol);
+                    console.log(rows[el].symbol);
                 }
             }
         );
-
+        
+        console.log(fsyms);
+        
         /*
 
         request(
@@ -83,8 +86,7 @@ function fetchPrices() {
             }
         );*/
 
-        console.log(fsyms);
-        
+
     });
 }
 
