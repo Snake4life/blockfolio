@@ -102,11 +102,12 @@ fetchAll()
                     });
                 }
                 console.log("success!");
-                return;
+                connection.end();
             });
-            return;
+            
+            
         });
-        connection.end();
+        
     })
     .catch(err => {
         console.error(err);
