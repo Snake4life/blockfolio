@@ -39,7 +39,56 @@ function fetchAll() {
     });
 }
 
-fetchAll()
+function fetchPrices() {
+    return new Promise((resolve, reject) => {
+        console.log("Fetching prices from cryptocompare API...");
+
+        var fsyms = [];
+
+        connection.query(
+            "SELECT * FROM currencies_cryptocompare WHERE 1",
+            (err, rows, fields) => {
+                if (err) {
+                    console.error(err);
+                    throw new Error(err);
+                }
+                for(el in rows) {
+                    fsyms.push(rows[el].symbol);
+                }
+            }
+        );
+
+        /*
+
+        request(
+            "https://min-api.cryptocompare.com/data/pricemulti?fsyms=" +
+                fsyms +
+                "&tsyms=USD,EUR,BTC",
+            function(error, response, body) {
+                try {
+                    var data = JSON.parse(body).Data;
+                    var coins = [];
+
+                    Object.keys(data).forEach(function(key) {
+                        coins.push(data[key]);
+                    });
+
+                    resolve(coins);
+                    return;
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+            }
+        );*/
+
+        console.log(fsyms);
+        
+    });
+}
+
+/*fetchAll()
     .then(response => {
         connection.beginTransaction(function(err) {
             if (err) {
@@ -104,11 +153,11 @@ fetchAll()
                 console.log("success!");
                 connection.end();
             });
-            
-            
         });
-        
     })
     .catch(err => {
         console.error(err);
     });
+*/
+
+fetchPrices();
