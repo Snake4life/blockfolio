@@ -8,7 +8,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
             mysql.query(
-                "SELECT * FROM `investments`  LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
+                "SELECT * FROM `investments`  LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
                 [userId],
                 (err, rows, fields) => {
                     if (err) {
@@ -33,7 +33,7 @@ module.exports = {
                 "Getting investments of " + currencyId + " for user " + userId
             );
             mysql.query(
-                "SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ? ORDER BY investments.date",
+                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ? ORDER BY investments.date",
                 [userId, currencyId],
                 (err, rows, fields) => {
                     if (err) {
@@ -59,7 +59,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("Getting investment "+investmentId+" for user "+userId);
 
-            mysql.query("SELECT * FROM `investments` LEFT JOIN currencies ON currencies.currency_id = investments.currency_id WHERE investments.user_id = ? AND investment_id = ?", [userId, investmentId], (err, rows, fields)=>{
+            mysql.query("SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND investment_id = ?", [userId, investmentId], (err, rows, fields)=>{
                 if(err) {
                     winston.error("Error while retrieving investment. "+err);
                     return reject(err);

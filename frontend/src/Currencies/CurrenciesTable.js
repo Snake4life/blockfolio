@@ -93,24 +93,17 @@ class CurrenciesTable extends React.Component {
                             <TableCell numeric padding="dense">
                                 #
                             </TableCell>
+                            <TableCell padding="dense">
+                            Image
+                            </TableCell>
                             <TableCell numeric padding="dense">
                                 Currency
                             </TableCell>
-                            <TableCell numeric padding="dense">
-                                Market cap
-                            </TableCell>
+                           
                             <TableCell numeric padding="dense">
                                 Price ($USD)
                             </TableCell>
-                            <TableCell numeric padding="dense">
-                                Change 1h
-                            </TableCell>
-                            <TableCell numeric padding="dense">
-                                Change 24h
-                            </TableCell>
-                            <TableCell numeric padding="dense">
-                                Change 7d
-                            </TableCell>
+                           
                             <TableCell>Last updated</TableCell>
                         </TableRow>
                     </TableHead>
@@ -123,7 +116,7 @@ class CurrenciesTable extends React.Component {
                             )
                             .map((n, index) => {
                                 const last_updated = humanDate.relativeTime(
-                                    new Date(n.last_updated * 1000).toString()
+                                    new Date(n.price_last_updated).toString()
                                 );
                                 return (
                                     <TableRow
@@ -142,6 +135,9 @@ class CurrenciesTable extends React.Component {
                                                 1}
                                         </TableCell>
                                         <TableCell padding="dense">
+                                            <img src={'https://www.cryptocompare.com/'+n.image_url} width="32" height="32"/>
+                                        </TableCell>
+                                        <TableCell padding="dense">
                                             <Link
                                                 to={
                                                     "/currencies/details/" +
@@ -151,49 +147,13 @@ class CurrenciesTable extends React.Component {
                                                 {n.name}
                                             </Link>
                                         </TableCell>
-                                        <TableCell numeric padding="dense">
-                                            {currencyFormatter("USD").format(
-                                                n.market_cap_usd
-                                            )}
-                                        </TableCell>
+                                        
                                         <TableCell numeric padding="dense">
                                             {currencyFormatter("USD").format(
                                                 n.price_usd
                                             )}
                                         </TableCell>
-                                        <TableCell
-                                            padding="dense"
-                                            numeric
-                                            className={
-                                                n.percent_change_1h > 0
-                                                    ? classes.greenColor
-                                                    : classes.redColor
-                                            }
-                                        >
-                                            {n.percent_change_1h}
-                                        </TableCell>
-                                        <TableCell
-                                            padding="dense"
-                                            numeric
-                                            className={
-                                                n.percent_change_24h > 0
-                                                    ? classes.greenColor
-                                                    : classes.redColor
-                                            }
-                                        >
-                                            {n.percent_change_24h}
-                                        </TableCell>
-                                        <TableCell
-                                            padding="dense"
-                                            numeric
-                                            className={
-                                                n.percent_change_7d > 0
-                                                    ? classes.greenColor
-                                                    : classes.redColor
-                                            }
-                                        >
-                                            {n.percent_change_7d}
-                                        </TableCell>
+                                        
                                         <TableCell padding="dense">
                                             {last_updated}
                                         </TableCell>

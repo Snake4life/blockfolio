@@ -74,16 +74,13 @@ class InvestmentsTable extends React.Component {
                                 Value
                             </TableCell>
                             <TableCell padding="dense">Date</TableCell>
-                            <TableCell padding="dense">Change 1h</TableCell>
-                            <TableCell padding="dense">Change 24h</TableCell>
-                            <TableCell padding="dense">Change 7d</TableCell>
                             <TableCell padding="dense">Last updated</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
                             const last_updated = humanDate.relativeTime(
-                                new Date(n.last_updated * 1000).toString()
+                                new Date(n.price_last_updated * 1000).toString()
                             );
 
                             return (
@@ -130,39 +127,7 @@ class InvestmentsTable extends React.Component {
                                     <TableCell padding="dense">
                                         {dateformat(n.date, "isoDate")}
                                     </TableCell>
-                                    <TableCell
-                                        numeric
-                                        padding="dense"
-                                        className={
-                                            n.percent_change_1h > 0
-                                                ? classes.greenColor
-                                                : classes.redColor
-                                        }
-                                    >
-                                        {n.percent_change_1h}
-                                    </TableCell>
-                                    <TableCell
-                                        numeric
-                                        padding="dense"
-                                        className={
-                                            n.percent_change_24h > 0
-                                                ? classes.greenColor
-                                                : classes.redColor
-                                        }
-                                    >
-                                        {n.percent_change_24h}
-                                    </TableCell>
-                                    <TableCell
-                                        numeric
-                                        padding="dense"
-                                        className={
-                                            n.percent_change_7d > 0
-                                                ? classes.greenColor
-                                                : classes.redColor
-                                        }
-                                    >
-                                        {n.percent_change_7d}
-                                    </TableCell>
+                                   
                                     <TableCell>{last_updated}</TableCell>
                                 </TableRow>
                             );
