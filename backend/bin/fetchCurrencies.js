@@ -90,7 +90,7 @@ fetchAll()
                                 throw err;
                             });
                         }
-                        console.log("Added "+name+" to the transaction.");
+                        console.log("Added " + name + " to the transaction.");
                     }
                 );
             }
@@ -104,8 +104,9 @@ fetchAll()
                 console.log("success!");
                 return;
             });
-
+            return;
         });
+        return;
     })
     .catch(err => {
         console.error(err);
