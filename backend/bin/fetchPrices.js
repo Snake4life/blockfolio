@@ -1,7 +1,6 @@
 var mysql = require("mysql");
 var config = require("../config");
 var request = require("request");
-var rp = require("request-promise");
 
 var connection = mysql.createConnection({
     host: config.db.host,
