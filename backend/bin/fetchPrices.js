@@ -10,6 +10,7 @@ var connection = mysql.createConnection({
     port: 3306
 });
 
+
 function fetchPrices() {
     return new Promise((resolve, reject) => {
         console.log("Fetching prices from cryptocompare API...");
@@ -53,10 +54,7 @@ function fetchPrices() {
                                         data[el].EUR,
                                         data[el].BTC,
                                         el
-                                    ],
-                                    function(err) {
-                                        connection.end();
-                                    }
+                                    ]
                                 );
                             }
 
