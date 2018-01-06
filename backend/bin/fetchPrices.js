@@ -53,7 +53,10 @@ function fetchPrices() {
                                         data[el].EUR,
                                         data[el].BTC,
                                         el
-                                    ]
+                                    ],
+                                    function(err) {
+                                        connection.end();
+                                    }
                                 );
                             }
 
@@ -65,7 +68,6 @@ function fetchPrices() {
                 }
             }
         );
-
     });
 }
 
