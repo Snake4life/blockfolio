@@ -76,7 +76,7 @@ function fetchPrices() {
                                 console.log("Updating price for " + el);
 
                                 connection.query(
-                                    "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ? WHERE symbol = ?",
+                                    "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ?, price_last_updated=CURRENT_TIMESTAMP WHERE symbol = ?",
                                     [
                                         data[el].USD,
                                         data[el].EUR,
