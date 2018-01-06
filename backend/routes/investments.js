@@ -18,18 +18,22 @@ router.get("/", function(req, res, next) {
     //res.json(investments);
 });
 
-router.get("/details/:currencyId", function(req, res, next) {
+router.get("/currency/:symbol", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
 
-    winston.info("Fetching currency details for "+req.params.currencyId);
-
-    Investment.getByUserAndCurrency(req.user.user_id, req.params.currencyId)
-        .then(response => {
-            res.json(response);
+    winston.info("Fetching currency details for "+req.params.symbol);
+    Currency.getBySymbol(req.params.symbol).then(currency=> {
+        Investment.getByUserAndSymbol(req.user.user_id, req.params.symbol)
+        .then(investments => {
+            res.json({currency:currency, investments:investments});
         })
         .catch(err => {
             winston.error("Unable to retrieve investments. "+err);
         });
+    }).catch(err => {
+        winston.error("Unable to fetch currency. "+err);
+    });
+
 });
 
 router.get("/investment/:investmentId", function(req, res, next) {

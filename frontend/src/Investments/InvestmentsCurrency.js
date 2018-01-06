@@ -8,7 +8,7 @@ import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
-import InvestmentsDetailsTable from "./InvestmentsDetailsTable";
+import InvestmentsCurrencyTable from "./InvestmentsCurrencyTable";
 import InvestmentChart from "./InvestmentChart";
 import LoadingMessage from "../LoadingMessage";
 
@@ -24,10 +24,11 @@ const styles = () => ({
     }
 });
 
-class InvestmentsDetails extends React.Component {
+class InvestmentsCurrency extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            currency: {},
             investments: []
         };
     }
@@ -37,7 +38,7 @@ class InvestmentsDetails extends React.Component {
     fetchInvestment() {
         this.props.setLoading(true);
         fetch(
-            "/api/investments/details/" + this.props.match.params.currencyId,
+            "/api/investments/currency/" + this.props.match.params.symbol,
             {
                 credentials: "same-origin",
                 headers: {
@@ -51,7 +52,10 @@ class InvestmentsDetails extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ investments: responseJson });
+                this.setState({
+                    investments: responseJson.investments,
+                    currency: responseJson.currency
+                });
             })
             .catch(err => {
                 this.props.setLoading(false);
@@ -67,9 +71,9 @@ class InvestmentsDetails extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <h2>{this.props.match.params.currencyId}</h2>
+                        <h2>{this.state.currency.name}</h2>
                         <p>Trades: {this.state.investments.length}</p>
-                        <InvestmentsDetailsTable
+                        <InvestmentsCurrencyTable
                             data={this.state.investments}
                         />
                         <InvestmentChart />
@@ -80,8 +84,8 @@ class InvestmentsDetails extends React.Component {
     }
 }
 
-InvestmentsDetails.propTypes = {
+InvestmentsCurrency.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(InvestmentsDetails));
+export default withStyles(styles)(withRouter(InvestmentsCurrency));

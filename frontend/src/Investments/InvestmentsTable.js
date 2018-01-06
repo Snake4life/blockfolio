@@ -61,16 +61,19 @@ class InvestmentsTable extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell padding="dense">#ID</TableCell>
-                            <TableCell numeric padding="dense">
+                            <TableCell padding="dense">
+                                Icon
+                            </TableCell>
+                            <TableCell padding="dense">
                                 Currency
                             </TableCell>
-                            <TableCell numeric padding="dense">
+                            <TableCell padding="dense">
                                 Price ($USD)
                             </TableCell>
-                            <TableCell numeric padding="dense">
+                            <TableCell padding="dense">
                                 Amount
                             </TableCell>
-                            <TableCell numeric padding="dense">
+                            <TableCell padding="dense">
                                 Value
                             </TableCell>
                             <TableCell padding="dense">Date</TableCell>
@@ -80,7 +83,7 @@ class InvestmentsTable extends React.Component {
                     <TableBody>
                         {this.props.data.map((n, index) => {
                             const last_updated = humanDate.relativeTime(
-                                new Date(n.price_last_updated * 1000).toString()
+                                new Date(n.price_last_updated).toString()
                             );
 
                             return (
@@ -102,10 +105,20 @@ class InvestmentsTable extends React.Component {
                                         </Link>
                                     </TableCell>
                                     <TableCell padding="dense">
+                                        <img
+                                            src={
+                                                "https://www.cryptocompare.com/" +
+                                                n.image_url
+                                            }
+                                            width="32"
+                                            height="32"
+                                        />
+                                    </TableCell>
+                                    <TableCell padding="dense">
                                         <Link
                                             to={
-                                                "/investments/details/" +
-                                                n.currency_id
+                                                "/investments/currency/" +
+                                                n.symbol
                                             }
                                         >
                                             {n.name}
@@ -127,7 +140,7 @@ class InvestmentsTable extends React.Component {
                                     <TableCell padding="dense">
                                         {dateformat(n.date, "isoDate")}
                                     </TableCell>
-                                   
+
                                     <TableCell>{last_updated}</TableCell>
                                 </TableRow>
                             );

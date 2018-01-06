@@ -23,7 +23,7 @@ class CurrencyDetails extends React.Component {
         this.fetchCurrency();
     }
     fetchCurrency() {
-        fetch("/api/currencies/" + this.props.match.params.currencyId, {
+        fetch("/api/currencies/currency/" + this.props.match.params.symbol, {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"

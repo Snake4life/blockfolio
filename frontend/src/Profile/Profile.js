@@ -63,10 +63,14 @@ class Profile extends React.Component {
                 else throw new Error(response.error);
             })
             .then(response => {
-                this.props.setLoading(false);
-                const { cookies } = this.props;
-                cookies.remove("session");
-                this.props.history.push("/profile/signIn");
+                try {
+                    this.props.setLoading(false);
+                    const { cookies } = this.props;
+                    cookies.remove("session");
+                    this.props.history.push("/profile/signIn");
+                } catch (e) {
+                    throw new Error(e);
+                }
             })
             .catch(err => {
                 this.props.setLoading(false);

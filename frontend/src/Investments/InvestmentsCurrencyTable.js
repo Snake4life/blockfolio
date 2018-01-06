@@ -31,7 +31,7 @@ const styles = theme => ({
     }
 });
 
-class InvestmentsDetailsTable extends React.Component {
+class InvestmentsCurrencyTable extends React.Component {
     constructor(props) {
         super(props);
         this.deleteInvestment = this.deleteInvestment.bind(this);
@@ -110,8 +110,8 @@ class InvestmentsDetailsTable extends React.Component {
     }
 }
 
-InvestmentsDetailsTable.propTypes = {
+InvestmentsCurrencyTable.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(InvestmentsDetailsTable));
+export default withStyles(styles)(withRouter(InvestmentsCurrencyTable));

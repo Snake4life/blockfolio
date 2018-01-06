@@ -22,17 +22,17 @@ router.get("/list", function(req, res, next) {
         });
 });
 
-router.get("/:currencyId", function(req, res, next) {
+router.get("/currency/:symbol", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
+    
+    winston.debug("Getting currency details for "+req.params.symbol);
 
-    winston.debug("Getting currency details for "+req.params.currencyId);
-
-    Currency.fetchOne(req.params.currencyId)
+    Currency.getBySymbol(req.params.symbol)
         .then(response => {
             res.json(response);
         })
         .catch(err => {
-            winston.error("Unable to retrieve investments. "+err);
+            winston.error("Unable to retrieve currency '"+req.params.symbol+"'. "+err);
         });
 
     //res.json(investments);

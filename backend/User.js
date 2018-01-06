@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 
 module.exports = {
     authenticate: function(username, password) {
-        winston.debug("User.authenticate("+username+","+password+")");
+
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM users WHERE users.username = ? AND users.password = SHA1(CONCAT(?,users.salt))",
@@ -37,7 +37,7 @@ module.exports = {
         });
     },
     generateToken: function(userId) {
-        winston.debug("User.generateToken("+userId+")");
+
         return new Promise((resolve, reject) => {
             var timestamp = Math.floor(Date.now() / 1000);
             var sessionId = crypto
@@ -70,7 +70,7 @@ module.exports = {
         });
     },
     isAuthenticated: function(sessionId) {
-        winston.debug("User.isAuthenticated("+sessionId+")");
+
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
@@ -93,7 +93,6 @@ module.exports = {
         });
     },
     findOne: function(userId) {
-        winston.debug("User.findOne("+userId+")");
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM users WHERE user_id = ?",

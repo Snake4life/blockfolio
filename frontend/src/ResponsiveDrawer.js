@@ -18,7 +18,7 @@ import SignIn from "./Profile/SignIn";
 import Profile from "./Profile/Profile";
 import { withCookies } from "react-cookie";
 import AddInvestment from "./Investments/AddInvestment";
-import InvestmentsDetails from "./Investments/InvestmentsDetails";
+import InvestmentsCurrency from "./Investments/InvestmentsCurrency";
 import CurrencyDetails from "./Currencies/CurrencyDetails";
 import { LinearProgress } from "material-ui/Progress";
 import Investment from "./Investments/Investment";
@@ -141,8 +141,8 @@ class ResponsiveDrawer extends React.PureComponent {
             />
         );
 
-        const InvestmentsDetailsComponent = () => (
-            <InvestmentsDetails
+        const InvestmentsCurrencyComponent = () => (
+            <InvestmentsCurrency
                 isSignedIn={this.isSignedIn}
                 setLoading={this.setLoading}
                 isLoading={this.isLoading}
@@ -262,8 +262,8 @@ class ResponsiveDrawer extends React.PureComponent {
                                 />
                                 <Route
                                     exact
-                                    path="/investments/details/:currencyId"
-                                    render={InvestmentsDetailsComponent}
+                                    path="/investments/currency/:symbol"
+                                    render={InvestmentsCurrencyComponent}
                                 />
                                 <Route
                                     exact
@@ -276,7 +276,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                     render={CurrenciesComponent}
                                 />
                                 <Route
-                                    path="/currencies/details/:currencyId"
+                                    path="/currencies/currency/:symbol"
                                     component={CurrencyDetails}
                                 />
                                 <Route

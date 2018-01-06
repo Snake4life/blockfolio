@@ -5,7 +5,7 @@ var mysql = require("./mysql-connection");
 
 module.exports = {
     getSession: function(sessionId) {
-        winston.debug("Session.getSession(" + sessionId + ")");
+
         return new Promise((resolve, reject) => {
             mysql.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
@@ -30,7 +30,7 @@ module.exports = {
         });
     },
     extend: function(sessionId, expires) {
-        winston.debug("Session.setExpires(" + sessionId + "," + expires + ")");
+
         return new Promise((resolve, reject) => {
             mysql.query(
                 "UPDATE sessions SET expires = FROM_UNIXTIME(?) WHERE session_id = ?",
@@ -56,7 +56,7 @@ module.exports = {
         });
     },
     terminate: function(sessionId) {
-        winston.debug("Session.terminate("+sessionId+")");
+
         return new Promise((resolve, reject) => {
             mysql.query(
                 "DELETE FROM sessions WHERE session_id = ?",

@@ -27,14 +27,14 @@ module.exports = {
         });
     },
 
-    getByUserAndCurrency: function(userId, currencyId) {
+    getByUserAndSymbol: function(userId, symbol) {
         return new Promise((resolve, reject) => {
             winston.info(
-                "Getting investments of " + currencyId + " for user " + userId
+                "Getting investments of " + symbol + " for user " + userId
             );
             mysql.query(
-                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND investments.currency_id = ? ORDER BY investments.date",
-                [userId, currencyId],
+                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND currencies_cryptocompare.symbol = ? ORDER BY investments.date",
+                [userId, symbol],
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(

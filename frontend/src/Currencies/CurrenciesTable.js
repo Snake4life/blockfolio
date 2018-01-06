@@ -59,7 +59,6 @@ class CurrenciesTable extends React.Component {
         if (parsed.rowsPerPage)
             this.setState({ rowsPerPage: parseInt(parsed.rowsPerPage) });
         else this.setState({ rowsPerPage: 5 });
-        console.log(this.state);
     }
     componentDidMount() {
         this.changePages();
@@ -90,20 +89,12 @@ class CurrenciesTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric padding="dense">
-                                #
-                            </TableCell>
-                            <TableCell padding="dense">
-                            Image
-                            </TableCell>
-                            <TableCell numeric padding="dense">
-                                Currency
-                            </TableCell>
-                           
-                            <TableCell numeric padding="dense">
-                                Price ($USD)
-                            </TableCell>
-                           
+                            <TableCell padding="dense">#</TableCell>
+                            <TableCell padding="dense">Icon</TableCell>
+                            <TableCell padding="dense">Currency</TableCell>
+
+                            <TableCell padding="dense">Price ($USD)</TableCell>
+
                             <TableCell>Last updated</TableCell>
                         </TableRow>
                     </TableHead>
@@ -135,25 +126,32 @@ class CurrenciesTable extends React.Component {
                                                 1}
                                         </TableCell>
                                         <TableCell padding="dense">
-                                            <img src={'https://www.cryptocompare.com/'+n.image_url} width="32" height="32"/>
+                                            <img
+                                                src={
+                                                    "https://www.cryptocompare.com/" +
+                                                    n.image_url
+                                                }
+                                                width="32"
+                                                height="32"
+                                            />
                                         </TableCell>
                                         <TableCell padding="dense">
                                             <Link
                                                 to={
-                                                    "/currencies/details/" +
-                                                    n.currency_id
+                                                    "/currencies/currency/" +
+                                                    n.symbol
                                                 }
                                             >
-                                                {n.name}
+                                                {n.full_name}
                                             </Link>
                                         </TableCell>
-                                        
+
                                         <TableCell numeric padding="dense">
                                             {currencyFormatter("USD").format(
                                                 n.price_usd
                                             )}
                                         </TableCell>
-                                        
+
                                         <TableCell padding="dense">
                                             {last_updated}
                                         </TableCell>
