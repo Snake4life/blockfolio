@@ -64,14 +64,25 @@ function fetchPrices() {
                         fsymsSlice.join() +
                         "&tsyms=USD,EUR,BTC";
 
+                    console.log(
+                        "fetching prices from " + i + " to " + (i + 50)
+                    );
+
                     request(url, function(error, response, body) {
                         try {
                             if (error) throw err;
                             var data = JSON.parse(body);
                             for (el in data) {
+                                console.log("Updating price for " + el);
+
                                 connection.query(
                                     "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ? WHERE symbol = ?",
-                                    [data[el].USD, data[el].EUR, data[el].BTC, el]
+                                    [
+                                        data[el].USD,
+                                        data[el].EUR,
+                                        data[el].BTC,
+                                        el
+                                    ]
                                 );
                             }
 
