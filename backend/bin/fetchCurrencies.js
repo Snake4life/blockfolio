@@ -64,7 +64,7 @@ fetchAll()
                 let sponsored = response[el].Sponsored;
 
                 connection.query(
-                    "INSERT INTO currencies_cryptocompare (currency_id, url, image_url, name, symbol, coin_name, full_name, \
+                    "INSERT IGNORE INTO currencies_cryptocompare (currency_id, url, image_url, name, symbol, coin_name, full_name, \
                     algorithm, proof_type, fully_premined, total_coin_supply, premined_value, total_coins_free_float, sort_order, sponsored) \
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [
