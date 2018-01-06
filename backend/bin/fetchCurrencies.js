@@ -102,6 +102,7 @@ fetchAll()
                     });
                 }
                 console.log("success!");
+                return;
             });
 
         });
