@@ -50,34 +50,37 @@ function fetchPrices() {
             (err, rows, fields) => {
                 if (err) {
                     console.error(err);
-                    throw new Error(err);
+                    reject(err);
                 }
                 for (el in rows) {
                     fsyms.push(rows[el].symbol);
                 }
 
-                request(
-                    "https://min-api.cryptocompare.com/data/pricemulti?fsyms=" +
-                        fsyms.join() +
-                        "&tsyms=USD,EUR,BTC",
-                    function(error, response, body) {
+                for (var i = 0; i < fsyms.length; i += 50) {
+                    let fsymsSlice = fsyms.slice(i, i + 50);
+
+                    var url =
+                        "https://min-api.cryptocompare.com/data/pricemulti?fsyms=" +
+                        fsymsSlice.join() +
+                        "&tsyms=USD,EUR,BTC";
+
+                    request(url, function(error, response, body) {
                         try {
-                            var data = JSON.parse(body).Data;
-                            var coins = [];
+                            if (error) throw err;
+                            var data = JSON.parse(body);
+                            for (el in data) {
+                                connection.query(
+                                    "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ? WHERE symbol = ?",
+                                    [data[el].USD, data[el].EUR, data[el].BTC, el]
+                                );
+                            }
 
-                            Object.keys(data).forEach(function(key) {
-                                coins.push(data[key]);
-                            });
-
-                            resolve(coins);
-                            return;
+                            resolve();
                         } catch (err) {
                             console.error(err);
-                            reject(err);
-                            return;
                         }
-                    }
-                );
+                    });
+                }
             }
         );
 
@@ -158,8 +161,10 @@ function fetchPrices() {
     });
 */
 
-fetchPrices().then(response => {
-    console.log(response);
-}).catch(err => {
-    console.error(err);
-});
+fetchPrices()
+    .then(response => {
+        //console.log(response);
+    })
+    .catch(err => {
+        console.error(err);
+    });
