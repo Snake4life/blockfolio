@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var config = require("../config");
 var request = require("request");
+var rp = require("request-promise");
 
 var connection = mysql.createConnection({
     host: config.db.host,
@@ -9,7 +10,6 @@ var connection = mysql.createConnection({
     database: config.db.database,
     port: 3306
 });
-
 
 function fetchPrices() {
     return new Promise((resolve, reject) => {
@@ -24,9 +24,12 @@ function fetchPrices() {
                     console.error(err);
                     reject(err);
                 }
-                for (el in rows) {
-                    fsyms.push(rows[el].symbol);
-                }
+
+                rows.forEach(el => {
+                    fsyms.push(el.symbol);
+                });
+
+                var urls = [];
 
                 for (var i = 0; i < fsyms.length; i += 50) {
                     let fsymsSlice = fsyms.slice(i, i + 50);
@@ -36,43 +39,61 @@ function fetchPrices() {
                         fsymsSlice.join() +
                         "&tsyms=USD,EUR,BTC";
 
-                    console.log(
-                        "fetching prices from " + i + " to " + (i + 50)
-                    );
+                    urls.push(url);
+                }
 
-                    request(url, function(error, response, body) {
-                        try {
-                            if (error) throw err;
-                            var data = JSON.parse(body);
-                            for (el in data) {
-                                console.log("Updating price for " + el);
+                var requestedUrls = 0;
+                var prices = {};
 
-                                connection.query(
-                                    "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ?, price_last_updated=CURRENT_TIMESTAMP WHERE symbol = ?",
-                                    [
-                                        data[el].USD,
-                                        data[el].EUR,
-                                        data[el].BTC,
-                                        el
-                                    ]
-                                );
-                            }
+                urls.forEach(url => {
+                    request(url, (err, response, body) => {
+                        requestedUrls++;
+                        prices = Object.assign(prices, JSON.parse(body));
 
-                            resolve();
-                        } catch (err) {
-                            console.error(err);
+                        if (requestedUrls == urls.length) {
+                            resolve(prices);
                         }
                     });
-                }
+                });
             }
         );
     });
 }
 
+// request(url, function(error, response, body) {
+
+//                     });
+
 fetchPrices()
-    .then(response => {
-        //console.log(response);
+    .then(prices => {
+        var processedKeys = 0;
+        Object.keys(prices).forEach(key => {
+            connection.query(
+                "UPDATE currencies_cryptocompare SET price_usd = ?, price_eur = ?, price_btc = ?, price_last_updated=CURRENT_TIMESTAMP WHERE symbol = ?",
+                [prices[key].USD, prices[key].EUR, prices[key].BTC, key],
+                (err) => {
+                    if(err) throw new Error(err);
+                    console.log("Updated price for "+key);
+                    processedKeys++;
+                    if(processedKeys==Object.keys(prices).length) {
+                        connection.end();
+                    }
+                }
+            );
+        });
+        
     })
     .catch(err => {
         console.error(err);
     });
+
+// try {
+//     if (error) throw err;
+//     var data = JSON.parse(body);
+//     for (el in data) {
+//         console.log("Updating price for " + el);
+
+//     resolve(prices);
+// } catch (err) {
+//     console.error(err);
+// }
