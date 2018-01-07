@@ -51,14 +51,14 @@ function getInvestmentCurrencies() {
 
 function addPrices(requests) {
     var req = requests.shift();
-    var date = req.date;
-    var url = req.url;
-    var currency = req.currency;
 
     // console.log(currency.symbol+" on "+date+", querying "+url);
-    if (url != undefined) {
+    if (req != undefined) {
+        var date = req.date;
+        var url = req.url;
+        var currency = req.currency;
         request(url, (err, response, body) => {
-            if(err) throw new Error(err);
+            if (err) throw new Error(err);
 
             var data = JSON.parse(body);
 
@@ -77,16 +77,17 @@ function addPrices(requests) {
                     //     "Added price for " + currency.symbol + " on " + date
                     // );
                     if (requests.length > 0) {
-
                         // check limits
-                        request("https://min-api.cryptocompare.com/stats/rate/second/limit", (err, response, body) => {
-                            var body = JSON.parse(body);
-                            if(body["CallsLeft"]==0) setTimeout(addPrices(requests), 1);
-                            else addPrices(requests);
-                        });
-                        
-                    }
-                    else {
+                        request(
+                            "https://min-api.cryptocompare.com/stats/rate/second/limit",
+                            (err, response, body) => {
+                                var body = JSON.parse(body);
+                                if (body["CallsLeft"] == 0)
+                                    setTimeout(addPrices(requests), 1);
+                                else addPrices(requests);
+                            }
+                        );
+                    } else {
                         connection.end();
                     }
                 }
@@ -123,7 +124,6 @@ function getUrlToQuery(currency, date) {
     });
 }
 
-
 // get the currencies from investments table
 getInvestmentCurrencies()
     .then(currencies => {
@@ -138,7 +138,7 @@ getInvestmentCurrencies()
             var dates = getDates(currency.mindate, new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
-            
+
             dates.forEach(date => {
                 // console.log(
                 //     "Finding dates for which there are no prices for currency " +
@@ -146,12 +146,16 @@ getInvestmentCurrencies()
                 //         " and date " +
                 //         date
                 // );
-                
+
                 getUrlToQuery(currency, date)
                     .then(url => {
-                        
-                        if (url != null) requests.push({ url:url, currency:currency, date:date });
-                        
+                        if (url != null)
+                            requests.push({
+                                url: url,
+                                currency: currency,
+                                date: date
+                            });
+
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
                             currenciesProcessed++;
@@ -159,7 +163,7 @@ getInvestmentCurrencies()
                                 // for those prices which do not exist, make a request to cryptocompare
                                 // console.log("All fetching done, time to query cryptocompare");
                                 // console.log(requests);
-                                if(requests) addPrices(requests);
+                                if (requests) addPrices(requests);
                             }
                         }
                     })
