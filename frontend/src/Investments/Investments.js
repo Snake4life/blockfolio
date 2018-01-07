@@ -10,6 +10,7 @@ import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import LoadingMessage from "../LoadingMessage";
+import InvestmentsPieChart from "./InvestmentsPieChart";
 
 const styles = () => ({
     table: {
@@ -22,15 +23,26 @@ const styles = () => ({
         bottom: 20,
         left: "auto",
         position: "fixed"
+    },
+    pieChart: {
+        maxWidth: "600px"
     }
 });
+
+var dynamicColors = function() {
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 255);
+    var b = Math.floor(Math.random() * 255);
+    return "rgb(" + r + "," + g + "," + b + ")";
+};
 
 class Investments extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             investments: [],
-            loading: true
+            loading: true,
+            chartData: {}
         };
         this.getInvestments = this.getInvestments.bind(this);
         this.getInvestmentById = this.getInvestmentById.bind(this);
@@ -58,10 +70,41 @@ class Investments extends React.Component {
             .then(responseJson => {
                 this.props.setLoading(false);
                 this.setState({ investments: responseJson, loading: false });
+
+                var currencies = {};
+
+                responseJson.forEach(el => {
+                    if (currencies[el.coin_name])
+                        currencies[el.coin_name] += el.price_usd * el.amount;
+                    else currencies[el.coin_name] = el.price_usd * el.amount;
+                });
+
+                var data = [];
+                var labels = [];
+                var backgroundColors = [];
+                console.log(
+                    Object.keys(currencies).map(key => {
+                        data.push(currencies[key]);
+                        labels.push(key);
+                        backgroundColors.push(dynamicColors());
+                    })
+                );
+
+                this.setState({
+                    chartData: {
+                        datasets: [
+                            {
+                                backgroundColor: backgroundColors,
+                                data: data
+                            }
+                        ],
+                        labels: labels
+                    }
+                });
             })
             .catch(err => {
                 this.props.setLoading(false);
-                console.error("Unable to fetch investments"); // show error message
+                console.error("Unable to fetch investments. " + err); // show error message
             });
     }
     getInvestments() {
@@ -102,6 +145,11 @@ class Investments extends React.Component {
                                 this.calculateTotal() * 3.45
                             )})
                         </h2>
+
+                        <div className={classes.pieChart}>
+                            <InvestmentsPieChart data={this.state.chartData} />
+                        </div>
+
                         <Button
                             fab
                             color="primary"

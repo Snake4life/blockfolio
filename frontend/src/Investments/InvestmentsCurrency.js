@@ -9,7 +9,6 @@ import currencyFormatter from "../currencyFormatter";
 import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
 import InvestmentsCurrencyTable from "./InvestmentsCurrencyTable";
-import InvestmentChart from "./InvestmentChart";
 import LoadingMessage from "../LoadingMessage";
 
 const styles = () => ({
@@ -76,7 +75,6 @@ class InvestmentsCurrency extends React.Component {
                         <InvestmentsCurrencyTable
                             data={this.state.investments}
                         />
-                        <InvestmentChart />
                     </div>
                 )}
             </div>
