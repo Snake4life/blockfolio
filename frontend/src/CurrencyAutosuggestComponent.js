@@ -8,7 +8,7 @@ import { withStyles } from "material-ui/styles";
 
 const styles = {
     container: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     textField: {
         width: "100%",
@@ -17,10 +17,6 @@ const styles = {
 };
 
 class CurrencyAutosuggest extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     renderInput(inputProps) {
         const { classes, autoFocus, value, ref, ...other } = inputProps;
 

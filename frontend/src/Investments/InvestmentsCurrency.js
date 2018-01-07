@@ -1,13 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { withRouter, Link } from "react-router-dom";
-import { Route, Switch } from "react-router";
-import EditIcon from "material-ui-icons/Edit";
-import Button from "material-ui/Button";
-import currencyFormatter from "../currencyFormatter";
-import { LinearProgress } from "material-ui/Progress";
-import dateformat from "dateformat";
+import { withRouter } from "react-router-dom";
 import InvestmentsCurrencyTable from "./InvestmentsCurrencyTable";
 import LoadingMessage from "../LoadingMessage";
 
@@ -36,15 +30,12 @@ class InvestmentsCurrency extends React.Component {
     }
     fetchInvestment() {
         this.props.setLoading(true);
-        fetch(
-            "/api/investments/currency/" + this.props.match.params.symbol,
-            {
-                credentials: "same-origin",
-                headers: {
-                    "Cache-Control": "no-cache"
-                }
+        fetch("/api/investments/currency/" + this.props.match.params.symbol, {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
             }
-        )
+        })
             .then(res => {
                 if (!res.ok) throw Error(res.status);
                 return res.json();

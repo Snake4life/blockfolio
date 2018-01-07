@@ -12,8 +12,6 @@ import { Link, withRouter } from "react-router-dom";
 import humanDate from "human-date";
 import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
-import Button from "material-ui/Button";
-import DeleteIcon from "material-ui-icons/Delete";
 
 const styles = theme => ({
     root: {
@@ -112,6 +110,7 @@ class InvestmentsTable extends React.Component {
                                             }
                                             width="32"
                                             height="32"
+                                            alt={n.symbol}
                                         />
                                     </TableCell>
                                     <TableCell padding="dense">

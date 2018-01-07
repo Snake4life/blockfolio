@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
-import { Route, Switch } from "react-router";
 import humanDate from "human-date";
 import currencyFormatter from "../currencyFormatter";
-import { LinearProgress } from "material-ui/Progress";
+import LoadingMessage from "../LoadingMessage";
 
 const styles = () => ({
     root: {}
@@ -23,6 +22,7 @@ class CurrencyDetails extends React.Component {
         this.fetchCurrency();
     }
     fetchCurrency() {
+        this.props.setLoading(true);
         fetch("/api/currencies/currency/" + this.props.match.params.symbol, {
             credentials: "same-origin",
             headers: {
@@ -34,9 +34,11 @@ class CurrencyDetails extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
+                this.props.setLoading(false);
                 this.setState({ currency: responseJson, loading: false });
             })
             .catch(err => {
+                this.props.setLoading(false);
                 console.error("Unable to fetch currency details"); // show error message
             });
     }
@@ -45,16 +47,36 @@ class CurrencyDetails extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? <LinearProgress /> : ""}
-                <h2>{this.state.currency.name}</h2>
-                Last updated:{" "}
-                {humanDate.relativeTime(
-                    new Date(this.state.currency.last_updated * 1000)
+                {this.state.loading ? (
+                    <LoadingMessage />
+                ) : (
+                    <div>
+                        <h2>{this.state.currency.name}</h2>
+                        Last updated:{" "}
+                        {humanDate.relativeTime(
+                            new Date(this.state.currency.last_updated * 1000)
+                        )}
+                        <p>Rank: {this.state.currency.rank}</p>
+                        <p>
+                            Price:{" "}
+                            {currencyFormatter("USD").format(
+                                this.state.currency.price_usd
+                            )}
+                        </p>
+                        <p>
+                            Market cap:{" "}
+                            {currencyFormatter("USD").format(
+                                this.state.currency.market_cap_usd
+                            )}
+                        </p>
+                        <p>
+                            24h Volume:{" "}
+                            {currencyFormatter("USD").format(
+                                this.state.currency["24h_volume_usd"]
+                            )}
+                        </p>
+                    </div>
                 )}
-                <p>Rank: {this.state.currency.rank}</p>
-                <p>Price: {currencyFormatter("USD").format(this.state.currency.price_usd)}</p>
-                <p>Market cap: {currencyFormatter("USD").format(this.state.currency.market_cap_usd)}</p>
-                <p>24h Volume: {currencyFormatter("USD").format(this.state.currency['24h_volume_usd'])}</p>
             </div>
         );
     }

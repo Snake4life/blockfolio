@@ -8,9 +8,7 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-import { Link, withRouter } from "react-router-dom";
-import humanDate from "human-date";
-import currencyFormatter from "../currencyFormatter";
+import { withRouter } from "react-router-dom";
 import dateformat from "dateformat";
 import Button from "material-ui/Button";
 import DeleteIcon from "material-ui-icons/Delete";
@@ -71,10 +69,6 @@ class InvestmentsCurrencyTable extends React.Component {
                     </TableHead>
                     <TableBody>
                         {this.props.data.map((n, index) => {
-                            const last_updated = humanDate.relativeTime(
-                                new Date(n.last_updated * 1000).toString()
-                            );
-
                             return (
                                 <TableRow
                                     key={index + 1}

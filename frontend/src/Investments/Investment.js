@@ -1,12 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { withRouter, Link } from "react-router-dom";
-import { Route, Switch } from "react-router";
-import EditIcon from "material-ui-icons/Edit";
+import { withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
-import { LinearProgress } from "material-ui/Progress";
 import dateformat from "dateformat";
 import LoadingMessage from "../LoadingMessage";
 

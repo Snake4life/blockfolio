@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
 import { FormControl } from "material-ui/Form";
-import Select from "material-ui/Select";
 import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 import { withRouter } from "react-router-dom";
 import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
-import { LinearProgress } from "material-ui/Progress";
 import currentDate from "current-date";
 import LoadingMessage from "../LoadingMessage";
 
@@ -130,7 +126,7 @@ class AddInvestment extends React.Component {
         this.setState({ date: event.target.value });
     }
     isValid() {
-        if (this.state.symbol && this.state.amount != 0) {
+        if (this.state.symbol && this.state.amount !== 0) {
             console.log(
                 "return true, currencyId:" +
                     this.state.currencyId +

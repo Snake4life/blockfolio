@@ -54,10 +54,10 @@ class CurrenciesTable extends React.Component {
     }
     changePages() {
         var parsed = queryString.parse(this.props.location.search);
-        if (parsed.page) this.setState({ page: parseInt(parsed.page) });
+        if (parsed.page) this.setState({ page: parseInt(parsed.page, 10) });
         else this.setState({ page: 0 });
         if (parsed.rowsPerPage)
-            this.setState({ rowsPerPage: parseInt(parsed.rowsPerPage) });
+            this.setState({ rowsPerPage: parseInt(parsed.rowsPerPage, 10) });
         else this.setState({ rowsPerPage: 5 });
     }
     componentDidMount() {
@@ -133,6 +133,7 @@ class CurrenciesTable extends React.Component {
                                                 }
                                                 width="32"
                                                 height="32"
+                                                alt={n.symbol}
                                             />
                                         </TableCell>
                                         <TableCell padding="dense">

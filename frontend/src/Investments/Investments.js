@@ -5,10 +5,8 @@ import { withStyles } from "material-ui/styles";
 import Button from "material-ui/Button";
 import AddIcon from "material-ui-icons/Add";
 import { withRouter, Link } from "react-router-dom";
-import { Route, Switch } from "react-router";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
-import { LinearProgress } from "material-ui/Progress";
 import LoadingMessage from "../LoadingMessage";
 import InvestmentsPieChart from "./InvestmentsPieChart";
 
@@ -72,23 +70,24 @@ class Investments extends React.Component {
                 this.setState({ investments: responseJson, loading: false });
 
                 var currencies = {};
+                var total = 0;
 
                 responseJson.forEach(el => {
                     if (currencies[el.coin_name])
                         currencies[el.coin_name] += el.price_usd * el.amount;
                     else currencies[el.coin_name] = el.price_usd * el.amount;
+                    total += el.price_usd * el.amount;
                 });
 
                 var data = [];
                 var labels = [];
                 var backgroundColors = [];
-                console.log(
-                    Object.keys(currencies).map(key => {
-                        data.push(currencies[key]);
-                        labels.push(key);
-                        backgroundColors.push(dynamicColors());
-                    })
-                );
+
+                Object.keys(currencies).forEach(key => {
+                    data.push(currencies[key] / total * 100);
+                    labels.push(key);
+                    backgroundColors.push(dynamicColors());
+                });
 
                 this.setState({
                     chartData: {

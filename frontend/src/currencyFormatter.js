@@ -1,5 +1,5 @@
 module.exports = function(currency) {
-    if (currency == "USD") {
+    if (currency === "USD") {
         return new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
@@ -8,7 +8,7 @@ module.exports = function(currency) {
             // and is usually already 2
         });
     }
-    if (currency == "PLN") {
+    if (currency === "PLN") {
         return new Intl.NumberFormat("pl-PL", {
             style: "currency",
             currency: "PLN",

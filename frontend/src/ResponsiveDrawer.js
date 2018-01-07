@@ -84,7 +84,7 @@ class ResponsiveDrawer extends React.PureComponent {
         this.isLoading = this.isLoading.bind(this);
         this.state = {
             mobileOpen: false,
-            loading: false,
+            loading: false
         };
     }
     setLoading(loading) {
@@ -115,64 +115,23 @@ class ResponsiveDrawer extends React.PureComponent {
         const SignInTitle = () => <div>Sign in</div>;
         const ErrorTitle = () => <div>Error</div>;
 
-        const CurrenciesComponent = () => (
-            <Currencies
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
-        );
-        const InvestmentsComponent = () => (
-            <Investments
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
-        );
+        const commonProps = {
+            isSignedIn: this.isSignedIn,
+            setLoading: this.setLoading,
+            isLoading: this.isLoading
+        };
 
-        const InvestmentComponent = () => (
-            <Investment
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
-        );
-
+        const CurrenciesComponent = () => <Currencies {...commonProps} />;
+        const InvestmentsComponent = () => <Investments {...commonProps} />;
+        const InvestmentComponent = () => <Investment {...commonProps} />;
         const InvestmentsCurrencyComponent = () => (
-            <InvestmentsCurrency
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
+            <InvestmentsCurrency {...commonProps} />
         );
-
-        const AddInvestmentComponent = () => (
-            <AddInvestment
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
-        );
-        const SignInComponent = () => (
-            <SignIn
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
-        );
-        const ProfileComponent = () => (
-            <Profile
-                isSignedIn={this.isSignedIn}
-                setLoading={this.setLoading}
-                isLoading={this.isLoading}
-                
-            />
+        const AddInvestmentComponent = () => <AddInvestment {...commonProps} />;
+        const SignInComponent = () => <SignIn {...commonProps} />;
+        const ProfileComponent = () => <Profile {...commonProps} />;
+        const CurrencyDetailsComponent = () => (
+            <CurrencyDetails {...commonProps} />
         );
         const NotFoundComponent = () => (
             <div>
@@ -277,7 +236,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                 />
                                 <Route
                                     path="/currencies/currency/:symbol"
-                                    component={CurrencyDetails}
+                                    render={CurrencyDetailsComponent}
                                 />
                                 <Route
                                     exact
