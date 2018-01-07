@@ -24,7 +24,7 @@ const styles = () => ({
         position: "fixed"
     },
     pieChart: {
-        maxWidth: "600px"
+        
     },
     lineChart: {}
 });
