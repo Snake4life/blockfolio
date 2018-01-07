@@ -55,7 +55,7 @@ function addPrices(requests) {
     var url = req.url;
     var currency = req.currency;
 
-    console.log(currency.symbol+" on "+date+", querying "+url);
+    // console.log(currency.symbol+" on "+date+", querying "+url);
     if (url != undefined) {
         request(url, (err, response, body) => {
             if(err) throw new Error(err);
@@ -73,10 +73,19 @@ function addPrices(requests) {
                 ],
                 (err, rows, fields) => {
                     if (err) reject(new Error(err));
-                    console.log(
-                        "Added price for " + currency.symbol + " on " + date
-                    );
-                    if (requests.length > 0) addPrices(requests);
+                    // console.log(
+                    //     "Added price for " + currency.symbol + " on " + date
+                    // );
+                    if (requests.length > 0) {
+
+                        // check limits
+                        request("https://min-api.cryptocompare.com/stats/rate/second/limit", (err, response, body) => {
+                            var body = JSON.parse(body);
+                            if(body["CallsLeft"]==0) setTimeOut(addPrices(requests), 1);
+                            else addPrices(requests);
+                        });
+                        
+                    }
                     else {
                         connection.end();
                     }
@@ -94,12 +103,12 @@ function getUrlToQuery(currency, date) {
             (err, rows, fields) => {
                 if (err) reject(err);
                 if (rows.length == 0) {
-                    console.log(
-                        "Not found prices for currency " +
-                            currency.symbol +
-                            " on date " +
-                            date
-                    );
+                    // console.log(
+                    //     "Not found prices for currency " +
+                    //         currency.symbol +
+                    //         " on date " +
+                    //         date
+                    // );
                     resolve(
                         "https://min-api.cryptocompare.com/data/pricehistorical?fsym=" +
                             currency.symbol +
@@ -121,22 +130,22 @@ getInvestmentCurrencies()
         var requests = [];
         var currenciesProcessed = 0;
         currencies.forEach(currency => {
-            console.log(
-                "Finding dates for which there are no prices for currency " +
-                    currency.symbol
-            );
+            // console.log(
+            //     "Finding dates for which there are no prices for currency " +
+            //         currency.symbol
+            // );
             // for all those currencies, get dates between then and now
             var dates = getDates(currency.mindate, new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
             
             dates.forEach(date => {
-                console.log(
-                    "Finding dates for which there are no prices for currency " +
-                        currency.symbol +
-                        " and date " +
-                        date
-                );
+                // console.log(
+                //     "Finding dates for which there are no prices for currency " +
+                //         currency.symbol +
+                //         " and date " +
+                //         date
+                // );
                 
                 getUrlToQuery(currency, date)
                     .then(url => {
@@ -148,8 +157,8 @@ getInvestmentCurrencies()
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
                                 // for those prices which do not exist, make a request to cryptocompare
-                                console.log("All fetching done, time to query cryptocompare");
-                                console.log(requests);
+                                // console.log("All fetching done, time to query cryptocompare");
+                                // console.log(requests);
                                 addPrices(requests);
                             }
                         }
