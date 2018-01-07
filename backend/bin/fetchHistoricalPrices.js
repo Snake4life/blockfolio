@@ -93,7 +93,7 @@ function addPrices(requests) {
                 }
             );
         });
-    }
+    } else connection.end();
 }
 
 function getUrlToQuery(currency, date) {
