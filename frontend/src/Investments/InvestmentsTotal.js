@@ -100,7 +100,7 @@ class InvestmentsTotal extends React.Component {
             })
             .catch(err => {
                 this.props.setLoading(false);
-                console.err(err);
+                console.error(err);
             });
     }
     getInvestments() {
@@ -122,6 +122,9 @@ class InvestmentsTotal extends React.Component {
                                 this.state.total * 3.45
                             )})
                         </h2>
+                        <div>
+                            {this.state.currencies}
+                        </div>
                         <div className={classes.pieChart}>
                             <InvestmentsPieChart data={this.state.chartData} />
                         </div>

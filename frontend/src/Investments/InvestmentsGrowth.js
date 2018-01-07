@@ -61,14 +61,27 @@ class InvestmentsGrowth extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ lineChartDataLoading: false , loading: false});
+                this.setState({ lineChartDataLoading: false, loading: false });
                 console.log(responseJson);
                 this.setState({
                     lineChartData: {
                         labels: Object.keys(responseJson),
                         datasets: [
                             {
-                                data: Object.values(responseJson)
+                                label: "Total value of investments",
+                                data: Object.values(responseJson),
+                                backgroundColor: [
+                                    "rgba(0, 0, 132, 0.2)",
+                                    
+                                ],
+                                borderColor: [
+                                    "rgba(100,100,132,1)",
+                                    
+                                ],
+                                borderWidth: 1,
+                                lineTension: 0,
+                                pointStyle: 'cross',
+                                pointRadius: 0
                             }
                         ]
                     }
@@ -79,7 +92,6 @@ class InvestmentsGrowth extends React.Component {
             .catch(err => {
                 console.err(err);
             });
-
     }
     getInvestments() {
         return this.state.investments;
