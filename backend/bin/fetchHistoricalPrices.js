@@ -135,7 +135,7 @@ getInvestmentCurrencies()
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(new Date(currency.mindate), new Date());
+            var dates = getDates(currency.mindate, new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
             
@@ -159,7 +159,7 @@ getInvestmentCurrencies()
                                 // for those prices which do not exist, make a request to cryptocompare
                                 // console.log("All fetching done, time to query cryptocompare");
                                 // console.log(requests);
-                                addPrices(requests);
+                                if(requests) addPrices(requests);
                             }
                         }
                     })
