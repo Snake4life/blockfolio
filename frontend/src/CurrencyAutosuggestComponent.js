@@ -55,7 +55,7 @@ class CurrencyAutosuggest extends React.Component {
         return (
             <MenuItem
                 {...itemProps}
-                key={currency.currency_id}
+                key={currency.symbol}
                 selected={isHighlighted}
                 component="div"
                 style={{
@@ -64,7 +64,7 @@ class CurrencyAutosuggest extends React.Component {
                         : theme.typography.fontWeightRegular
                 }}
             >
-                {currency.name}
+                {currency.full_name}
             </MenuItem>
         );
     }
@@ -85,7 +85,7 @@ class CurrencyAutosuggest extends React.Component {
         return currencies.filter(currency => {
             const keep =
                 (!inputValue ||
-                    currency.name
+                    currency.full_name
                         .toLowerCase()
                         .includes(inputValue.toLowerCase())) &&
                 count < 5;
@@ -130,7 +130,7 @@ class CurrencyAutosuggest extends React.Component {
                                           index,
                                           theme,
                                           itemProps: getItemProps({
-                                              item: currency.currency_id
+                                              item: currency.symbol
                                           }),
                                           highlightedIndex,
                                           selectedItem

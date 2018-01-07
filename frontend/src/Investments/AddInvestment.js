@@ -38,7 +38,7 @@ class AddInvestment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currencyId: "",
+            symbol: "",
             amount: 0,
             currencies: [],
             loading: true,
@@ -69,7 +69,7 @@ class AddInvestment extends React.Component {
             },
             method: "POST",
             body: JSON.stringify({
-                currencyId: this.state.currencyId,
+                symbol: this.state.symbol,
                 amount: this.state.amount,
                 date: this.state.date
             })
@@ -122,15 +122,15 @@ class AddInvestment extends React.Component {
                 console.error("Unable to fetch investments"); // show error message
             });
     }
-    handleCurrencyChange(currency) {
-        this.setState({ currencyId: currency });
+    handleCurrencyChange(symbol) {
+        this.setState({ symbol: symbol });
     }
     handleDateChange(event) {
         console.log(event.target.value);
         this.setState({ date: event.target.value });
     }
     isValid() {
-        if (this.state.currencyId && this.state.amount != 0) {
+        if (this.state.symbol && this.state.amount != 0) {
             console.log(
                 "return true, currencyId:" +
                     this.state.currencyId +

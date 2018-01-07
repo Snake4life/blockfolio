@@ -211,7 +211,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                     />
                                     <Route
                                         exact
-                                        path="/profile/signin"
+                                        path="/profile/signIn"
                                         component={SignInTitle}
                                     />
                                     <Route component={ErrorTitle} />
@@ -281,7 +281,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                 />
                                 <Route
                                     exact
-                                    path="/profile/signin"
+                                    path="/profile/signIn"
                                     render={SignInComponent}
                                 />
 
