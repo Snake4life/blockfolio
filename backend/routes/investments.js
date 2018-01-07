@@ -78,6 +78,19 @@ router.get("/growth", function(req, res, next) {
         .catch(err => {
             winston.error("Unable to retrieve investment growth. "+err);
         });
+});
+
+
+router.get("/total", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
+
+    Investment.getSummaryForUser(req.user.user_id)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            winston.error("Unable to retrieve investment growth. "+err);
+        });
 
     //res.json(investments);
 });

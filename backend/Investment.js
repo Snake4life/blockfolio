@@ -29,6 +29,29 @@ module.exports = {
         });
     },
 
+    getSummaryForUser: function(userId) {
+        return new Promise((resolve, reject) => {
+            winston.info("Getting investments for user " + userId);
+            mysql.query(
+                "SELECT symbol, coin_name, SUM( amount * price_usd ) AS sum_usd FROM  `investments` LEFT JOIN currencies_cryptocompare ON investments.currency_id = currencies_cryptocompare.currency_id WHERE user_id = ? GROUP BY investments.currency_id",
+                [userId],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error(
+                            "Error while retrieving investment summary. " + err
+                        );
+                        return reject(err);
+                    } else {
+                        winston.info(
+                            "Retrieved investments summary: " + rows.length + " row(s)."
+                        );
+                        return resolve(rows);
+                    }
+                }
+            );
+        });
+    },
+
     getByUserAndSymbol: function(userId, symbol) {
         return new Promise((resolve, reject) => {
             winston.info(
@@ -158,7 +181,7 @@ module.exports = {
                 FROM `investments` AS inv \
                 LEFT JOIN prices_history AS ph ON ph.currency_id = inv.currency_id \
                 LEFT JOIN currencies_cryptocompare as cc ON inv.currency_id = cc.currency_id \
-                WHERE inv.user_id = ? AND ph.date>inv.date \
+                WHERE inv.user_id = ? AND ph.date>=inv.date \
                 GROUP BY currency_id,ph.date \
                 ORDER BY `ph`.`date` ASC",
                 [userId],
@@ -175,5 +198,6 @@ module.exports = {
                 }
             );
         });
-    }
+    },
+
 };

@@ -66,7 +66,7 @@ class InvestmentsTable extends React.Component {
                                 Currency
                             </TableCell>
                             <TableCell padding="dense">
-                                Price ($USD)
+                                Price at the time ($USD)
                             </TableCell>
                             <TableCell padding="dense">
                                 Amount
