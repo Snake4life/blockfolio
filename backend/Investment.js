@@ -3,12 +3,14 @@ var winston = require("winston");
 var request = require("request");
 var mysql = require("./mysql-connection");
 var Currency = require("./Currency");
+var dateFormat = require("dateformat");
+
 module.exports = {
     getByUser: function(userId) {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
             mysql.query(
-                "SELECT * FROM `investments`  LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
+                "SELECT *, ph.price_usd as price_usd, ph.price_btc as price_btc, ph.price_eur as price_eur FROM `investments`  LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id LEFT JOIN prices_history AS ph ON ph.date=investments.date AND ph.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
                 [userId],
                 (err, rows, fields) => {
                     if (err) {
@@ -124,7 +126,9 @@ module.exports = {
                     );
                 })
                 .catch(err => {
-                    winston.error("Could not find currency for symbol "+symbol);
+                    winston.error(
+                        "Could not find currency for symbol " + symbol
+                    );
                 });
         });
     },
@@ -143,6 +147,31 @@ module.exports = {
                     } else {
                         return resolve();
                     }
+                }
+            );
+        });
+    },
+    getGrowthOverTime: function(userId) {
+        return new Promise((resolve, reject) => {
+            mysql.query(
+                "SELECT inv.currency_id, cc.symbol, ph.date, ph.price_usd, SUM(inv.amount)*ph.price_usd as sum_value_usd \
+                FROM `investments` AS inv \
+                LEFT JOIN prices_history AS ph ON ph.currency_id = inv.currency_id \
+                LEFT JOIN currencies_cryptocompare as cc ON inv.currency_id = cc.currency_id \
+                WHERE inv.user_id = ? AND ph.date>inv.date \
+                GROUP BY currency_id,ph.date \
+                ORDER BY `ph`.`date` ASC",
+                [userId],
+                (err, rows, fields) => {
+                    if(err) return reject(err);
+
+                    var output = {};
+                    rows.forEach(row=> {
+                        if(output[dateFormat(row.date,"isoDate")]) output[dateFormat(row.date,"isoDate")]+=row.sum_value_usd;
+                        else output[dateFormat(row.date,"isoDate")]=row.sum_value_usd;
+                    });
+                    console.log(output);
+                    return resolve(output);
                 }
             );
         });

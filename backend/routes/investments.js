@@ -68,6 +68,20 @@ router.get("/delete/:investmentId", function(req, res, next) {
 
 });
 
+router.get("/growth", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
+
+    Investment.getGrowthOverTime(req.user.user_id)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            winston.error("Unable to retrieve investment growth. "+err);
+        });
+
+    //res.json(investments);
+});
+
 router.post("/add", function(req, res, next) {
     if(req.user == null) return res.sendStatus(401);
 

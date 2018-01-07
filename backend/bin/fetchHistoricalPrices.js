@@ -81,7 +81,7 @@ function addPrices(requests) {
                         // check limits
                         request("https://min-api.cryptocompare.com/stats/rate/second/limit", (err, response, body) => {
                             var body = JSON.parse(body);
-                            if(body["CallsLeft"]==0) setTimeOut(addPrices(requests), 1);
+                            if(body["CallsLeft"]==0) setTimeout(addPrices(requests), 1);
                             else addPrices(requests);
                         });
                         
@@ -135,7 +135,7 @@ getInvestmentCurrencies()
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(currency.mindate, new Date());
+            var dates = getDates(new Date(currency.mindate), new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
             
