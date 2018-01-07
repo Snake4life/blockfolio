@@ -36,7 +36,7 @@ var dynamicColors = function() {
     return "rgb(" + r + "," + g + "," + b + ")";
 };
 
-class Investments extends React.Component {
+class InvestmentsTotal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -46,7 +46,6 @@ class Investments extends React.Component {
             lineChartDataLoading: true
         };
         this.getInvestments = this.getInvestments.bind(this);
-        this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
     componentDidMount() {
@@ -56,26 +55,7 @@ class Investments extends React.Component {
     }
     fetchInvestments() {
         this.props.setLoading(true);
-
-        var api1 = fetch("/api/investments", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
-            })
-            .then(responseJson => {
-
-                this.setState({ investments: responseJson, loading: false });
-            })
-            .catch(err => {
-                console.error("Unable to fetch investments. " + err); // show error message
-            });
-
-        var api2 = fetch("/api/investments/growth", {
+        fetch("/api/investments/total", {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
@@ -87,38 +67,8 @@ class Investments extends React.Component {
                 return res.json();
             })
             .then(responseJson => {
-                this.setState({ lineChartDataLoading: false });
-                console.log(responseJson);
-                this.setState({
-                    lineChartData: {
-                        labels: Object.keys(responseJson),
-                        datasets: [
-                            {
-                                data: Object.values(responseJson)
-                            }
-                        ]
-                    }
-                });
+                this.props.setLoading(false);
 
-                console.log(this.state.lineChartData);
-            })
-            .catch(err => {
-                console.err(err);
-            });
-
-        var api3 = fetch("/api/investments/total", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-
-                return res.json();
-            })
-            .then(responseJson => {
-                //console.log(responseJson);
                 var currencies = {};
                 var total = 0;
                 responseJson.forEach(el => {
@@ -135,6 +85,7 @@ class Investments extends React.Component {
                     backgroundColors.push(dynamicColors());
                 });
                 this.setState({
+                    loading:false,
                     total: total,
                     chartData: {
                         datasets: [
@@ -148,25 +99,12 @@ class Investments extends React.Component {
                 });
             })
             .catch(err => {
+                this.props.setLoading(false);
                 console.err(err);
-            });
-
-        Promise.all([api1, api2, api3])
-            .then(responses => {
-                this.props.setLoading(false);
-            })
-            .catch(err => {
-                this.props.setLoading(false);
             });
     }
     getInvestments() {
         return this.state.investments;
-    }
-    getInvestmentById(id) {
-        const investments = this.state.investments.filter(
-            investment => investment.id === id
-        );
-        if (investments.length > 0) return investments[0];
     }
     render() {
         const { classes } = this.props;
@@ -177,18 +115,16 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <InvestmentsTable data={this.getInvestments()} />
-                        
-                        <Button
-                            fab
-                            color="primary"
-                            aria-label="add"
-                            className={classes.button}
-                            component={Link}
-                            to="/investments/add"
-                        >
-                            <AddIcon />
-                        </Button>
+                        <h2>
+                            Total current value of investments:{" "}
+                            {currencyFormatter("USD").format(this.state.total)}{" "}
+                            ({currencyFormatter("PLN").format(
+                                this.state.total * 3.45
+                            )})
+                        </h2>
+                        <div className={classes.pieChart}>
+                            <InvestmentsPieChart data={this.state.chartData} />
+                        </div>
                     </div>
                 )}
             </div>
@@ -196,8 +132,8 @@ class Investments extends React.Component {
     }
 }
 
-Investments.propTypes = {
+InvestmentsTotal.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(withCookies(Investments)));
+export default withStyles(styles)(withRouter(withCookies(InvestmentsTotal)));

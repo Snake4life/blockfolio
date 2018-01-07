@@ -22,6 +22,8 @@ import InvestmentsCurrency from "./Investments/InvestmentsCurrency";
 import CurrencyDetails from "./Currencies/CurrencyDetails";
 import { LinearProgress } from "material-ui/Progress";
 import Investment from "./Investments/Investment";
+import InvestmentsTotal from "./Investments/InvestmentsTotal";
+import InvestmentsGrowth from "./Investments/InvestmentsGrowth";
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -127,6 +129,12 @@ class ResponsiveDrawer extends React.PureComponent {
         const InvestmentsCurrencyComponent = () => (
             <InvestmentsCurrency {...commonProps} />
         );
+        const InvestmentsTotalComponent = () => (
+            <InvestmentsTotal {...commonProps} />
+        );
+        const InvestmentsGrowthComponent = () => (
+            <InvestmentsGrowth {...commonProps} />
+        );
         const AddInvestmentComponent = () => <AddInvestment {...commonProps} />;
         const SignInComponent = () => <SignIn {...commonProps} />;
         const ProfileComponent = () => <Profile {...commonProps} />;
@@ -228,6 +236,16 @@ class ResponsiveDrawer extends React.PureComponent {
                                     exact
                                     path="/investments/investment/:investmentId"
                                     render={InvestmentComponent}
+                                />
+                                <Route
+                                    exact
+                                    path="/investments/total"
+                                    render={InvestmentsTotalComponent}
+                                />
+                                <Route
+                                    exact
+                                    path="/investments/growth"
+                                    render={InvestmentsGrowthComponent}
                                 />
                                 <Route
                                     exact
