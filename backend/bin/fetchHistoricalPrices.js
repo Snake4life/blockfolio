@@ -61,6 +61,8 @@ function addPrices(requests) {
             if (err) throw new Error(err);
 
             var data = JSON.parse(body);
+            var curDate = new Date();
+            var final = (date.getFullYear()!=curDate.getFullYear() && date.getMonth()!=curDate.getMonth() && date.getDate()!=curDate.getDate());
 
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?)",
@@ -70,10 +72,10 @@ function addPrices(requests) {
                     data[currency.symbol].USD,
                     data[currency.symbol].EUR,
                     data[currency.symbol].BTC,
-                    date!=new Date()
+                    final
                 ],
                 (err, rows, fields) => {
-                    if (err) reject(new Error(err));
+                    if (err) thorw new Error(err);
                     // console.log(
                     //     "Added price for " + currency.symbol + " on " + date
                     // );
