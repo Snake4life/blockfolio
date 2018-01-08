@@ -65,7 +65,7 @@ function addPrices(requests) {
             var final = (date.getFullYear()!=curDate.getFullYear() && date.getMonth()!=curDate.getMonth() && date.getDate()!=curDate.getDate());
 
             connection.query(
-                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?)",
                 [
                     currency.currency_id,
                     date,
