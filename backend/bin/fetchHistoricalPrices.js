@@ -101,9 +101,10 @@ function addPrices(requests) {
 
 function getUrlToQuery(currency, date) {
     return new Promise((resolve, reject) => {
+
         connection.query(
-            "SELECT * FROM prices_history WHERE currency_id = ? AND date = ?",
-            [currency.currency_id, date],
+            "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?)",
+            [currency.currency_id, date.getTime() / 1000],
             (err, rows, fields) => {
                 if (err) reject(err);
                 if (rows.length == 0) {
@@ -152,20 +153,21 @@ getInvestmentCurrencies()
 
                 getUrlToQuery(currency, date)
                     .then(url => {
-                        if (url != null)
+                        if (url != null) {
                             requests.push({
                                 url: url,
                                 currency: currency,
                                 date: date
                             });
-
+                            console.log(requests[requests.length-1]);
+                        }
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
                             console.log("datesProcessed: "+datesProcessed);
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
                                 console.log("currenciesProcessed: "+datesProcessed);
-                                console.log("adding prices...");
+                                console.log("adding Prices...")
                                 // for those prices which do not exist, make a request to cryptocompare
                                 // console.log("All fetching done, time to query cryptocompare");
                                 // console.log(requests);
