@@ -83,7 +83,7 @@ function addPrices(requests) {
                         curDate.getDate()
                 );
             connection.query(
-                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE final = ?",
+                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE price_usd = ?, price_eur= ?, price_btc = ?, final = ?",
                 [
                     currency.currency_id,
                     date,
@@ -91,7 +91,10 @@ function addPrices(requests) {
                     data[currency.symbol].EUR,
                     data[currency.symbol].BTC,
                     final,
-                    final
+                    data[currency.symbol].USD,
+                    data[currency.symbol].EUR,
+                    data[currency.symbol].BTC,
+                    final,
                 ],
                 (err, rows, fields) => {
                     if (err) throw new Error(err);
