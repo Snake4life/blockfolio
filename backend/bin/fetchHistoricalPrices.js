@@ -160,7 +160,7 @@ getInvestmentCurrencies()
                                 currency: currency,
                                 date: date
                             });
-                            console.log(requests[requests.length-1]);
+                            //console.log(requests[requests.length-1]);
                         }
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
