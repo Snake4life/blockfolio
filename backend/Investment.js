@@ -10,8 +10,8 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
             mysql.query(
-                "SELECT *, ph.price_usd as price_usd, ph.price_btc as price_btc, ph.price_eur as price_eur FROM `investments`  LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id LEFT JOIN prices_history AS ph ON ph.date=investments.date AND ph.currency_id = investments.currency_id WHERE user_id = ? ORDER BY investments.date",
-                [userId],
+                "SELECT i1.*, currencies_cryptocompare.* , ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.date <= i1.date AND i2.investment_id <= i1.investment_id AND i2.user_id = ? AND i1.currency_id = i2.currency_id ) AS balance, ph.price_usd as price_usd, ph.price_btc as price_btc, ph.price_eur as price_eur FROM `investments` AS i1 LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = i1.currency_id LEFT JOIN prices_history AS ph ON ph.date=i1.date AND ph.currency_id = i1.currency_id WHERE user_id = ? ORDER BY i1.date",
+                [userId, userId],
                 (err, rows, fields) => {
                     if (err) {
                         winston.error(
@@ -43,7 +43,9 @@ module.exports = {
                         return reject(err);
                     } else {
                         winston.info(
-                            "Retrieved investments summary: " + rows.length + " row(s)."
+                            "Retrieved investments summary: " +
+                                rows.length +
+                                " row(s)."
                         );
                         return resolve(rows);
                     }
@@ -80,6 +82,43 @@ module.exports = {
         });
     },
 
+    getByUserAndCurrencyIdWithBalance: function(userId, currencyId) {
+        return new Promise((resolve, reject) => {
+            winston.info(
+                "Getting investments of currency " +
+                    currencyId +
+                    " for user " +
+                    userId +
+                    " with balance"
+            );
+            mysql.query(
+                "SELECT ph.price_usd, i1.investment_id,i1.currency_id, i1.date, i1.amount, ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.date <= i1.date AND i1.user_id = i2.user_id AND i1.currency_id = i2.currency_id ) AS balance \
+                FROM  `investments` AS i1 \
+                JOIN prices_history as ph ON i1.currency_id = ph.currency_id AND i1.date = ph.date \
+                WHERE i1.user_id = ? AND i1.currency_id = ? \
+                GROUP BY DATE \
+                ORDER BY DATE ASC ",
+                [userId, currencyId],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error(
+                            "Error while retrieving investments. " + err
+                        );
+                        return reject(err);
+                    } else {
+                        if (rows.length > 0) {
+                            winston.info("Retrieved investments.");
+                            return resolve(rows);
+                        } else {
+                            winston.info("No investments found.");
+                            return reject(404);
+                        }
+                    }
+                }
+            );
+        });
+    },
+
     getByUserAndInvestment: function(userId, investmentId) {
         return new Promise((resolve, reject) => {
             winston.info(
@@ -87,7 +126,7 @@ module.exports = {
             );
 
             mysql.query(
-                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND investment_id = ?",
+                "SELECT * FROM `investments` as i LEFT JOIN prices_history as ph ON i.currency_id = ph.currency_id AND i.date = ph.date  WHERE i.user_id = ? AND i.investment_id = ?",
                 [userId, investmentId],
                 (err, rows, fields) => {
                     if (err) {
@@ -186,18 +225,21 @@ module.exports = {
                 ORDER BY `ph`.`date` ASC",
                 [userId],
                 (err, rows, fields) => {
-                    if(err) return reject(err);
+                    if (err) return reject(err);
 
                     var output = {};
-                    rows.forEach(row=> {
-                        if(output[dateFormat(row.date,"isoDate")]) output[dateFormat(row.date,"isoDate")]+=row.sum_value_usd;
-                        else output[dateFormat(row.date,"isoDate")]=row.sum_value_usd;
+                    rows.forEach(row => {
+                        if (output[dateFormat(row.date, "isoDate")])
+                            output[dateFormat(row.date, "isoDate")] +=
+                                row.sum_value_usd;
+                        else
+                            output[dateFormat(row.date, "isoDate")] =
+                                row.sum_value_usd;
                     });
                     console.log(output);
                     return resolve(output);
                 }
             );
         });
-    },
-
+    }
 };

@@ -51,29 +51,25 @@ class CurrencyDetails extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
+                        <img
+                            src={
+                                "https://www.cryptocompare.com/" +
+                                this.state.currency.image_url
+                            }
+                            width="128"
+                            height="128"
+                            alt={this.state.currency.symbol}
+                        />
                         <h2>{this.state.currency.name}</h2>
-                        Last updated:{" "}
-                        {humanDate.relativeTime(
-                            new Date(this.state.currency.last_updated * 1000)
-                        )}
-                        <p>Rank: {this.state.currency.rank}</p>
                         <p>
                             Price:{" "}
                             {currencyFormatter("USD").format(
                                 this.state.currency.price_usd
-                            )}
-                        </p>
-                        <p>
-                            Market cap:{" "}
-                            {currencyFormatter("USD").format(
-                                this.state.currency.market_cap_usd
-                            )}
-                        </p>
-                        <p>
-                            24h Volume:{" "}
-                            {currencyFormatter("USD").format(
-                                this.state.currency["24h_volume_usd"]
-                            )}
+                            )}{" "}
+                            (last updated{" "}
+                            {humanDate.relativeTime(
+                                this.state.currency.price_last_updated
+                            )})
                         </p>
                     </div>
                 )}

@@ -63,13 +63,14 @@ function addPrices(requests) {
             var data = JSON.parse(body);
 
             connection.query(
-                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?)",
                 [
                     currency.currency_id,
                     date,
                     data[currency.symbol].USD,
                     data[currency.symbol].EUR,
-                    data[currency.symbol].BTC
+                    data[currency.symbol].BTC,
+                    date!=new Date()
                 ],
                 (err, rows, fields) => {
                     if (err) reject(new Error(err));

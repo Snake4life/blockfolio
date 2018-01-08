@@ -8,10 +8,11 @@ import Table, {
     TableRow
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import dateformat from "dateformat";
 import Button from "material-ui/Button";
 import DeleteIcon from "material-ui-icons/Delete";
+import currencyFormatter from "../currencyFormatter";
 
 const styles = theme => ({
     root: {
@@ -32,27 +33,7 @@ const styles = theme => ({
 class InvestmentsCurrencyTable extends React.Component {
     constructor(props) {
         super(props);
-        this.deleteInvestment = this.deleteInvestment.bind(this);
     }
-    deleteInvestment(investment_id) {
-        fetch(
-            "/api/investments/delete/" + investment_id,
-            {
-                credentials: "same-origin",
-                headers: {
-                    "Cache-Control": "no-cache"
-                }
-            }
-        )
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return this.props.history.push("/investments");
-            })
-            .catch(err => {
-                console.error("Unable to delete investment: "+err);
-            });
-    }
-
     render() {
         const { classes } = this.props;
 
@@ -61,10 +42,13 @@ class InvestmentsCurrencyTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric>Amount</TableCell>
-                            
+                            <TableCell>#ID</TableCell>
                             <TableCell>Date</TableCell>
-                            <TableCell>Delete</TableCell>
+                            <TableCell numeric padding="dense">
+                                Price at the time ($USD)
+                            </TableCell>
+                            <TableCell numeric>Amount</TableCell>
+                            <TableCell numeric>Balance</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -76,24 +60,27 @@ class InvestmentsCurrencyTable extends React.Component {
                                         index % 2 === 0 ? classes.tableRow : ""
                                     }
                                 >
-                                    
-                                    <TableCell numeric>{n.amount}</TableCell>
-                                    
+                                    <TableCell padding="dense">
+                                        <Link
+                                            to={
+                                                "/investments/investment/" +
+                                                n.investment_id
+                                            }
+                                        >
+                                            {n.investment_id}
+                                        </Link>
+                                    </TableCell>
                                     <TableCell>
                                         {dateformat(n.date, "isoDate")}
                                     </TableCell>
-                                    
-                                    <TableCell>
-                                        <Button
-                                            id="delete"
-                                            fab mini
-                                            color="primary"
-                                            onClick={() => {this.deleteInvestment(n.investment_id)}}
-                                            raised
-                                        >
-                                            <DeleteIcon/>
-                                        </Button>
+                                    <TableCell numeric padding="dense">
+                                        {currencyFormatter("USD").format(
+                                            n.price_usd
+                                        )}
                                     </TableCell>
+                                    <TableCell numeric>{n.amount}</TableCell>
+
+                                    <TableCell numeric>{n.balance} {this.props.currency.symbol}</TableCell>
                                 </TableRow>
                             );
                         })}

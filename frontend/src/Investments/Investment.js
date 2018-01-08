@@ -6,7 +6,7 @@ import Button from "material-ui/Button";
 import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
 import LoadingMessage from "../LoadingMessage";
-
+import humanDate from "human-date";
 const styles = () => ({
     root: {},
     button: {
@@ -23,6 +23,7 @@ class Investment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            currency: {},
             investment: {},
             loading: true
         };
@@ -49,7 +50,11 @@ class Investment extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ investment: responseJson, loading: false });
+                this.setState({
+                    currency: responseJson.currency,
+                    investment: responseJson.investment,
+                    loading: false
+                });
             })
             .catch(err => {
                 this.props.setLoading(false);
@@ -81,20 +86,44 @@ class Investment extends React.Component {
         const render = (
             <div className={classes.root}>
                 {this.props.isLoading() ? (
-                    <LoadingMessage/>
+                    <LoadingMessage />
                 ) : (
                     <div>
+                        <img
+                            src={
+                                "https://www.cryptocompare.com/" +
+                                this.state.currency.image_url
+                            }
+                            width="128"
+                            height="128"
+                            alt={this.state.currency.symbol}
+                        />
                         <h2>{this.state.investment.name}</h2>
                         <p>Amount: {this.state.investment.amount}</p>
                         <p>
-                            Price:{" "}
+                            Current price:{" "}
+                            {currencyFormatter("USD").format(
+                                this.state.currency.price_usd
+                            )}{" "}
+                            (last updated{" "}
+                            {humanDate.relativeTime(
+                                this.state.currency.price_last_updated
+                            )})
+                        </p>
+                        <p>
+                            Price at the time:{" "}
                             {currencyFormatter("USD").format(
                                 this.state.investment.price_usd
                             )}
                         </p>
                         <p>
                             Date of the trade:{" "}
-                            {this.state.investment.date ? dateformat(this.state.investment.date, "isoDate") : ""}
+                            {this.state.investment.date
+                                ? dateformat(
+                                      this.state.investment.date,
+                                      "isoDate"
+                                  )
+                                : ""}
                         </p>
                         <Button
                             id="delete"

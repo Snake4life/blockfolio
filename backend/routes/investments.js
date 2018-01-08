@@ -23,7 +23,7 @@ router.get("/currency/:symbol", function(req, res, next) {
 
     winston.info("Fetching currency details for "+req.params.symbol);
     Currency.getBySymbol(req.params.symbol).then(currency=> {
-        Investment.getByUserAndSymbol(req.user.user_id, req.params.symbol)
+        Investment.getByUserAndCurrencyIdWithBalance(req.user.user_id, currency.currency_id)
         .then(investments => {
             res.json({currency:currency, investments:investments});
         })
@@ -42,8 +42,14 @@ router.get("/investment/:investmentId", function(req, res, next) {
     winston.info("Fetching currency details for "+req.params.investmentId);
 
     Investment.getByUserAndInvestment(req.user.user_id, req.params.investmentId)
-        .then(response => {
-            res.json(response);
+        .then(investment => {
+            Currency.getById(investment.currency_id).then(currency => {
+                res.json({ currency: currency, investment: investment});
+            }).catch(err => {
+                winston.error("Unable to retrieve currency. "+err);
+                res.sendStatus(404);
+            });
+            
         })
         .catch(err => {
             winston.error("Unable to retrieve investment. "+err);

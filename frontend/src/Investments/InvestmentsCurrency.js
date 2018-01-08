@@ -61,10 +61,19 @@ class InvestmentsCurrency extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
+                        <img
+                            src={
+                                "https://www.cryptocompare.com/" +
+                                this.state.currency.image_url
+                            }
+                            width="128"
+                            height="128"
+                            alt={this.state.currency.symbol}
+                        />
                         <h2>{this.state.currency.name}</h2>
                         <p>Trades: {this.state.investments.length}</p>
                         <InvestmentsCurrencyTable
-                            data={this.state.investments}
+                            data={this.state.investments} currency={this.state.currency}
                         />
                     </div>
                 )}

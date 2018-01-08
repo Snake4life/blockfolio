@@ -59,23 +59,20 @@ class InvestmentsTable extends React.Component {
                     <TableHead>
                         <TableRow>
                             <TableCell padding="dense">#ID</TableCell>
-                            <TableCell padding="dense">
-                                Icon
-                            </TableCell>
-                            <TableCell padding="dense">
-                                Currency
-                            </TableCell>
+                            <TableCell padding="dense">Icon</TableCell>
+                            <TableCell padding="dense">Currency</TableCell>
+                            <TableCell padding="dense">Date</TableCell>
+                            <TableCell padding="dense">Amount</TableCell>
                             <TableCell padding="dense">
                                 Price at the time ($USD)
                             </TableCell>
-                            <TableCell padding="dense">
-                                Amount
+                            
+                            <TableCell padding="dense">Value</TableCell>
+                            <TableCell padding="dense">Balance</TableCell>
+                            <TableCell numeric padding="dense">
+                                Balance value
                             </TableCell>
-                            <TableCell padding="dense">
-                                Value
-                            </TableCell>
-                            <TableCell padding="dense">Date</TableCell>
-                            <TableCell padding="dense">Last updated</TableCell>
+                            
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -123,24 +120,33 @@ class InvestmentsTable extends React.Component {
                                             {n.name}
                                         </Link>
                                     </TableCell>
-                                    <TableCell numeric padding="dense">
-                                        {currencyFormatter("USD").format(
-                                            n.price_usd
-                                        )}
+                                    <TableCell padding="dense">
+                                        {dateformat(n.date, "isoDate")}
                                     </TableCell>
                                     <TableCell numeric padding="dense">
                                         {n.amount}
                                     </TableCell>
                                     <TableCell numeric padding="dense">
                                         {currencyFormatter("USD").format(
+                                            n.price_usd
+                                        )}
+                                    </TableCell>
+                                    
+
+                                    <TableCell numeric padding="dense">
+                                        {currencyFormatter("USD").format(
                                             n.amount * n.price_usd
                                         )}
                                     </TableCell>
-                                    <TableCell padding="dense">
-                                        {dateformat(n.date, "isoDate")}
+                                    <TableCell numeric padding="dense">
+                                        {n.balance} {n.symbol}
                                     </TableCell>
-
-                                    <TableCell>{last_updated}</TableCell>
+                                    <TableCell numeric padding="dense">
+                                        {currencyFormatter("USD").format(
+                                            n.balance * n.price_usd
+                                        )}
+                                    </TableCell>
+                                    
                                 </TableRow>
                             );
                         })}
