@@ -75,7 +75,7 @@ function addPrices(requests) {
                     final
                 ],
                 (err, rows, fields) => {
-                    if (err) thorw new Error(err);
+                    if (err) throw new Error(err);
                     // console.log(
                     //     "Added price for " + currency.symbol + " on " + date
                     // );
