@@ -63,7 +63,8 @@ function addPrices(requests) {
             var data = JSON.parse(body);
             var curDate = new Date();
             var final = (date.getFullYear()!=curDate.getFullYear() && date.getMonth()!=curDate.getMonth() && date.getDate()!=curDate.getDate());
-            console.log(date + " ... " +curDate);
+
+            if(final==0) console.log(date + " ... " +curDate);
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?)",
                 [
