@@ -83,13 +83,14 @@ function addPrices(requests) {
                         curDate.getDate()
                 );
             connection.query(
-                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE final = ?",
                 [
                     currency.currency_id,
                     date,
                     data[currency.symbol].USD,
                     data[currency.symbol].EUR,
                     data[currency.symbol].BTC,
+                    final,
                     final
                 ],
                 (err, rows, fields) => {
@@ -120,7 +121,7 @@ function addPrices(requests) {
 function getUrlToQuery(currency, date) {
     return new Promise((resolve, reject) => {
         connection.query(
-            "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?)",
+            "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?) AND final=1",
             [currency.currency_id, date.getTime() / 1000],
             (err, rows, fields) => {
                 if (err) reject(err);
@@ -205,7 +206,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            console.log(requests);
+            addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
