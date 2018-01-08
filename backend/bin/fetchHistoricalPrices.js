@@ -62,9 +62,26 @@ function addPrices(requests) {
 
             var data = JSON.parse(body);
             var curDate = new Date();
-            var final = !(date.getFullYear()==curDate.getFullYear() && date.getMonth()==curDate.getMonth() && date.getDate()==curDate.getDate());
+            var final = !(
+                date.getFullYear() == curDate.getFullYear() &&
+                date.getMonth() == curDate.getMonth() &&
+                date.getDate() == curDate.getDate()
+            );
 
-            if(final==0) console.log(date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate() + " ... " +curDate.getFullYear()+"-"+curDate.getMonth()+"-"+curDate.getDate());
+            if (final == 0)
+                console.log(
+                    date.getFullYear() +
+                        "-" +
+                        date.getMonth() +
+                        "-" +
+                        date.getDate() +
+                        " ... " +
+                        curDate.getFullYear() +
+                        "-" +
+                        curDate.getMonth() +
+                        "-" +
+                        curDate.getDate()
+                );
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?)",
                 [
@@ -102,7 +119,6 @@ function addPrices(requests) {
 
 function getUrlToQuery(currency, date) {
     return new Promise((resolve, reject) => {
-
         connection.query(
             "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?)",
             [currency.currency_id, date.getTime() / 1000],
@@ -129,9 +145,8 @@ function getUrlToQuery(currency, date) {
     });
 }
 
-// get the currencies from investments table
-getInvestmentCurrencies()
-    .then(currencies => {
+function getUrls(currencies) {
+    return new Promise((resolve, reject) => {
         var requests = [];
         var currenciesProcessed = 0;
         currencies.forEach(currency => {
@@ -164,15 +179,17 @@ getInvestmentCurrencies()
                         }
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
-                            console.log("datesProcessed: "+datesProcessed);
+                            console.log("datesProcessed: " + datesProcessed);
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
-                                console.log("currenciesProcessed: "+datesProcessed);
-                                console.log("adding Prices...")
+                                console.log(
+                                    "currenciesProcessed: " + datesProcessed
+                                );
+                                console.log("adding Prices...");
                                 // for those prices which do not exist, make a request to cryptocompare
                                 // console.log("All fetching done, time to query cryptocompare");
                                 // console.log(requests);
-                                if (requests) addPrices(requests);
+                                if (requests) resolve(requests);
                             }
                         }
                     })
@@ -180,6 +197,17 @@ getInvestmentCurrencies()
                         console.error(err);
                     });
             });
+        });
+    });
+}
+
+// get the currencies from investments table
+getInvestmentCurrencies()
+    .then(currencies => {
+        getUrls(currencies).then(requests=>{
+            console.log(requests);
+        }).catch(err => {
+            console.log(err);
         });
     })
     .catch(err => {
