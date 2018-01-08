@@ -63,7 +63,7 @@ function addPrices(requests) {
             var data = JSON.parse(body);
             var curDate = new Date();
             var final = (date.getFullYear()!=curDate.getFullYear() && date.getMonth()!=curDate.getMonth() && date.getDate()!=curDate.getDate());
-
+            console.log(date + " ... " +curDate);
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?)",
                 [
@@ -161,8 +161,11 @@ getInvestmentCurrencies()
 
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
+                            console.log("datesProcessed: "+datesProcessed);
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
+                                console.log("currenciesProcessed: "+datesProcessed);
+                                console.log("adding prices...");
                                 // for those prices which do not exist, make a request to cryptocompare
                                 // console.log("All fetching done, time to query cryptocompare");
                                 // console.log(requests);
