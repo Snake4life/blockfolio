@@ -90,7 +90,7 @@ class InvestmentsGrowth extends React.Component {
                 console.log(this.state.lineChartData);
             })
             .catch(err => {
-                console.err(err);
+                console.error(err);
             });
     }
     getInvestments() {

@@ -30,7 +30,7 @@ function getInvestmentCurrencies() {
     return new Promise((resolve, reject) => {
         connection.query(
             "SELECT T.currency_id, T.mindate, currencies_cryptocompare.symbol \
-            FROM ( SELECT * , MIN( DATE ) AS mindate FROM investments GROUP BY investments.currency_id ORDER BY mindate ASC ) AS T \
+            FROM ( SELECT * , MIN( DATE(datetime) ) AS mindate FROM investments GROUP BY investments.currency_id ORDER BY mindate ASC ) AS T \
             JOIN currencies_cryptocompare ON T.currency_id = currencies_cryptocompare.currency_id",
             (err, rows, fields) => {
                 var currencies = [];

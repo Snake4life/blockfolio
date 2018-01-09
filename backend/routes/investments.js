@@ -104,9 +104,9 @@ router.get("/total", function(req, res, next) {
 router.post("/add", function(req, res, next) {
     if(req.user == null) return res.sendStatus(401);
 
-    winston.info("Adding investment, currency: "+req.body.symbol+", amount: "+req.body.amount + " user: "+req.user.user_id + ", date: "+req.body.date);
+    winston.info("Adding investment, currency: "+req.body.symbol+", amount: "+req.body.amount + " user: "+req.user.user_id + ", datetime: "+req.body.datetime);
 
-    Investment.add(req.user.user_id, req.body.symbol, req.body.amount, req.body.date).then(response => {
+    Investment.add(req.user.user_id, req.body.symbol, req.body.amount, req.body.datetime).then(response => {
         winston.info("Succesfully added investment.");
     }).catch(err => {
         winston.error("Unable to add investment. "+err);

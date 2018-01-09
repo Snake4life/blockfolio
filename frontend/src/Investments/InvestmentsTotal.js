@@ -119,7 +119,7 @@ class InvestmentsTotal extends React.Component {
                             Total current value of investments:{" "}
                             {currencyFormatter("USD").format(this.state.total)}{" "}
                             ({currencyFormatter("PLN").format(
-                                this.state.total * 3.45
+                                this.state.total * 3.51
                             )})
                         </h2>
                         <div>

@@ -10,7 +10,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
             mysql.query(
-                "SELECT i1.*, currencies_cryptocompare.* , ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.date <= i1.date AND i2.investment_id <= i1.investment_id AND i2.user_id = ? AND i1.currency_id = i2.currency_id ) AS balance, ph.price_usd as price_usd, ph.price_btc as price_btc, ph.price_eur as price_eur FROM `investments` AS i1 LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = i1.currency_id LEFT JOIN prices_history AS ph ON ph.date=i1.date AND ph.currency_id = i1.currency_id WHERE user_id = ? ORDER BY i1.date",
+                "SELECT i1.*, currencies_cryptocompare.* , ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.datetime <= i1.datetime AND i2.user_id = ? AND i1.currency_id = i2.currency_id ) AS balance, ph.price_usd as price_usd, ph.price_btc as price_btc, ph.price_eur as price_eur FROM `investments` AS i1 LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = i1.currency_id LEFT JOIN prices_history AS ph ON ph.date=DATE(i1.datetime) AND ph.currency_id = i1.currency_id WHERE user_id = ? ORDER BY i1.datetime",
                 [userId, userId],
                 (err, rows, fields) => {
                     if (err) {
@@ -60,7 +60,7 @@ module.exports = {
                 "Getting investments of " + symbol + " for user " + userId
             );
             mysql.query(
-                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND currencies_cryptocompare.symbol = ? ORDER BY investments.date",
+                "SELECT * FROM `investments` LEFT JOIN currencies_cryptocompare ON currencies_cryptocompare.currency_id = investments.currency_id WHERE investments.user_id = ? AND currencies_cryptocompare.symbol = ? ORDER BY investments.datetime",
                 [userId, symbol],
                 (err, rows, fields) => {
                     if (err) {
@@ -92,9 +92,9 @@ module.exports = {
                     " with balance"
             );
             mysql.query(
-                "SELECT ph.price_usd, i1.investment_id,i1.currency_id, i1.date, i1.amount, ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.date <= i1.date AND i1.user_id = i2.user_id AND i1.currency_id = i2.currency_id ) AS balance \
+                "SELECT ph.price_usd, i1.investment_id,i1.currency_id, i1.datetime, i1.amount, ( SELECT SUM( amount )  FROM investments AS i2 WHERE i2.datetime <= i1.datetime AND i1.user_id = i2.user_id AND i1.currency_id = i2.currency_id ) AS balance \
                 FROM  `investments` AS i1 \
-                JOIN prices_history as ph ON i1.currency_id = ph.currency_id AND i1.date = ph.date \
+                JOIN prices_history as ph ON i1.currency_id = ph.currency_id AND DATE(i1.datetime) = ph.date \
                 WHERE i1.user_id = ? AND i1.currency_id = ? \
                 GROUP BY DATE \
                 ORDER BY DATE ASC ",
@@ -126,7 +126,7 @@ module.exports = {
             );
 
             mysql.query(
-                "SELECT * FROM `investments` as i LEFT JOIN prices_history as ph ON i.currency_id = ph.currency_id AND i.date = ph.date  WHERE i.user_id = ? AND i.investment_id = ?",
+                "SELECT * FROM `investments` as i LEFT JOIN prices_history as ph ON i.currency_id = ph.currency_id AND DATE(i.datetime) = ph.date  WHERE i.user_id = ? AND i.investment_id = ?",
                 [userId, investmentId],
                 (err, rows, fields) => {
                     if (err) {
@@ -155,7 +155,7 @@ module.exports = {
         });
     },
 
-    add: function(userId, symbol, amount, date) {
+    add: function(userId, symbol, amount, datetime) {
         return new Promise((resolve, reject) => {
             winston.info(
                 "Adding investment of " +
@@ -164,16 +164,16 @@ module.exports = {
                     symbol +
                     " for user " +
                     userId +
-                    " date " +
-                    date
+                    " datetime " +
+                    datetime
             );
 
             Currency.getBySymbol(symbol)
                 .then(currency => {
                     winston.debug(currency);
                     mysql.query(
-                        "INSERT INTO investments (user_id, currency_id, amount, date) VALUES (?, ?, ?, ?)",
-                        [userId, currency.currency_id, amount, date],
+                        "INSERT INTO investments (user_id, currency_id, amount, datetime) VALUES (?, ?, ?, ?)",
+                        [userId, currency.currency_id, amount, datetime],
                         (err, rows, fields) => {
                             if (err) {
                                 winston.error(
@@ -220,7 +220,7 @@ module.exports = {
                 FROM `investments` AS inv \
                 LEFT JOIN prices_history AS ph ON ph.currency_id = inv.currency_id \
                 LEFT JOIN currencies_cryptocompare as cc ON inv.currency_id = cc.currency_id \
-                WHERE inv.user_id = ? AND ph.date>=inv.date \
+                WHERE inv.user_id = ? AND ph.date>=DATE(inv.datetime) \
                 GROUP BY currency_id,ph.date \
                 ORDER BY `ph`.`date` ASC",
                 [userId],
@@ -236,7 +236,6 @@ module.exports = {
                             output[dateFormat(row.date, "isoDate")] =
                                 row.sum_value_usd;
                     });
-                    console.log(output);
                     return resolve(output);
                 }
             );

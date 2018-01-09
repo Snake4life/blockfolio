@@ -9,6 +9,7 @@ import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import currentDate from "current-date";
 import LoadingMessage from "../LoadingMessage";
 
+
 const styles = theme => ({
     root: {
         width: "100%"
@@ -39,7 +40,7 @@ class AddInvestment extends React.Component {
             currencies: [],
             loading: true,
             isValid: false,
-            date: currentDate("date")
+            datetime: currentDate("date")+"T00:00"
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -47,7 +48,8 @@ class AddInvestment extends React.Component {
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
         this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
         this.isValid = this.isValid.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleDatetimeChange = this.handleDatetimeChange.bind(this);
+        this.isDatetimeValid = this.isDatetimeValid.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
@@ -67,7 +69,7 @@ class AddInvestment extends React.Component {
             body: JSON.stringify({
                 symbol: this.state.symbol,
                 amount: this.state.amount,
-                date: this.state.date
+                datetime: this.state.datetime
             })
         })
             .then(res => {
@@ -100,43 +102,26 @@ class AddInvestment extends React.Component {
                 );
             });
     }
-    fetchInvestments() {
-        fetch("/api/investments", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
-            })
-            .then(responseJson => {
-                this.setState({ investments: responseJson, loading: false });
-            })
-            .catch(err => {
-                console.error("Unable to fetch investments"); // show error message
-            });
-    }
+ 
     handleCurrencyChange(symbol) {
         this.setState({ symbol: symbol });
     }
-    handleDateChange(event) {
-        console.log(event.target.value);
-        this.setState({ date: event.target.value });
+    handleDatetimeChange(event) {
+        this.setState({ datetime: event.target.value });
     }
     isValid() {
-        if (this.state.symbol && this.state.amount !== 0) {
-            console.log(
-                "return true, currencyId:" +
-                    this.state.currencyId +
-                    ", amount:" +
-                    this.state.amount
-            );
+        if (this.state.symbol && this.state.amount !== 0 && this.isDatetimeValid()) {
             return true;
         }
-        console.log("return false z");
         return false;
+    }
+    isDatetimeValid() {
+        console.log(this.state.datetime);
+        var d = new Date(this.state.datetime);
+        var cd = new Date();
+        var fd = new Date("17 Mar 2010");
+        if(this.state.datetime != "" && d<=cd && d>=fd) return true;
+        else return false;
     }
     render() {
         const { classes } = this.props;
@@ -170,15 +155,16 @@ class AddInvestment extends React.Component {
                             </FormControl>
                             <FormControl className={classes.formControl}>
                                 <TextField
-                                    id="date"
-                                    type="date"
+                                    id="datetime"
+                                    type="datetime-local"
                                     className={classes.textField}
-                                    onChange={this.handleDateChange}
-                                    label="Date of the trade"
-                                    defaultValue={currentDate("date")}
+                                    onChange={this.handleDatetimeChange}
+                                    label="Date and time of the trade"
+                                    defaultValue={currentDate("date")+"T00:00"}
                                     InputLabelProps={{
                                         shrink: true
                                     }}
+                                    error={!this.isDatetimeValid()}
                                 />
                             </FormControl>
                             <div>

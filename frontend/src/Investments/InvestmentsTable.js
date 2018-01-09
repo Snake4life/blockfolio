@@ -121,7 +121,7 @@ class InvestmentsTable extends React.Component {
                                         </Link>
                                     </TableCell>
                                     <TableCell padding="dense">
-                                        {dateformat(n.date, "isoDate")}
+                                        {dateformat(n.datetime, "isoDate")} {dateformat(n.datetime, "isoTime")}
                                     </TableCell>
                                     <TableCell numeric padding="dense">
                                         {n.amount}
