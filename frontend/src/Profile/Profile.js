@@ -55,7 +55,10 @@ class Profile extends React.Component {
     signOut() {
         this.props.setLoading(true);
         fetch("/api/auth/signOut", {
-            credentials: "same-origin"
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
         })
             .then(response => {
                 if (response.ok) return response;
@@ -65,7 +68,7 @@ class Profile extends React.Component {
                 try {
                     this.props.setLoading(false);
                     const { cookies } = this.props;
-                    cookies.remove("session");
+                    cookies.remove("session")
                     this.props.history.push("/profile/signIn");
                 } catch (e) {
                     throw new Error(e);
