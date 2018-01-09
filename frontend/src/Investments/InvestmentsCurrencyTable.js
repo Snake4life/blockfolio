@@ -44,11 +44,13 @@ class InvestmentsCurrencyTable extends React.Component {
                         <TableRow>
                             <TableCell>#ID</TableCell>
                             <TableCell>Date</TableCell>
+                            <TableCell numeric>Amount</TableCell>
                             <TableCell numeric padding="dense">
                                 Price at the time ($USD)
                             </TableCell>
-                            <TableCell numeric>Amount</TableCell>
+                            
                             <TableCell numeric>Balance</TableCell>
+                            <TableCell numeric>Balance value</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -73,14 +75,18 @@ class InvestmentsCurrencyTable extends React.Component {
                                     <TableCell>
                                         {dateformat(n.date, "isoDate")}
                                     </TableCell>
+                                    <TableCell numeric>{n.amount}</TableCell>
                                     <TableCell numeric padding="dense">
                                         {currencyFormatter("USD").format(
                                             n.price_usd
                                         )}
                                     </TableCell>
-                                    <TableCell numeric>{n.amount}</TableCell>
-
                                     <TableCell numeric>{n.balance} {this.props.currency.symbol}</TableCell>
+                                    <TableCell numeric>
+                                    {currencyFormatter("USD").format(
+                                            n.price_usd*n.balance
+                                        )}
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}
