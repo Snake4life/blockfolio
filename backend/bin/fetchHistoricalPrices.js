@@ -68,7 +68,7 @@ function addPrices(requests) {
                 date.getDate() == curDate.getDate()
             );
 
-            console.log("Adding price for "+currency_id+" at date "+date);
+            console.log("Adding price for "+currency.currency_id+" at date "+date);
 
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE price_usd = ?, price_eur= ?, price_btc = ?, final = ?",
