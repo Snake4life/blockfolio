@@ -200,7 +200,7 @@ getInvestmentCurrencies()
     .then(currencies => {
         console.log(currencies);
         getUrls(currencies).then(requests=>{
-            
+            console.log(requests);
             //addPrices(requests);
         }).catch(err => {
             console.log(err);
