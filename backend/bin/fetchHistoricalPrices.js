@@ -20,11 +20,11 @@ Date.prototype.addDays = function(days) {
 };
 
 function getDates(startDate, stopDate) {
-    startDate = convertDateToUTC(startDate);
+    startDate = startDate;
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
-        dateArray.push(convertDateToUTC(new Date(currentDate)));
+        dateArray.push(new Date(currentDate));
         currentDate = currentDate.addDays(1);
     }
     return dateArray;
@@ -78,7 +78,7 @@ function addPrices(requests) {
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE price_usd = ?, price_eur= ?, price_btc = ?, final = ?",
                 [
                     currency.currency_id,
-                    convertDateToUTC(date),
+                    date,
                     data[currency.symbol].USD,
                     data[currency.symbol].EUR,
                     data[currency.symbol].BTC,
@@ -91,7 +91,7 @@ function addPrices(requests) {
                 (err, rows, fields) => {
                     if (err) throw new Error(err);
                     console.log(
-                        "Added price for " + currency.symbol + " on " + convertDateToUTC(date)
+                        "Added price for " + currency.symbol + " on " + date
                     );
                     if (requests.length > 0) {
                         // check limits
@@ -151,10 +151,10 @@ function getUrls(currencies) {
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(convertDateToUTC(currency.mindate), convertDateToUTC(new Date()));
+            var dates = getDates(currency.mindate, new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
-
+            console.log(currency.minddate);
             dates.forEach(date => {
                 // console.log(
                 //     "Finding dates for which there are no prices for currency " +
@@ -202,7 +202,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            addPrices(requests);
+            //addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
