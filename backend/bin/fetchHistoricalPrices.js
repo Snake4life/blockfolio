@@ -154,7 +154,7 @@ function getUrls(currencies) {
             var dates = getDates(currency.mindate, new Date());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
-            console.log(currency.minddate);
+            if(currency.mindate.getHours()!=0) console.log(currency.minddate);
             dates.forEach(date => {
                 // console.log(
                 //     "Finding dates for which there are no prices for currency " +
