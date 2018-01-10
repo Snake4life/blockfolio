@@ -20,7 +20,7 @@ Date.prototype.addDays = function(days) {
 };
 
 function getDates(startDate, stopDate) {
-    console.log(convertDateToUTC(startDate) + " - " + stopDate);
+    startDate = convertDateToUTC(startDate);
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
@@ -90,9 +90,9 @@ function addPrices(requests) {
                 ],
                 (err, rows, fields) => {
                     if (err) throw new Error(err);
-                    // console.log(
-                    //     "Added price for " + currency.symbol + " on " + date
-                    // );
+                    console.log(
+                        "Added price for " + currency.symbol + " on " + date
+                    );
                     if (requests.length > 0) {
                         // check limits
                         request(
@@ -202,7 +202,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            //addPrices(requests);
+            addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
