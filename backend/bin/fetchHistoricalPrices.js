@@ -11,6 +11,8 @@ var connection = mysql.createConnection({
     timezone: "+00:00"
 });
 
+function convertDateToUTC(date) { return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); }
+
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -148,7 +150,7 @@ function getUrls(currencies) {
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(currency.mindate, new Date());
+            var dates = getDates(currency.mindate, convertDateToUTC(new Date()));
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
 
@@ -199,10 +201,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            requests.forEach(el=>{
-                console.log(el);
-            });
-            //addPrices(requests);
+            addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
