@@ -20,7 +20,7 @@ Date.prototype.addDays = function(days) {
 };
 
 function getDates(startDate, stopDate) {
-    console.log(startDate + " - " + stopDate);
+    console.log(convertDateToUTC(startDate) + " - " + stopDate);
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
