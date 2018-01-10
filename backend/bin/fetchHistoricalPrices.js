@@ -7,7 +7,8 @@ var connection = mysql.createConnection({
     user: config.db.user,
     password: config.db.password,
     database: config.db.database,
-    port: 3306
+    port: 3306,
+    timezone: 'utc'
 });
 
 Date.prototype.addDays = function(days) {
@@ -172,7 +173,7 @@ function getUrls(currencies) {
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
                             console.log("datesProcessed: " + datesProcessed);
-                            console.log(dates);
+
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
                                 console.log(
