@@ -87,9 +87,9 @@ class ResponsiveDrawer extends React.PureComponent {
         this.signOut = this.signOut.bind(this);
         this.state = {
             mobileOpen: false,
-            loading: false
+            loading: false,
+            signedIn: false
         };
-        this.requiresLogin = this.requiresLogin.bind(this);
     }
     setLoading(loading) {
         this.setState({ loading: loading });
@@ -99,14 +99,16 @@ class ResponsiveDrawer extends React.PureComponent {
     }
     isSignedIn() {
         const { cookies } = this.props;
-        if (cookies.get("session") !== undefined) {
+        var session = cookies.get("session");
+        var curDate = new Date();
+        if (session !== undefined) {
+            if(session.expires<(curDate.getTime()/1000)) {
+                cookies.remove("session");
+                return false;
+            }
             return true;
         }
-    }
-    requiresLogin() {
-        if (!this.isSignedIn()) {
-            console.log("user not signed in");
-        } else console.log("user signed in");
+        return false;
     }
     signOut() {
         this.setLoading(true);
