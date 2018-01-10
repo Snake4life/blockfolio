@@ -172,6 +172,7 @@ function getUrls(currencies) {
                         datesProcessed++;
                         if (datesProcessed == dates.length) {
                             console.log("datesProcessed: " + datesProcessed);
+                            console.log(dates);
                             currenciesProcessed++;
                             if (currenciesProcessed == currencies.length) {
                                 console.log(
