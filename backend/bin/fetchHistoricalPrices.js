@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var config = require("../config");
 var request = require("request");
+var moment = require("moment");
 
 var connection = mysql.createConnection({
     host: config.db.host,
@@ -8,7 +9,8 @@ var connection = mysql.createConnection({
     password: config.db.password,
     database: config.db.database,
     port: 3306,
-    timezone: "UTC"
+    timezone: "+00:00",
+    dateStrings: 'date'
 });
 
 function convertDateToUTC(date) { return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); }
@@ -24,8 +26,8 @@ function getDates(startDate, stopDate) {
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
-        dateArray.push(new Date(currentDate));
-        currentDate = currentDate.addDays(1);
+        dateArray.push(moment.utc(currentDate));
+        currentDate = currentDate.add(1, 'days');
     }
     return dateArray;
 }
@@ -117,7 +119,7 @@ function getUrlToQuery(currency, date) {
     return new Promise((resolve, reject) => {
         connection.query(
             "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?) AND final=1",
-            [currency.currency_id, date.getTime() / 1000],
+            [currency.currency_id, date.valueOf() / 1000],
             (err, rows, fields) => {
                 if (err) reject(err);
                 if (rows.length == 0) {
@@ -131,7 +133,7 @@ function getUrlToQuery(currency, date) {
                         "https://min-api.cryptocompare.com/data/pricehistorical?fsym=" +
                             currency.symbol +
                             "&tsyms=BTC,USD,EUR&ts=" +
-                            date.getTime() / 1000
+                            date.valueOf() / 1000
                     );
                 } else {
                     resolve(null);
@@ -151,10 +153,10 @@ function getUrls(currencies) {
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(currency.mindate, new Date());
+            var dates = getDates(moment.utc(currency.mindate), moment.utc());
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
-            if(currency.mindate.getHours()!=0) console.log(currency.mindate + " getHours: "+currency.mindate.getHours());
+            
             dates.forEach(date => {
                 // console.log(
                 //     "Finding dates for which there are no prices for currency " +
@@ -162,7 +164,7 @@ function getUrls(currencies) {
                 //         " and date " +
                 //         date
                 // );
-
+                
                 getUrlToQuery(currency, date)
                     .then(url => {
                         if (url != null) {
@@ -202,7 +204,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            //addPrices(requests);
+            addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
