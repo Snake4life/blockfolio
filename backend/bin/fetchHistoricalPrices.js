@@ -88,7 +88,7 @@ function addPrices(requests) {
                 (err, rows, fields) => {
                     if (err) throw new Error(err);
                     console.log(
-                        "Added price for " + currency.symbol + " on " + date.utc()
+                        "Added price for " + currency.symbol + " on " + date.format()
                     );
                     if (requests.length > 0) {
                         // check limits
