@@ -67,11 +67,8 @@ function addPrices(requests) {
             if (err) throw new Error(err);
 
             var data = JSON.parse(body);
-            var curDate = new Date();
-            var final = !(
-                date.getFullYear() == curDate.getFullYear() &&
-                date.getMonth() == curDate.getMonth() &&
-                date.getDate() == curDate.getDate()
+            var curDate = moment.utc();
+            var final = !( moment(date).isSame(curDate, 'day');
             );
 
             //console.log("Adding price for "+currency.currency_id+" at date "+(date.getTime() / 1000)+" ("+date+"), price_usd: "+data[currency.symbol].USD);
