@@ -151,6 +151,7 @@ function getUrls(currencies) {
             // );
             // for all those currencies, get dates between then and now
             var dates = getDates(currency.mindate, convertDateToUTC(new Date()));
+            console.log(dates);
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
 
@@ -201,7 +202,7 @@ function getUrls(currencies) {
 getInvestmentCurrencies()
     .then(currencies => {
         getUrls(currencies).then(requests=>{
-            addPrices(requests);
+            //addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
