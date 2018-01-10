@@ -20,8 +20,6 @@ class Currencies extends React.Component {
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
     }
     componentDidMount() {
-        if (!this.props.isSignedIn())
-            return this.props.history.push("/profile/signIn");
         this.fetchCurrencies();
     }
     getCurrencies() {

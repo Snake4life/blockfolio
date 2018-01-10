@@ -1,8 +1,9 @@
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormHelperText } from "material-ui/Form";
 import TextField from "material-ui/TextField";
+
 import Button from "material-ui/Button";
 import { withRouter } from "react-router-dom";
 import { withCookies } from "react-cookie";
@@ -16,7 +17,8 @@ class SignIn extends React.Component {
         super(props);
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            referrer: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -31,7 +33,7 @@ class SignIn extends React.Component {
     componentDidMount() {
         // redirect to user profile if already signedin
         if (this.state.session !== undefined)
-            this.props.history.push("/");
+            this.props.history.replace("/");
     }
     onFormSubmit(e) {
         e.preventDefault();
@@ -43,7 +45,14 @@ class SignIn extends React.Component {
                 cookies.set("session", res.session, {
                     path: "/"
                 });
-                this.props.history.push("/");
+                const { location } = this.props;
+                if(location.pathname == "/profile/signIn") {
+                    this.props.history.replace("/");
+                }
+                else {
+                    this.props.history.replace(location.pathname);
+                }
+
             },
             err => {
                 this.setState({ error: true });
@@ -83,7 +92,11 @@ class SignIn extends React.Component {
         return (
             <div className={classes.root}>
                 <form onSubmit={this.onFormSubmit}>
+                    
                     <FormControl className={classes.formControl}>
+                        <FormHelperText>
+                        {this.props.requiresLoginInfo ? "The page you are trying to access requires signing in." : ""}
+                        </FormHelperText>
                         <TextField
                             id="username"
                             label="Username"
@@ -121,5 +134,8 @@ class SignIn extends React.Component {
 SignIn.propTypes = {
     classes: PropTypes.object.isRequired
 };
+SignIn.defaultProps = {
+    requiresLoginInfo: false
+}
 
 export default withStyles(styles)(withRouter(withCookies(SignIn)));

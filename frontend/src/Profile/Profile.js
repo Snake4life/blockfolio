@@ -48,8 +48,6 @@ class Profile extends React.Component {
             });
     }
     componentDidMount() {
-        if (!this.props.isSignedIn())
-            return this.props.history.push("/profile/signIn");
         this.fetchUserData();
     }
     signOut() {
@@ -76,6 +74,9 @@ class Profile extends React.Component {
             })
             .catch(err => {
                 this.props.setLoading(false);
+                const { cookies } = this.props;
+                cookies.remove("session")
+                this.props.history.push("/profile/signIn");
                 console.error(err);
             });
 

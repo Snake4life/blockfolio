@@ -213,14 +213,15 @@ module.exports = {
             );
         });
     },
-    getGrowthOverTime: function(userId) {
+    getGrowthOverTime: function(userId,currency_id) {
         return new Promise((resolve, reject) => {
+            if(!currency_id) currency_id="inv.currency_id";
             mysql.query(
                 "SELECT inv.currency_id, cc.symbol, ph.date, ph.price_usd, SUM(inv.amount)*ph.price_usd as sum_value_usd \
                 FROM `investments` AS inv \
                 LEFT JOIN prices_history AS ph ON ph.currency_id = inv.currency_id \
                 LEFT JOIN currencies_cryptocompare as cc ON inv.currency_id = cc.currency_id \
-                WHERE inv.user_id = ? AND ph.date>=DATE(inv.datetime) \
+                WHERE inv.user_id = ? AND ph.date>=DATE(inv.datetime) AND inv.currency_id = "+currency_id+" \
                 GROUP BY currency_id,ph.date \
                 ORDER BY `ph`.`date` ASC",
                 [userId],

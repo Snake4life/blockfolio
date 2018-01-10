@@ -8,7 +8,6 @@ import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
-import InvestmentsPieChart from "./InvestmentsPieChart";
 import InvestmentsLineChart from "./InvestmentsLineChart";
 
 const styles = () => ({
@@ -42,13 +41,15 @@ class InvestmentsGrowth extends React.Component {
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
     componentDidMount() {
-        if (!this.props.isSignedIn())
-            return this.props.history.push("/profile/signIn");
         this.fetchInvestments();
     }
     fetchInvestments() {
         this.props.setLoading(true);
-        fetch("/api/investments/growth", {
+        console.log(this.props.match.params.symbol);
+        console.log(this.props.match.params.dateFrom);
+        if(this.props.match.params.symbol) var url="/api/investments/growth/currency/"+this.props.match.params.symbol;
+        else var url="/api/investments/growth";
+        fetch(url, {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
@@ -105,7 +106,7 @@ class InvestmentsGrowth extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <h2>Growth of value over time</h2>
+                        <h2>Growth of value over time{this.props.match.params.symbol ? " for "+this.props.match.params.symbol : ""}</h2>
                         <div className={classes.lineChart}>
                             {this.state.lineChartDataLoading ? (
                                 "Line chart data here"

@@ -88,6 +88,7 @@ class ResponsiveDrawer extends React.PureComponent {
             mobileOpen: false,
             loading: false
         };
+        this.requiresLogin = this.requiresLogin.bind(this);
     }
     setLoading(loading) {
         this.setState({ loading: loading });
@@ -100,6 +101,11 @@ class ResponsiveDrawer extends React.PureComponent {
         if (cookies.get("session") !== undefined) {
             return true;
         }
+    }
+    requiresLogin() {
+        if (!this.isSignedIn()) {
+            console.log("user not signed in");
+        } else console.log("user signed in");
     }
     render() {
         const { classes, theme } = this.props;
@@ -118,9 +124,22 @@ class ResponsiveDrawer extends React.PureComponent {
         const ErrorTitle = () => <div>Error</div>;
 
         const commonProps = {
-            isSignedIn: this.isSignedIn,
             setLoading: this.setLoading,
             isLoading: this.isLoading
+        };
+
+        const SignInComponent = requiresLoginInfo => {
+            return () => (
+                <SignIn
+                    {...commonProps}
+                    requiresLoginInfo={requiresLoginInfo}
+                />
+            );
+        };
+
+        const RequiresLogin = component => {
+            if (this.isSignedIn()) return component;
+            else return SignInComponent(true);
         };
 
         const CurrenciesComponent = () => <Currencies {...commonProps} />;
@@ -136,7 +155,7 @@ class ResponsiveDrawer extends React.PureComponent {
             <InvestmentsGrowth {...commonProps} />
         );
         const AddInvestmentComponent = () => <AddInvestment {...commonProps} />;
-        const SignInComponent = () => <SignIn {...commonProps} />;
+
         const ProfileComponent = () => <Profile {...commonProps} />;
         const CurrencyDetailsComponent = () => (
             <CurrencyDetails {...commonProps} />
@@ -220,52 +239,52 @@ class ResponsiveDrawer extends React.PureComponent {
                                 <Route
                                     exact
                                     path="/investments"
-                                    render={InvestmentsComponent}
+                                    render={RequiresLogin(InvestmentsComponent)}
                                 />
                                 <Route
                                     exact
                                     path="/investments/add"
-                                    render={AddInvestmentComponent}
+                                    render={RequiresLogin(AddInvestmentComponent)}
                                 />
                                 <Route
                                     exact
                                     path="/investments/currency/:symbol"
-                                    render={InvestmentsCurrencyComponent}
+                                    render={RequiresLogin(InvestmentsCurrencyComponent)}
                                 />
                                 <Route
                                     exact
                                     path="/investments/investment/:investmentId"
-                                    render={InvestmentComponent}
+                                    render={RequiresLogin(InvestmentComponent)}
                                 />
                                 <Route
                                     exact
                                     path="/investments/total"
-                                    render={InvestmentsTotalComponent}
+                                    render={RequiresLogin(InvestmentsTotalComponent)}
                                 />
                                 <Route
-                                    exact
-                                    path="/investments/growth"
-                                    render={InvestmentsGrowthComponent}
+                                    path="/investments/growth/:symbol?"
+                                    render={RequiresLogin(InvestmentsGrowthComponent)}
                                 />
+
                                 <Route
                                     exact
                                     path="/currencies"
-                                    render={CurrenciesComponent}
+                                    render={RequiresLogin(CurrenciesComponent)}
                                 />
                                 <Route
                                     path="/currencies/currency/:symbol"
-                                    render={CurrencyDetailsComponent}
+                                    render={RequiresLogin(CurrencyDetailsComponent)}
                                 />
                                 <Route
                                     exact
                                     path="/profile/signIn"
-                                    render={SignInComponent}
+                                    render={SignInComponent(false)}
                                 />
 
                                 <Route
                                     exact
                                     path="/"
-                                    render={ProfileComponent}
+                                    render={RequiresLogin(ProfileComponent)}
                                 />
                                 <Route component={NotFoundComponent} />
                             </Switch>

@@ -50,8 +50,6 @@ class Investments extends React.Component {
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
     componentDidMount() {
-        if (!this.props.isSignedIn())
-            return this.props.history.push("/profile/signIn");
         this.fetchInvestments();
     }
     fetchInvestments() {
