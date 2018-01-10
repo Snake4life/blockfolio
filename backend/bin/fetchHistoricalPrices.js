@@ -20,11 +20,11 @@ Date.prototype.addDays = function(days) {
 };
 
 function getDates(startDate, stopDate) {
+    console.log(startDate + " - " + stopDate);
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
         dateArray.push(convertDateToUTC(new Date(currentDate)));
-        if(dateArray[dateArray.length-1].getHours()!=0) console.log(dateArray[dateArray.length-1]);
         currentDate = currentDate.addDays(1);
     }
     return dateArray;
