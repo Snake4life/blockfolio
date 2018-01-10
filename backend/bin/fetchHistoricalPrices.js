@@ -69,8 +69,6 @@ function addPrices(requests) {
             var data = JSON.parse(body);
             var curDate = moment.utc();
             var final = !( moment(date).isSame(curDate, 'day') );
-            );
-
             //console.log("Adding price for "+currency.currency_id+" at date "+(date.getTime() / 1000)+" ("+date+"), price_usd: "+data[currency.symbol].USD);
 
             connection.query(
