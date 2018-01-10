@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     password: config.db.password,
     database: config.db.database,
     port: 3306,
-    timezone: "+00:00"
+    timezone: "UTC"
 });
 
 function convertDateToUTC(date) { return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); }
@@ -78,7 +78,7 @@ function addPrices(requests) {
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE price_usd = ?, price_eur= ?, price_btc = ?, final = ?",
                 [
                     currency.currency_id,
-                    date,
+                    convertDateToUTC(date),
                     data[currency.symbol].USD,
                     data[currency.symbol].EUR,
                     data[currency.symbol].BTC,
@@ -91,7 +91,7 @@ function addPrices(requests) {
                 (err, rows, fields) => {
                     if (err) throw new Error(err);
                     console.log(
-                        "Added price for " + currency.symbol + " on " + date
+                        "Added price for " + currency.symbol + " on " + convertDateToUTC(date)
                     );
                     if (requests.length > 0) {
                         // check limits
