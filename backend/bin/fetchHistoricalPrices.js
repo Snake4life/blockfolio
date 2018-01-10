@@ -151,7 +151,7 @@ function getUrls(currencies) {
             // );
             // for all those currencies, get dates between then and now
             var dates = getDates(convertDateToUTC(currency.mindate), convertDateToUTC(new Date()));
-            if(convertDateToUTC(currency.mindate).getHours()==1) console.log(currency.mindate + " - " + convertDateToUTC(currency.mindate));
+            if(convertDateToUTC(new Date()).getHours()==1) console.log(convertDateToUTC(new Date()));
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
 
