@@ -198,8 +198,10 @@ function getUrls(currencies) {
 // get the currencies from investments table
 getInvestmentCurrencies()
     .then(currencies => {
+        console.log(currencies);
         getUrls(currencies).then(requests=>{
-            addPrices(requests);
+            
+            //addPrices(requests);
         }).catch(err => {
             console.log(err);
         });
