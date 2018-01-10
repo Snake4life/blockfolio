@@ -37,8 +37,8 @@ class InvestmentsCurrency extends React.Component {
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
@@ -47,9 +47,10 @@ class InvestmentsCurrency extends React.Component {
                     currency: responseJson.currency
                 });
             })
-            .catch(err => {
+            .catch(res => {
                 this.props.setLoading(false);
-                console.error(err);
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to fetch data. "+res.error);
             });
     }
     render() {
@@ -73,7 +74,8 @@ class InvestmentsCurrency extends React.Component {
                         <h2>{this.state.currency.name}</h2>
                         <p>Trades: {this.state.investments.length}</p>
                         <InvestmentsCurrencyTable
-                            data={this.state.investments} currency={this.state.currency}
+                            data={this.state.investments}
+                            currency={this.state.currency}
                         />
                     </div>
                 )}

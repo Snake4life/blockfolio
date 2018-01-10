@@ -84,6 +84,7 @@ class ResponsiveDrawer extends React.PureComponent {
         this.isSignedIn = this.isSignedIn.bind(this);
         this.setLoading = this.setLoading.bind(this);
         this.isLoading = this.isLoading.bind(this);
+        this.signOut = this.signOut.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false
@@ -107,6 +108,23 @@ class ResponsiveDrawer extends React.PureComponent {
             console.log("user not signed in");
         } else console.log("user signed in");
     }
+    signOut() {
+        this.setLoading(true);
+        const { cookies } = this.props;
+        cookies.remove("session");
+
+        fetch("/api/auth/signOut", {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        }).then(res => {
+            this.setLoading(false);
+            this.props.history.push("/profile/signIn");
+        });
+
+        // remove cookies
+    }
     render() {
         const { classes, theme } = this.props;
 
@@ -125,7 +143,8 @@ class ResponsiveDrawer extends React.PureComponent {
 
         const commonProps = {
             setLoading: this.setLoading,
-            isLoading: this.isLoading
+            isLoading: this.isLoading,
+            signOut: this.signOut
         };
 
         const SignInComponent = requiresLoginInfo => {
@@ -244,12 +263,16 @@ class ResponsiveDrawer extends React.PureComponent {
                                 <Route
                                     exact
                                     path="/investments/add"
-                                    render={RequiresLogin(AddInvestmentComponent)}
+                                    render={RequiresLogin(
+                                        AddInvestmentComponent
+                                    )}
                                 />
                                 <Route
                                     exact
                                     path="/investments/currency/:symbol"
-                                    render={RequiresLogin(InvestmentsCurrencyComponent)}
+                                    render={RequiresLogin(
+                                        InvestmentsCurrencyComponent
+                                    )}
                                 />
                                 <Route
                                     exact
@@ -259,11 +282,15 @@ class ResponsiveDrawer extends React.PureComponent {
                                 <Route
                                     exact
                                     path="/investments/total"
-                                    render={RequiresLogin(InvestmentsTotalComponent)}
+                                    render={RequiresLogin(
+                                        InvestmentsTotalComponent
+                                    )}
                                 />
                                 <Route
                                     path="/investments/growth/:symbol?"
-                                    render={RequiresLogin(InvestmentsGrowthComponent)}
+                                    render={RequiresLogin(
+                                        InvestmentsGrowthComponent
+                                    )}
                                 />
 
                                 <Route
@@ -273,7 +300,9 @@ class ResponsiveDrawer extends React.PureComponent {
                                 />
                                 <Route
                                     path="/currencies/currency/:symbol"
-                                    render={RequiresLogin(CurrencyDetailsComponent)}
+                                    render={RequiresLogin(
+                                        CurrencyDetailsComponent
+                                    )}
                                 />
                                 <Route
                                     exact

@@ -47,8 +47,11 @@ class InvestmentsGrowth extends React.Component {
         this.props.setLoading(true);
         console.log(this.props.match.params.symbol);
         console.log(this.props.match.params.dateFrom);
-        if(this.props.match.params.symbol) var url="/api/investments/growth/currency/"+this.props.match.params.symbol;
-        else var url="/api/investments/growth";
+        if (this.props.match.params.symbol)
+            var url =
+                "/api/investments/growth/currency/" +
+                this.props.match.params.symbol;
+        else var url = "/api/investments/growth";
         fetch(url, {
             credentials: "same-origin",
             headers: {
@@ -56,9 +59,8 @@ class InvestmentsGrowth extends React.Component {
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
@@ -71,17 +73,11 @@ class InvestmentsGrowth extends React.Component {
                             {
                                 label: "Total value of investments",
                                 data: Object.values(responseJson),
-                                backgroundColor: [
-                                    "rgba(0, 0, 132, 0.2)",
-                                    
-                                ],
-                                borderColor: [
-                                    "rgba(100,100,132,1)",
-                                    
-                                ],
+                                backgroundColor: ["rgba(0, 0, 132, 0.2)"],
+                                borderColor: ["rgba(100,100,132,1)"],
                                 borderWidth: 1,
                                 lineTension: 0,
-                                pointStyle: 'cross',
+                                pointStyle: "cross",
                                 pointRadius: 0
                             }
                         ]
@@ -90,8 +86,9 @@ class InvestmentsGrowth extends React.Component {
 
                 console.log(this.state.lineChartData);
             })
-            .catch(err => {
-                console.error(err);
+            .catch(res => {
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to load investments data. "+res.error);
             });
     }
     getInvestments() {
@@ -106,7 +103,12 @@ class InvestmentsGrowth extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <h2>Growth of value over time{this.props.match.params.symbol ? " for "+this.props.match.params.symbol : ""}</h2>
+                        <h2>
+                            Growth of value over time{this.props.match.params
+                                .symbol
+                                ? " for " + this.props.match.params.symbol
+                                : ""}
+                        </h2>
                         <div className={classes.lineChart}>
                             {this.state.lineChartDataLoading ? (
                                 "Line chart data here"

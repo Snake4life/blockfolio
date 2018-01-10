@@ -45,7 +45,6 @@ class Investments extends React.Component {
             chartData: {},
             lineChartDataLoading: true
         };
-        this.getInvestments = this.getInvestments.bind(this);
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
     }
@@ -55,110 +54,24 @@ class Investments extends React.Component {
     fetchInvestments() {
         this.props.setLoading(true);
 
-        var api1 = fetch("/api/investments", {
+        fetch("/api/investments", {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
-
+                this.props.setLoading(false);
                 this.setState({ investments: responseJson, loading: false });
             })
-            .catch(err => {
-                console.error("Unable to fetch investments. " + err); // show error message
+            .catch(res => {
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to fetch investments. " + res.error); // show error message
             });
-
-        var api2 = fetch("/api/investments/growth", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-
-                return res.json();
-            })
-            .then(responseJson => {
-                this.setState({ lineChartDataLoading: false });
-                console.log(responseJson);
-                this.setState({
-                    lineChartData: {
-                        labels: Object.keys(responseJson),
-                        datasets: [
-                            {
-                                data: Object.values(responseJson)
-                            }
-                        ]
-                    }
-                });
-
-                console.log(this.state.lineChartData);
-            })
-            .catch(err => {
-                console.err(err);
-            });
-
-        var api3 = fetch("/api/investments/total", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-
-                return res.json();
-            })
-            .then(responseJson => {
-                //console.log(responseJson);
-                var currencies = {};
-                var total = 0;
-                responseJson.forEach(el => {
-                    currencies[el.coin_name] = el.sum_usd;
-
-                    total += el.sum_usd;
-                });
-                var data = [];
-                var labels = [];
-                var backgroundColors = [];
-                Object.keys(currencies).forEach(key => {
-                    data.push(currencies[key] / total * 100);
-                    labels.push(key);
-                    backgroundColors.push(dynamicColors());
-                });
-                this.setState({
-                    total: total,
-                    chartData: {
-                        datasets: [
-                            {
-                                backgroundColor: backgroundColors,
-                                data: data
-                            }
-                        ],
-                        labels: labels
-                    }
-                });
-            })
-            .catch(err => {
-                console.err(err);
-            });
-
-        Promise.all([api1, api2, api3])
-            .then(responses => {
-                this.props.setLoading(false);
-            })
-            .catch(err => {
-                this.props.setLoading(false);
-            });
-    }
-    getInvestments() {
-        return this.state.investments;
     }
     getInvestmentById(id) {
         const investments = this.state.investments.filter(
@@ -175,8 +88,8 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <InvestmentsTable data={this.getInvestments()} />
-                        
+                        <InvestmentsTable data={this.state.investments} />
+
                         <Button
                             fab
                             color="primary"

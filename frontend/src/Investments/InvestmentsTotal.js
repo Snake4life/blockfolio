@@ -23,9 +23,7 @@ const styles = () => ({
         left: "auto",
         position: "fixed"
     },
-    pieChart: {
-        
-    },
+    pieChart: {},
     lineChart: {}
 });
 
@@ -60,9 +58,8 @@ class InvestmentsTotal extends React.Component {
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
@@ -83,7 +80,7 @@ class InvestmentsTotal extends React.Component {
                     backgroundColors.push(dynamicColors());
                 });
                 this.setState({
-                    loading:false,
+                    loading: false,
                     total: total,
                     chartData: {
                         datasets: [
@@ -96,9 +93,10 @@ class InvestmentsTotal extends React.Component {
                     }
                 });
             })
-            .catch(err => {
+            .catch(res => {
                 this.props.setLoading(false);
-                console.error(err);
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to fetch data. "+res.error);
             });
     }
     getInvestments() {
@@ -120,9 +118,7 @@ class InvestmentsTotal extends React.Component {
                                 this.state.total * 3.51
                             )})
                         </h2>
-                        <div>
-                            {this.state.currencies}
-                        </div>
+                        <div>{this.state.currencies}</div>
                         <div className={classes.pieChart}>
                             <InvestmentsPieChart data={this.state.chartData} />
                         </div>

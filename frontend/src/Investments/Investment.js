@@ -45,8 +45,8 @@ class Investment extends React.Component {
             }
         )
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
@@ -56,9 +56,10 @@ class Investment extends React.Component {
                     loading: false
                 });
             })
-            .catch(err => {
+            .catch(res => {
                 this.props.setLoading(false);
-                console.error("Unable to fetch investment"); // show error message
+                if (res.status == 401) this.props.signOut();
+                console.error("Unable to fetch investment: "+res.error);
             });
     }
     deleteInvestment() {
@@ -73,11 +74,13 @@ class Investment extends React.Component {
             }
         )
             .then(res => {
-                if (!res.ok) throw Error(res.status);
+                if (!res.ok) throw res;
                 return this.props.history.push("/investments");
             })
-            .catch(err => {
-                console.error("Unable to delete investment");
+            .catch(res => {
+                this.props.setLoading(false);
+                if (res.status == 401) this.props.signOut();
+                console.error("Unable to delete investment: "+res.error);
             });
     }
     render() {

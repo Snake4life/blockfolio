@@ -34,16 +34,17 @@ class Currencies extends React.Component {
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
                 this.setState({ currencies: responseJson, loading: false });
             })
-            .catch(e => {
+            .catch(res => {
+                if (res.status == 401) this.props.signOut();
                 console.error(
-                    "Unable to fetch currencies from the server: " + e
+                    "Unable to fetch currencies from the server: " + res.error
                 );
             });
     }
@@ -53,7 +54,7 @@ class Currencies extends React.Component {
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    <LoadingMessage/>
+                    <LoadingMessage />
                 ) : (
                     <CurrenciesTable data={this.getCurrencies()} />
                 )}

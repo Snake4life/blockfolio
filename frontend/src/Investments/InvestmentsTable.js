@@ -32,24 +32,7 @@ const styles = theme => ({
 class InvestmentsTable extends React.Component {
     constructor(props) {
         super(props);
-        this.deleteInvestment = this.deleteInvestment.bind(this);
     }
-    deleteInvestment(investment_id) {
-        fetch("/api/investments/delete/" + investment_id, {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return this.props.history.push("/investments");
-            })
-            .catch(err => {
-                console.error("Unable to delete investment: " + err);
-            });
-    }
-
     render() {
         const { classes, theme } = this.props;
 
@@ -66,13 +49,12 @@ class InvestmentsTable extends React.Component {
                             <TableCell padding="dense">
                                 Price at the time ($USD)
                             </TableCell>
-                            
+
                             <TableCell padding="dense">Value</TableCell>
                             <TableCell padding="dense">Balance</TableCell>
                             <TableCell numeric padding="dense">
                                 Balance value
                             </TableCell>
-                            
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -121,7 +103,8 @@ class InvestmentsTable extends React.Component {
                                         </Link>
                                     </TableCell>
                                     <TableCell padding="dense">
-                                        {dateformat(n.datetime, "isoDate")} {dateformat(n.datetime, "isoTime")}
+                                        {dateformat(n.datetime, "isoDate")}{" "}
+                                        {dateformat(n.datetime, "isoTime")}
                                     </TableCell>
                                     <TableCell numeric padding="dense">
                                         {n.amount}
@@ -131,7 +114,6 @@ class InvestmentsTable extends React.Component {
                                             n.price_usd
                                         )}
                                     </TableCell>
-                                    
 
                                     <TableCell numeric padding="dense">
                                         {currencyFormatter("USD").format(
@@ -146,7 +128,6 @@ class InvestmentsTable extends React.Component {
                                             n.balance * n.price_usd
                                         )}
                                     </TableCell>
-                                    
                                 </TableRow>
                             );
                         })}

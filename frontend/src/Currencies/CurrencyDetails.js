@@ -30,16 +30,17 @@ class CurrencyDetails extends React.Component {
             }
         })
             .then(res => {
-                if (!res.ok) throw Error(res.status);
-                return res.json();
+                if (res.ok) return res.json();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
                 this.setState({ currency: responseJson, loading: false });
             })
-            .catch(err => {
+            .catch(res => {
                 this.props.setLoading(false);
-                console.error("Unable to fetch currency details"); // show error message
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to fetch currency details." +res.error); // show error message
             });
     }
     render() {

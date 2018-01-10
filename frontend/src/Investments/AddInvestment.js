@@ -9,7 +9,6 @@ import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import currentDate from "current-date";
 import LoadingMessage from "../LoadingMessage";
 
-
 const styles = theme => ({
     root: {
         width: "100%"
@@ -40,7 +39,7 @@ class AddInvestment extends React.Component {
             currencies: [],
             loading: true,
             isValid: false,
-            datetime: currentDate("date")+"T00:00"
+            datetime: currentDate("date") + "T00:00"
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -73,7 +72,10 @@ class AddInvestment extends React.Component {
             })
         })
             .then(res => {
-                if (!res.ok) throw Error(res.statusText);
+                if (!res.ok) {
+                    if (res.status == 401) this.props.signOut();
+                    else throw Error(res.statusText);
+                }
                 this.props.setLoading(true);
                 this.props.history.push("/investments");
             })
@@ -88,8 +90,9 @@ class AddInvestment extends React.Component {
         this.props.setLoading(true);
         fetch("/api/currencies/list", { credentials: "same-origin" })
             .then(res => {
-                if (!res.ok) throw Error(res.statusText);
-                return res.json();
+                if (res.ok) return res.json();
+                else if (res.status == 401) this.props.signOut();
+                else throw res;
             })
             .then(responseJson => {
                 this.props.setLoading(false);
@@ -102,7 +105,7 @@ class AddInvestment extends React.Component {
                 );
             });
     }
- 
+
     handleCurrencyChange(symbol) {
         this.setState({ symbol: symbol });
     }
@@ -110,7 +113,11 @@ class AddInvestment extends React.Component {
         this.setState({ datetime: event.target.value });
     }
     isValid() {
-        if (this.state.symbol && this.state.amount !== 0 && this.isDatetimeValid()) {
+        if (
+            this.state.symbol &&
+            this.state.amount !== 0 &&
+            this.isDatetimeValid()
+        ) {
             return true;
         }
         return false;
@@ -120,7 +127,7 @@ class AddInvestment extends React.Component {
         var d = new Date(this.state.datetime);
         var cd = new Date();
         var fd = new Date("17 Mar 2010");
-        if(this.state.datetime != "" && d<=cd && d>=fd) return true;
+        if (this.state.datetime != "" && d <= cd && d >= fd) return true;
         else return false;
     }
     render() {
@@ -160,7 +167,9 @@ class AddInvestment extends React.Component {
                                     className={classes.textField}
                                     onChange={this.handleDatetimeChange}
                                     label="Date and time of the trade"
-                                    defaultValue={currentDate("date")+"T00:00"}
+                                    defaultValue={
+                                        currentDate("date") + "T00:00"
+                                    }
                                     InputLabelProps={{
                                         shrink: true
                                     }}

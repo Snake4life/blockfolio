@@ -32,8 +32,10 @@ class SignIn extends React.Component {
     };
     componentDidMount() {
         // redirect to user profile if already signedin
-        if (this.state.session !== undefined)
+        if (this.state.session !== undefined) {
+            console.log("session already exists");
             this.props.history.replace("/");
+        }
     }
     onFormSubmit(e) {
         e.preventDefault();

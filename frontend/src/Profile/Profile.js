@@ -23,18 +23,16 @@ class Profile extends React.Component {
             }
         };
         this.fetchUserData = this.fetchUserData.bind(this);
-        this.signOut = this.signOut.bind(this);
     }
     fetchUserData() {
         this.props.setLoading(true);
         fetch("/api/auth/info", {
             credentials: "same-origin"
         })
-            .then(response => {
-                if (response.ok) return response;
-                else throw new Error(response.error);
+            .then(res => {
+                if (res.ok) return res.json();
+                else throw res;
             })
-            .then(response => response.json())
             .then(responseJson => {
                 this.props.setLoading(false);
                 this.setState({
@@ -43,44 +41,14 @@ class Profile extends React.Component {
                     loading: false
                 });
             })
-            .catch(err => {
-                console.error(err);
+            .catch(res => {
+                this.props.setLoading(false);
+                if( res.status == 401) this.props.signOut();
+                else console.error("Unable to load profile data. "+res.error);
             });
     }
     componentDidMount() {
         this.fetchUserData();
-    }
-    signOut() {
-        this.props.setLoading(true);
-        fetch("/api/auth/signOut", {
-            credentials: "same-origin",
-            headers: {
-                "Cache-Control": "no-cache"
-            }
-        })
-            .then(response => {
-                if (response.ok) return response;
-                else throw new Error(response.error);
-            })
-            .then(response => {
-                try {
-                    this.props.setLoading(false);
-                    const { cookies } = this.props;
-                    cookies.remove("session")
-                    this.props.history.push("/profile/signIn");
-                } catch (e) {
-                    throw new Error(e);
-                }
-            })
-            .catch(err => {
-                this.props.setLoading(false);
-                const { cookies } = this.props;
-                cookies.remove("session")
-                this.props.history.push("/profile/signIn");
-                console.error(err);
-            });
-
-        // remove cookies
     }
     render() {
         const { classes } = this.props;
@@ -97,7 +65,7 @@ class Profile extends React.Component {
                         <br />
                         <p>
                             <Button
-                                onClick={this.signOut}
+                                onClick={this.props.signOut}
                                 raised
                                 disabled={this.state.loading}
                             >
