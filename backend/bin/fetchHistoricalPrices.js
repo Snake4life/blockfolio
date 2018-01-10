@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     password: config.db.password,
     database: config.db.database,
     port: 3306,
-    timezone: 'UTC+0'
+    dateStrings : true
 });
 
 Date.prototype.addDays = function(days) {
