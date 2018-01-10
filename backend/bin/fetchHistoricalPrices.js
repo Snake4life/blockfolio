@@ -23,7 +23,8 @@ function getDates(startDate, stopDate) {
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
-        dateArray.push(new Date(currentDate));
+        dateArray.push(convertDateToUTC(new Date(currentDate)));
+        if(dateArray[dateArray.length-1].getHours()!=0) console.log(dateArray[dateArray.length-1]);
         currentDate = currentDate.addDays(1);
     }
     return dateArray;
@@ -151,7 +152,6 @@ function getUrls(currencies) {
             // );
             // for all those currencies, get dates between then and now
             var dates = getDates(convertDateToUTC(currency.mindate), convertDateToUTC(new Date()));
-            if(convertDateToUTC(new Date()).getHours()==1) console.log(convertDateToUTC(new Date()));
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
 
