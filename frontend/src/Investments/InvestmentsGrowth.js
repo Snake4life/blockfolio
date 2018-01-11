@@ -9,6 +9,7 @@ import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
 import InvestmentsLineChart from "./InvestmentsLineChart";
+import moment from "moment";
 
 const styles = () => ({
     table: {
@@ -34,8 +35,7 @@ class InvestmentsGrowth extends React.Component {
         this.state = {
             investments: [],
             loading: true,
-            chartData: {},
-            lineChartDataLoading: true
+            chartData: {}
         };
         this.getInvestments = this.getInvestments.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
@@ -64,11 +64,10 @@ class InvestmentsGrowth extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ lineChartDataLoading: false, loading: false });
-                console.log(responseJson);
+                this.setState({ loading: false });
                 this.setState({
                     lineChartData: {
-                        labels: Object.keys(responseJson),
+                        labels: Object.keys(responseJson).map(el=>moment(el).format("MM-DD-YY")),
                         datasets: [
                             {
                                 label: "Total value of investments",
@@ -84,11 +83,13 @@ class InvestmentsGrowth extends React.Component {
                     }
                 });
 
-                console.log(this.state.lineChartData);
             })
             .catch(res => {
                 if (res.status == 401) this.props.signOut();
-                else console.error("Unable to load investments data. "+res.error);
+                else
+                    console.error(
+                        "Unable to load investments data. " + res.error
+                    );
             });
     }
     getInvestments() {
@@ -110,13 +111,9 @@ class InvestmentsGrowth extends React.Component {
                                 : ""}
                         </h2>
                         <div className={classes.lineChart}>
-                            {this.state.lineChartDataLoading ? (
-                                "Line chart data here"
-                            ) : (
-                                <InvestmentsLineChart
-                                    data={this.state.lineChartData}
-                                />
-                            )}
+                            <InvestmentsLineChart
+                                data={this.state.lineChartData}
+                            />
                         </div>
                         <Button
                             fab

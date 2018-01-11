@@ -6,6 +6,7 @@ import InvestmentsIcon from "material-ui-icons/AccountBalance";
 import MoneyIcon from "material-ui-icons/AttachMoney";
 import ShowChartIcon from "material-ui-icons/ShowChart";
 import PieChartIcon from "material-ui-icons/PieChart";
+import ChartIcon from "material-ui-icons/InsertChart";
 import AccountIcon from "material-ui-icons/AccountBox";
 import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
@@ -57,6 +58,10 @@ class MenuList extends React.Component {
                         <ListItem button component={Link} to="/investments/growth">
                             <ShowChartIcon />{" "}
                             <ListItemText primary="Growth" />
+                        </ListItem>
+                        <ListItem button component={Link} to="/charts">
+                            <ChartIcon />{" "}
+                            <ListItemText primary="Charts" />
                         </ListItem>
                     </List>
                 </div>

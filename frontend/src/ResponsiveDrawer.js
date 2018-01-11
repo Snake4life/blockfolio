@@ -24,6 +24,8 @@ import { LinearProgress } from "material-ui/Progress";
 import Investment from "./Investments/Investment";
 import InvestmentsTotal from "./Investments/InvestmentsTotal";
 import InvestmentsGrowth from "./Investments/InvestmentsGrowth";
+import ChartsTabs from "./Charts/ChartsTabs.js";
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -67,7 +69,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         width: "100%",
         overflow: "scroll",
-        padding: theme.spacing.unit * 3,
+        padding: 0,
         marginTop: 56,
         [theme.breakpoints.up("sm")]: {
             marginTop: 64
@@ -102,7 +104,7 @@ class ResponsiveDrawer extends React.PureComponent {
         var session = cookies.get("session");
         var curDate = new Date();
         if (session !== undefined) {
-            if(session.expires<(curDate.getTime()/1000)) {
+            if (session.expires < curDate.getTime() / 1000) {
                 cookies.remove("session");
                 return false;
             }
@@ -112,9 +114,7 @@ class ResponsiveDrawer extends React.PureComponent {
     }
     signOut() {
         this.setLoading(true);
-        const { cookies } = this.props;
-        cookies.remove("session");
-
+    
         fetch("/api/auth/signOut", {
             credentials: "same-origin",
             headers: {
@@ -122,10 +122,11 @@ class ResponsiveDrawer extends React.PureComponent {
             }
         }).then(res => {
             this.setLoading(false);
+            document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             this.props.history.push("/profile/signIn");
         });
 
-        // remove cookies
+        
     }
     render() {
         const { classes, theme } = this.props;
@@ -137,11 +138,25 @@ class ResponsiveDrawer extends React.PureComponent {
                 <MenuList onRequestClose={this.handleDrawerToggle} />
             </div>
         );
-        const InvestmentsTitle = () => <div>Investments</div>;
-        const CurrenciesTitle = () => <div>Currencies</div>;
-        const ProfileTitle = () => <div>Profile</div>;
-        const SignInTitle = () => <div>Sign in</div>;
-        const ErrorTitle = () => <div>Error</div>;
+        const InvestmentsTitle = () => {
+            document.title="Investments";
+            return <div>Investments</div> };
+        const CurrenciesTitle = () => {
+            document.title="Currencies";
+            return <div>Currencies</div>;
+        }
+        const ProfileTitle = () => {
+            document.title="Profile";
+            return <div>Profile</div>;
+        }
+        const SignInTitle = () => {
+            document.title="Sign in";
+            return <div>Sign in</div>;
+        }
+        const ErrorTitle = () => {
+            document.title="Error";
+            return <div>Error</div>;
+        }
 
         const commonProps = {
             setLoading: this.setLoading,
@@ -181,6 +196,9 @@ class ResponsiveDrawer extends React.PureComponent {
         const CurrencyDetailsComponent = () => (
             <CurrencyDetails {...commonProps} />
         );
+        const ChartsTabsComponent = () => (
+            <ChartsTabs {...commonProps} />
+        );
         const NotFoundComponent = () => (
             <div>
                 <h2>404</h2>Not found
@@ -205,7 +223,11 @@ class ResponsiveDrawer extends React.PureComponent {
                                 <Switch>
                                     <Route
                                         exact
-                                        path="/"
+                                        path="/profile/signIn"
+                                        component={SignInTitle}
+                                    />
+                                    <Route
+                                        path="/profile"
                                         component={ProfileTitle}
                                     />
                                     <Route
@@ -216,11 +238,7 @@ class ResponsiveDrawer extends React.PureComponent {
                                         path="/currencies"
                                         component={CurrenciesTitle}
                                     />
-                                    <Route
-                                        exact
-                                        path="/profile/signIn"
-                                        component={SignInTitle}
-                                    />
+
                                     <Route component={ErrorTitle} />
                                 </Switch>
                             </Typography>
@@ -313,9 +331,19 @@ class ResponsiveDrawer extends React.PureComponent {
                                 />
 
                                 <Route
+                                    path="/profile"
+                                    render={RequiresLogin(ProfileComponent)}
+                                />
+
+                                <Route
+                                    path="/charts"
+                                    render={RequiresLogin(ChartsTabsComponent)}
+                                />
+
+                                <Route
                                     exact
                                     path="/"
-                                    render={RequiresLogin(ProfileComponent)}
+                                    component={SignInComponent(false)}
                                 />
                                 <Route component={NotFoundComponent} />
                             </Switch>

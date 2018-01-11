@@ -22,8 +22,6 @@ class SignIn extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        const { cookies } = this.props;
-        this.state.session = cookies.get("session");
     }
     handleChange = name => event => {
         this.setState({
@@ -31,10 +29,11 @@ class SignIn extends React.Component {
         });
     };
     componentDidMount() {
+        const { cookies } = this.props;
+
         // redirect to user profile if already signedin
-        if (this.state.session !== undefined) {
-            console.log("session already exists");
-            this.props.history.replace("/");
+        if (cookies.get("session") !== undefined) {
+            this.props.history.replace("/profile");
         }
     }
     onFormSubmit(e) {

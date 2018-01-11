@@ -1,8 +1,9 @@
 import React from "react";
+import Typography from "material-ui/Typography";
 
 class LoadingMessage extends React.Component {
     render() {
-        return <div>Please wait while we load stuff...</div>;
+        return <Typography type="body1" gutterBottom>Please wait while we load stuff...</Typography>;
     }
 }
 
