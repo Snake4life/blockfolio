@@ -120,12 +120,12 @@ function getUrlToQuery(currency, date) {
             (err, rows, fields) => {
                 if (err) reject(err);
                 if (rows.length == 0) {
-                    // console.log(
-                    //     "Not found prices for currency " +
-                    //         currency.symbol +
-                    //         " on date " +
-                    //         date
-                    // );
+                    console.log(
+                        "Not found prices for currency " +
+                            currency.symbol +
+                            " on date " +
+                            date
+                    );
                     resolve(
                         "https://min-api.cryptocompare.com/data/pricehistorical?fsym=" +
                             currency.symbol +
