@@ -69,8 +69,10 @@ function addPrices(requests) {
             var data = JSON.parse(body);
             var curDate = moment.utc();
             var final = !( moment(date).isSame(curDate, 'day') );
-            //console.log("Adding price for "+currency.currency_id+" at date "+(date.getTime() / 1000)+" ("+date+"), price_usd: "+data[currency.symbol].USD);
-
+            console.log(
+                        "Adding price for " + currency.symbol + " on " + date.format() + " from url " + url
+                    );
+            
             connection.query(
                 "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc, final) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?, ?) ON DUPLICATE KEY UPDATE price_usd = ?, price_eur= ?, price_btc = ?, final = ?",
                 [
@@ -113,7 +115,7 @@ function addPrices(requests) {
 function getUrlToQuery(currency, date) {
     return new Promise((resolve, reject) => {
         connection.query(
-            "SELECT * FROM prices_history WHERE currency_id = ? AND date = FROM_UNIXTIME(?) AND final=1",
+            "SELECT * FROM prices_history WHERE currency_id = ? AND date = DATE(FROM_UNIXTIME(?)) AND final=1",
             [currency.currency_id, date.valueOf() / 1000],
             (err, rows, fields) => {
                 if (err) reject(err);
