@@ -14,8 +14,14 @@ var app = express();
 var winston = require("winston");
 var logger = require("./logger");
 var mysql = require("./mysql-connection");
-
+var compression = require("compression");
 var Currency = require("./Currency");
+var expressMetrics = require('express-metrics');
+
+app.use(compression());
+app.use(expressMetrics({
+  port: 8091
+}));
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
