@@ -11,7 +11,7 @@ import LoadingMessage from "../LoadingMessage";
 import InvestmentsLineChart from "./InvestmentsLineChart";
 import moment from "moment";
 
-const styles = () => ({
+const styles = (theme) => ({
     table: {
         minWidth: 700
     },
@@ -121,4 +121,4 @@ InvestmentsGrowth.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(withCookies(InvestmentsGrowth)));
+export default withStyles(styles, {withTheme:true})(withRouter(withCookies(InvestmentsGrowth)));

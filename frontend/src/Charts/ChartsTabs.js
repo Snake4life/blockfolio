@@ -9,6 +9,7 @@ import PieChartIcon from "material-ui-icons/PieChart";
 import ShowChartIcon from "material-ui-icons/ShowChart";
 import InvestmentsGrowth from "../Investments/InvestmentsGrowth";
 import InvestmentsTotal from "../Investments/InvestmentsTotal";
+import { withRouter } from "react-router-dom";
 
 function TabContainer({ children, dir }) {
     return (
@@ -27,31 +28,35 @@ const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         width: "100%",
-        height:"100%"
+        height: "100%"
     },
     appBar: {}
 });
 
 class ChartsTabs extends React.Component {
     state = {
-        value: 0
+        value: 0,
+        values: ["total", "growth"]
     };
 
     handleChange = (event, value) => {
         this.setState({ value });
+        this.props.history.push("/charts/" + this.state.values[value]);
     };
 
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
-
+    componentDidMount() {
+        if (this.props.match.params.tab)
+            this.setState({ value: this.state.values.findIndex(el=>el==this.props.match.params.tab) });
+    }
     render() {
         const { classes, theme } = this.props;
         const styles = {
-        display: "flex",
-        width:"100%",
-
-    }
+            display: "flex",
+            width: "100%"
+        };
         return (
             <div className={classes.root}>
                 <AppBar
@@ -66,17 +71,30 @@ class ChartsTabs extends React.Component {
                         textColor="primary"
                         fullWidth
                     >
-                        <Tab label="Totals" icon={<PieChartIcon/>} />
-                        <Tab label="Growth" icon={<ShowChartIcon/>} />
+                        <Tab
+                            label="Totals"
+                            icon={<PieChartIcon />}
+                            
+                        />
+                        <Tab
+                            label="Growth"
+                            icon={<ShowChartIcon />}
+                            
+                        />
                     </Tabs>
                 </AppBar>
-                <SwipeableViews containerStyle={styles}
+                <SwipeableViews
+                    containerStyle={styles}
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}
                 >
-                    <TabContainer dir={theme.direction}><InvestmentsTotal setLoading={this.props.setLoading}/></TabContainer>
-                    <TabContainer dir={theme.direction}><InvestmentsGrowth setLoading={this.props.setLoading}/></TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <InvestmentsTotal setLoading={this.props.setLoading} />
+                    </TabContainer>
+                    <TabContainer dir={theme.direction}>
+                        <InvestmentsGrowth setLoading={this.props.setLoading} />
+                    </TabContainer>
                 </SwipeableViews>
             </div>
         );
@@ -88,4 +106,4 @@ ChartsTabs.propTypes = {
     theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(ChartsTabs);
+export default withStyles(styles, { withTheme: true })(withRouter(ChartsTabs));

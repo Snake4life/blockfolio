@@ -15,8 +15,10 @@ import dateformat from "dateformat";
 
 const styles = theme => ({
     root: {
-        marginTop: theme.spacing.unit,
-        overflowX: "auto"
+        //marginTop: theme.spacing.unit,
+        overflowX: "auto",
+        height: "calc(100vh - 180px)"
+
     },
     redColor: {
         color: "#ff0000"

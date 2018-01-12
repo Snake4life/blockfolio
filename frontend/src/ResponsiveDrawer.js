@@ -71,7 +71,7 @@ const styles = theme => ({
         overflow: "scroll",
         padding: 0,
         marginTop: 56,
-        display: "flex",
+        //display: "flex",
 
         [theme.breakpoints.up("sm")]: {
             marginTop: 64
@@ -340,7 +340,7 @@ class ResponsiveDrawer extends React.PureComponent {
                             />
 
                             <Route
-                                path="/charts"
+                                path="/charts/:tab?"
                                 render={RequiresLogin(ChartsTabsComponent)}
                             />
 
