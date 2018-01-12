@@ -17,6 +17,9 @@ import Avatar from "material-ui/Avatar";
 import FolderIcon from "material-ui-icons/Folder";
 import moment from "moment";
 import Divider from "material-ui/Divider";
+import Collapse from "material-ui/transitions/Collapse";
+import Typography from "material-ui/Typography";
+
 const styles = theme => ({
     root: {
         //marginTop: theme.spacing.unit,
@@ -32,10 +35,34 @@ const styles = theme => ({
     },
     tableRow: {
         backgroundColor: "#fafafa"
+    },
+    col: {
+        width: "200px"
+    },
+    fixedItem: {
+        position: "fixed",
+        width: "100%",
+        background: theme.palette.background.default,
+        zIndex: "1000"
+    },
+    plus: {
+        color: "lightgreen"
+    },
+    minus: {
+        color: "red"
     }
 });
 
 class FolderList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            expanded: []
+        };
+        this.props.data.map((n, index) => {
+            this.state.expanded[index] = false;
+        });
+    }
     render() {
         const { classes, theme } = this.props;
 
@@ -44,7 +71,14 @@ class FolderList extends React.Component {
                 <List dense={true}>
                     {this.props.data.map((n, index) => {
                         return [
-                            <ListItem button>
+                            <ListItem
+                                divider
+                                button
+                                component={Link}
+                                to={
+                                    "/investments/investment/" + n.investment_id
+                                }
+                            >
                                 <ListItemIcon>
                                     <img
                                         src={
@@ -58,21 +92,58 @@ class FolderList extends React.Component {
                                 </ListItemIcon>
                                 <ListItemText
                                     secondary={
-                                        (n.amount > 0
-                                            ? "+" + n.amount
-                                            : n.amount) +
-                                        " " +
-                                        n.symbol
+                                        <span
+                                            className={
+                                                n.amount > 0
+                                                    ? classes.plus
+                                                    : classes.minus
+                                            }
+                                        >
+                                            {(n.amount > 0
+                                                ? "+" + n.amount
+                                                : n.amount) +
+                                                " " +
+                                                n.symbol}
+                                        </span>
                                     }
                                     primary={moment(n.datetime).format(
                                         "DD-MM-YYYY HH:SS"
                                     )}
+                                    className={classes.col}
+                                />
+
+                                <ListItemText
+                                    className={classes.col}
+                                    secondary={
+                                        <span
+                                            className={
+                                                n.amount > 0
+                                                    ? classes.plus
+                                                    : classes.minus
+                                            }
+                                        >
+                                            {" "}
+                                            {(n.amount > 0 ? "+" : "") +
+                                                currencyFormatter("USD").format(
+                                                    n.price_usd * n.amount
+                                                )}
+                                        </span>
+                                    }
+                                    primary={currencyFormatter("USD").format(
+                                        n.price_usd
+                                    )}
                                 />
                                 <ListItemText
+                                    className={classes.col}
                                     primary={n.balance + " " + n.symbol}
+                                    secondary={
+                                        "=" +
+                                        currencyFormatter("USD").format(
+                                            n.balance * n.price_usd
+                                        )
+                                    }
                                 />
-                            </ListItem>,
-                            <Divider light />
+                            </ListItem>
                         ];
                     })}
                 </List>

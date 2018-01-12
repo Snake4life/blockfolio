@@ -86,7 +86,7 @@ class Investments extends React.Component {
                 {this.state.loading ? (
                     <LoadingMessage />
                 ) : (
-                    <InvestmentsList data={this.state.investments} />
+                    <InvestmentsTable data={this.state.investments} />
                 )}
                 <Button
                     fab

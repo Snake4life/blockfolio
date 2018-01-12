@@ -12,13 +12,18 @@ import { Link, withRouter } from "react-router-dom";
 import humanDate from "human-date";
 import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
+import moment from "moment";
 
 const styles = theme => ({
     root: {
         //marginTop: theme.spacing.unit,
         overflowX: "auto",
-        height: "calc(100vh - 180px)"
-
+        height: "calc(100vh - 180px)",
+        width:"100%"
+    },
+    table: {
+        width:"100%",
+        boxShadow:"none !important"
     },
     redColor: {
         color: "#ff0000"
@@ -27,7 +32,16 @@ const styles = theme => ({
         color: "#00aa00"
     },
     tableRow: {
+        textDecoration: "none"
+    },
+    tableOddRow: {
         backgroundColor: "#fafafa"
+    },
+    plus: {
+        color: "lightgreen"
+    },
+    minus: {
+        color: "red"
     }
 });
 
@@ -43,20 +57,10 @@ class InvestmentsTable extends React.Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell padding="dense">#ID</TableCell>
-                            <TableCell padding="dense">Icon</TableCell>
-                            <TableCell padding="dense">Currency</TableCell>
-                            <TableCell padding="dense">Date</TableCell>
-                            <TableCell padding="dense">Amount</TableCell>
-                            <TableCell padding="dense">
-                                Price at the time ($USD)
-                            </TableCell>
-
-                            <TableCell padding="dense">Value</TableCell>
-                            <TableCell padding="dense">Balance</TableCell>
-                            <TableCell numeric padding="dense">
-                                Balance value
-                            </TableCell>
+                            <TableCell padding="dense" />
+                            <TableCell padding="none">Trade</TableCell>
+                            <TableCell padding="none">Price</TableCell>
+                            <TableCell padding="none">Balance</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -69,20 +73,18 @@ class InvestmentsTable extends React.Component {
                                 <TableRow
                                     hover="true"
                                     key={index + 1}
-                                    className={
-                                        index % 2 === 0 ? classes.tableRow : ""
+                                    className={[
+                                        classes.tableRow,
+                                        index % 2 === 0
+                                            ? classes.tableOddRow
+                                            : ""
+                                    ]}
+                                    component={Link}
+                                    to={
+                                        "/investments/investment/" +
+                                        n.investment_id
                                     }
                                 >
-                                    <TableCell padding="dense">
-                                        <Link
-                                            to={
-                                                "/investments/investment/" +
-                                                n.investment_id
-                                            }
-                                        >
-                                            {n.investment_id}
-                                        </Link>
-                                    </TableCell>
                                     <TableCell padding="dense">
                                         <img
                                             src={
@@ -94,41 +96,54 @@ class InvestmentsTable extends React.Component {
                                             alt={n.symbol}
                                         />
                                     </TableCell>
-                                    <TableCell padding="dense">
-                                        <Link
-                                            to={
-                                                "/investments/currency/" +
-                                                n.symbol
+
+                                    <TableCell padding="none">
+                                        {moment(n.datetime).format(
+                                        "DD-MM-YYYY HH:SS"
+                                    )}
+                                        <br />
+                                        <span
+                                            className={
+                                                n.amount > 0
+                                                    ? classes.plus
+                                                    : classes.minus
                                             }
                                         >
-                                            {n.name}
-                                        </Link>
+                                            {(n.amount > 0
+                                                ? "+" + n.amount
+                                                : n.amount) +
+                                                " " +
+                                                n.symbol}
+                                        </span>
                                     </TableCell>
-                                    <TableCell padding="dense">
-                                        {dateformat(n.datetime, "isoDate")}{" "}
-                                        {dateformat(n.datetime, "isoTime")}
-                                    </TableCell>
-                                    <TableCell numeric padding="dense">
-                                        {n.amount}
-                                    </TableCell>
-                                    <TableCell numeric padding="dense">
+                                    <TableCell padding="none">
+                                        
+                                        
                                         {currencyFormatter("USD").format(
                                             n.price_usd
-                                        )}
+                                        )}<br/>
+                                        <span
+                                            className={
+                                                n.amount > 0
+                                                    ? classes.plus
+                                                    : classes.minus
+                                            }
+                                        >
+                                            {" "}
+                                            {(n.amount > 0 ? "+" : "") +
+                                                currencyFormatter("USD").format(
+                                                    n.price_usd * n.amount
+                                                )}
+                                        </span>
                                     </TableCell>
-
-                                    <TableCell numeric padding="dense">
-                                        {currencyFormatter("USD").format(
-                                            n.amount * n.price_usd
-                                        )}
-                                    </TableCell>
-                                    <TableCell numeric padding="dense">
-                                        {n.balance} {n.symbol}
-                                    </TableCell>
-                                    <TableCell numeric padding="dense">
-                                        {currencyFormatter("USD").format(
+                                    <TableCell padding="none">
+                                        {n.balance + " " + n.symbol}
+                                        <br/>{
+                                        "=" +
+                                        currencyFormatter("USD").format(
                                             n.balance * n.price_usd
-                                        )}
+                                        )
+                                    }
                                     </TableCell>
                                 </TableRow>
                             );
