@@ -9,7 +9,8 @@ import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
 import InvestmentsPieChart from "./InvestmentsPieChart";
-import InvestmentsLineChart from "./InvestmentsLineChart";
+
+import InvestmentsList from "./InvestmentsList";
 
 const styles = theme => ({
 
@@ -21,9 +22,9 @@ const styles = theme => ({
         left: "auto",
         position: "fixed"
     },
-    lineChart: { marginBottom: "150px" },
+    
     root: {
-        padding: theme.spacing.unit * 3,
+        padding: 0,
     }
 });
 
@@ -41,7 +42,7 @@ class Investments extends React.Component {
             investments: [],
             loading: true,
             chartData: {},
-            lineChartDataLoading: true
+            
         };
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
@@ -85,7 +86,7 @@ class Investments extends React.Component {
                 {this.state.loading ? (
                     <LoadingMessage />
                 ) : (
-                    <InvestmentsTable data={this.state.investments} />
+                    <InvestmentsList data={this.state.investments} />
                 )}
                 <Button
                     fab
