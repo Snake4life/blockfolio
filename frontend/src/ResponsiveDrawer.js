@@ -71,6 +71,8 @@ const styles = theme => ({
         overflow: "scroll",
         padding: 0,
         marginTop: 56,
+        display: "flex",
+
         [theme.breakpoints.up("sm")]: {
             marginTop: 64
         }
@@ -114,7 +116,7 @@ class ResponsiveDrawer extends React.PureComponent {
     }
     signOut() {
         this.setLoading(true);
-    
+
         fetch("/api/auth/signOut", {
             credentials: "same-origin",
             headers: {
@@ -122,11 +124,10 @@ class ResponsiveDrawer extends React.PureComponent {
             }
         }).then(res => {
             this.setLoading(false);
-            document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie =
+                "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             this.props.history.push("/profile/signIn");
         });
-
-        
     }
     render() {
         const { classes, theme } = this.props;
@@ -139,24 +140,29 @@ class ResponsiveDrawer extends React.PureComponent {
             </div>
         );
         const InvestmentsTitle = () => {
-            document.title="Investments";
-            return <div>Investments</div> };
+            document.title = "Investments :: Growthfolio";
+            return <div>Investments</div>;
+        };
         const CurrenciesTitle = () => {
-            document.title="Currencies";
+            document.title = "Currencies :: Growthfolio";
             return <div>Currencies</div>;
-        }
+        };
         const ProfileTitle = () => {
-            document.title="Profile";
+            document.title = "Profile :: Growthfolio";
             return <div>Profile</div>;
-        }
+        };
         const SignInTitle = () => {
-            document.title="Sign in";
+            document.title = "Sign in :: Growthfolio";
             return <div>Sign in</div>;
-        }
+        };
         const ErrorTitle = () => {
-            document.title="Error";
+            document.title = "Error :: Growthfolio";
             return <div>Error</div>;
-        }
+        };
+        const ChartsTitle = () => {
+            document.title = "Charts :: Growthfolio";
+            return <div>Charts</div>;
+        };
 
         const commonProps = {
             setLoading: this.setLoading,
@@ -196,9 +202,7 @@ class ResponsiveDrawer extends React.PureComponent {
         const CurrencyDetailsComponent = () => (
             <CurrencyDetails {...commonProps} />
         );
-        const ChartsTabsComponent = () => (
-            <ChartsTabs {...commonProps} />
-        );
+        const ChartsTabsComponent = () => <ChartsTabs {...commonProps} />;
         const NotFoundComponent = () => (
             <div>
                 <h2>404</h2>Not found
@@ -239,6 +243,11 @@ class ResponsiveDrawer extends React.PureComponent {
                                         component={CurrenciesTitle}
                                     />
 
+                                    <Route
+                                        path="/charts"
+                                        component={ChartsTitle}
+                                    />
+
                                     <Route component={ErrorTitle} />
                                 </Switch>
                             </Typography>
@@ -273,81 +282,75 @@ class ResponsiveDrawer extends React.PureComponent {
                         </Drawer>
                     </Hidden>
                     <main className={classes.content}>
-                        <div className={classes.contentWrapper}>
-                            <Switch>
-                                <Route
-                                    exact
-                                    path="/investments"
-                                    render={RequiresLogin(InvestmentsComponent)}
-                                />
-                                <Route
-                                    exact
-                                    path="/investments/add"
-                                    render={RequiresLogin(
-                                        AddInvestmentComponent
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/investments/currency/:symbol"
-                                    render={RequiresLogin(
-                                        InvestmentsCurrencyComponent
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/investments/investment/:investmentId"
-                                    render={RequiresLogin(InvestmentComponent)}
-                                />
-                                <Route
-                                    exact
-                                    path="/investments/total"
-                                    render={RequiresLogin(
-                                        InvestmentsTotalComponent
-                                    )}
-                                />
-                                <Route
-                                    path="/investments/growth/:symbol?"
-                                    render={RequiresLogin(
-                                        InvestmentsGrowthComponent
-                                    )}
-                                />
+                        <Switch>
+                            <Route
+                                exact
+                                path="/investments"
+                                render={RequiresLogin(InvestmentsComponent)}
+                            />
+                            <Route
+                                exact
+                                path="/investments/add"
+                                render={RequiresLogin(AddInvestmentComponent)}
+                            />
+                            <Route
+                                exact
+                                path="/investments/currency/:symbol"
+                                render={RequiresLogin(
+                                    InvestmentsCurrencyComponent
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/investments/investment/:investmentId"
+                                render={RequiresLogin(InvestmentComponent)}
+                            />
+                            <Route
+                                exact
+                                path="/investments/total"
+                                render={RequiresLogin(
+                                    InvestmentsTotalComponent
+                                )}
+                            />
+                            <Route
+                                path="/investments/growth/:symbol?"
+                                render={RequiresLogin(
+                                    InvestmentsGrowthComponent
+                                )}
+                            />
 
-                                <Route
-                                    exact
-                                    path="/currencies"
-                                    render={RequiresLogin(CurrenciesComponent)}
-                                />
-                                <Route
-                                    path="/currencies/currency/:symbol"
-                                    render={RequiresLogin(
-                                        CurrencyDetailsComponent
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/profile/signIn"
-                                    render={SignInComponent(false)}
-                                />
+                            <Route
+                                exact
+                                path="/currencies"
+                                render={RequiresLogin(CurrenciesComponent)}
+                            />
+                            <Route
+                                path="/currencies/currency/:symbol"
+                                render={RequiresLogin(CurrencyDetailsComponent)}
+                            />
+                            <Route
+                                exact
+                                path="/profile/signIn"
+                                render={SignInComponent(false)}
+                            />
 
-                                <Route
-                                    path="/profile"
-                                    render={RequiresLogin(ProfileComponent)}
-                                />
+                            <Route
+                                path="/profile"
+                                render={RequiresLogin(ProfileComponent)}
+                            />
 
-                                <Route
-                                    path="/charts"
-                                    render={RequiresLogin(ChartsTabsComponent)}
-                                />
+                            <Route
+                                path="/charts"
+                                render={RequiresLogin(ChartsTabsComponent)}
+                            />
 
-                                <Route
-                                    exact
-                                    path="/"
-                                    component={SignInComponent(false)}
-                                />
-                                <Route component={NotFoundComponent} />
-                            </Switch>
-                        </div>
+                            <Route
+                                exact
+                                path="/"
+                                component={SignInComponent(false)}
+                            />
+                            <Route component={NotFoundComponent} />
+                        </Switch>
                     </main>
                 </div>
             </div>

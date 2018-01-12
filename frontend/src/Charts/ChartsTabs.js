@@ -1,79 +1,91 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "material-ui/styles";
+import SwipeableViews from "react-swipeable-views";
+import AppBar from "material-ui/AppBar";
+import Tabs, { Tab } from "material-ui/Tabs";
+import Typography from "material-ui/Typography";
+import PieChartIcon from "material-ui-icons/PieChart";
+import ShowChartIcon from "material-ui-icons/ShowChart";
+import InvestmentsGrowth from "../Investments/InvestmentsGrowth";
+import InvestmentsTotal from "../Investments/InvestmentsTotal";
 
 function TabContainer({ children, dir }) {
-  return (
-    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
-      {children}
-    </Typography>
-  );
+    return (
+        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+            {children}
+        </Typography>
+    );
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-  dir: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
+    dir: PropTypes.string.isRequired
 };
 
 const styles = theme => ({
-  root: {
-    backgroundColor:  theme.palette.background.default,
-    width: "100%",
-  },
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        width: "100%",
+        height:"100%"
+    },
+    appBar: {}
 });
 
 class ChartsTabs extends React.Component {
-  state = {
-    value: 0,
-  };
+    state = {
+        value: 0
+    };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
 
-  handleChangeIndex = index => {
-    this.setState({ value: index });
-  };
+    handleChangeIndex = index => {
+        this.setState({ value: index });
+    };
 
-  render() {
-    const { classes, theme } = this.props;
+    render() {
+        const { classes, theme } = this.props;
+        const styles = {
+        display: "flex",
+        width:"100%",
 
-    return (
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            fullWidth
-          >
-            <Tab label="Item One" />
-            <Tab label="Item Two" />
-            <Tab label="Item Three" />
-          </Tabs>
-        </AppBar>
-        <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={this.state.value}
-          onChangeIndex={this.handleChangeIndex}
-        >
-          <TabContainer dir={theme.direction}>Item One</TabContainer>
-          <TabContainer dir={theme.direction}>Item Two</TabContainer>
-          <TabContainer dir={theme.direction}>Item Three</TabContainer>
-        </SwipeableViews>
-      </div>
-    );
-  }
+    }
+        return (
+            <div className={classes.root}>
+                <AppBar
+                    position="static"
+                    color="default"
+                    className={classes.appBar}
+                >
+                    <Tabs
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        fullWidth
+                    >
+                        <Tab label="Totals" icon={<PieChartIcon/>} />
+                        <Tab label="Growth" icon={<ShowChartIcon/>} />
+                    </Tabs>
+                </AppBar>
+                <SwipeableViews containerStyle={styles}
+                    axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                    index={this.state.value}
+                    onChangeIndex={this.handleChangeIndex}
+                >
+                    <TabContainer dir={theme.direction}><InvestmentsTotal setLoading={this.props.setLoading}/></TabContainer>
+                    <TabContainer dir={theme.direction}><InvestmentsGrowth setLoading={this.props.setLoading}/></TabContainer>
+                </SwipeableViews>
+            </div>
+        );
+    }
 }
 
 ChartsTabs.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(ChartsTabs);

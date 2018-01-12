@@ -5,8 +5,8 @@ import { withRouter } from "react-router-dom";
 import CurrenciesTable from "./CurrenciesTable";
 import LoadingMessage from "../LoadingMessage";
 
-const styles = () => ({
-    root: {}
+const styles = (theme) => ({
+    root: {padding: theme.spacing.unit * 3,}
 });
 
 class Currencies extends React.Component {
@@ -67,4 +67,4 @@ Currencies.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(Currencies));
+export default withStyles(styles, {withTheme:true})(withRouter(Currencies));

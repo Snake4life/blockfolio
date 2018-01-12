@@ -11,10 +11,8 @@ import LoadingMessage from "../LoadingMessage";
 import InvestmentsPieChart from "./InvestmentsPieChart";
 import InvestmentsLineChart from "./InvestmentsLineChart";
 
-const styles = () => ({
-    table: {
-        minWidth: 700
-    },
+const styles = theme => ({
+
     button: {
         margin: 0,
         top: "auto",
@@ -23,10 +21,10 @@ const styles = () => ({
         left: "auto",
         position: "fixed"
     },
-    pieChart: {
-        maxWidth: "600px"
-    },
-    lineChart: {}
+    lineChart: { marginBottom: "150px" },
+    root: {
+        padding: theme.spacing.unit * 3,
+    }
 });
 
 var dynamicColors = function() {
@@ -87,21 +85,18 @@ class Investments extends React.Component {
                 {this.state.loading ? (
                     <LoadingMessage />
                 ) : (
-                    <div>
-                        <InvestmentsTable data={this.state.investments} />
-
-                        <Button
-                            fab
-                            color="primary"
-                            aria-label="add"
-                            className={classes.button}
-                            component={Link}
-                            to="/investments/add"
-                        >
-                            <AddIcon />
-                        </Button>
-                    </div>
+                    <InvestmentsTable data={this.state.investments} />
                 )}
+                <Button
+                    fab
+                    color="primary"
+                    aria-label="add"
+                    className={classes.button}
+                    component={Link}
+                    to="/investments/add"
+                >
+                    <AddIcon />
+                </Button>
             </div>
         );
     }
@@ -111,4 +106,6 @@ Investments.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(withCookies(Investments)));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(withCookies(Investments))
+);

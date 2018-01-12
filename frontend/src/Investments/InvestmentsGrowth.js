@@ -104,27 +104,12 @@ class InvestmentsGrowth extends React.Component {
                     <LoadingMessage />
                 ) : (
                     <div>
-                        <h2>
-                            Growth of value over time{this.props.match.params
-                                .symbol
-                                ? " for " + this.props.match.params.symbol
-                                : ""}
-                        </h2>
+                        
                         <div className={classes.lineChart}>
                             <InvestmentsLineChart
                                 data={this.state.lineChartData}
                             />
                         </div>
-                        <Button
-                            fab
-                            color="primary"
-                            aria-label="add"
-                            className={classes.button}
-                            component={Link}
-                            to="/investments/add"
-                        >
-                            <AddIcon />
-                        </Button>
                     </div>
                 )}
             </div>

@@ -9,8 +9,8 @@ import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
 import AppBar from "material-ui/AppBar";
 import LoadingMessage from "../LoadingMessage";
-const styles = () => ({
-    root: { width: "100%" }
+const styles = (theme) => ({
+    root: { width: "100%", padding: theme.spacing.unit * 3 }
 });
 
 class Profile extends React.Component {
@@ -23,8 +23,7 @@ class Profile extends React.Component {
             },
             session: {
                 expires: ""
-            },
-
+            }
         };
         this.fetchUserData = this.fetchUserData.bind(this);
     }
@@ -65,11 +64,13 @@ class Profile extends React.Component {
         return (
             <div className={classes.root}>
                 {this.state.loading ? (
-                    <LoadingMessage/>
+                    <LoadingMessage />
                 ) : (
                     <div>
-                        <Typography type="title" gutterBottom>Welcome, {this.state.user.username}</Typography>
-                        
+                        <Typography type="title" gutterBottom>
+                            Welcome, {this.state.user.username}
+                        </Typography>
+
                         <p>
                             <Button
                                 onClick={this.props.signOut}
@@ -90,4 +91,4 @@ Profile.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withCookies(withRouter(Profile)));
+export default withStyles(styles, { withTheme: true } )(withCookies(withRouter(Profile)));
