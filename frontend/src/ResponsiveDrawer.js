@@ -19,7 +19,7 @@ import Profile from "./Profile/Profile";
 import { withCookies } from "react-cookie";
 import AddInvestment from "./Investments/AddInvestment";
 import InvestmentsCurrency from "./Investments/InvestmentsCurrency";
-import CurrencyDetails from "./Currencies/CurrencyDetails";
+import CurrencyDetails from "./AllCurrencies/CurrencyDetails";
 import { LinearProgress } from "material-ui/Progress";
 import Investment from "./Investments/Investment";
 import InvestmentsTotal from "./Investments/InvestmentsTotal";
