@@ -114,7 +114,7 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 </div>
             );
-        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} outdatedPrices={this.state.outdatedPrices}/>;
+        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} outdatedPrices={this.state.outdatedPrices} fetchInvestments={this.fetchInvestments} checkPrices={this.checkPrices}/>;
     }
 }
 

@@ -33,7 +33,7 @@ module.exports = {
             winston.info("Checking if prices for currencies of user "+userId+" are up to date");
 
             mysql.query(
-                "SELECT symbol FROM ( SELECT cc.symbol,count(ph.currency_id)=tsdiff as prices_up2date FROM (SELECT user_id,currency_id,MIN(DATE(i.datetime)) as minDate,timestampdiff(DAY, MIN(i.datetime), NOW())+1 as tsdiff FROM investments as i WHERE user_id = ? GROUP BY currency_id) as t1 LEFT JOIN prices_history as ph ON ph.currency_id = t1.currency_id AND ph.date>=t1.minDate LEFT JOIN currencies_cryptocompare as cc ON t1.currency_id = cc.currency_id GROUP BY t1.currency_id ) as x WHERE x.prices_up2date = 0",
+                "SELECT symbol,no_market_data FROM ( SELECT cc.symbol,cc.no_market_data,count(ph.currency_id)=tsdiff as prices_up2date FROM (SELECT user_id,currency_id,MIN(DATE(i.datetime)) as minDate,timestampdiff(DAY, MIN(i.datetime), NOW())+1 as tsdiff FROM investments as i WHERE user_id = ? GROUP BY currency_id) as t1 LEFT JOIN prices_history as ph ON ph.currency_id = t1.currency_id AND ph.date>=t1.minDate LEFT JOIN currencies_cryptocompare as cc ON t1.currency_id = cc.currency_id GROUP BY t1.currency_id ) as x WHERE x.prices_up2date = 0",
                 [userId],
                 (err, rows, fields) => {
                     if (err) {

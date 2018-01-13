@@ -81,9 +81,6 @@ class DetailedExpansionPanel extends React.Component {
         };
         this.deleteItem = this.deleteItem.bind(this);
     }
-    componentDidUpdate() {
-        console.log(this.props.outdatedPrices.map(el=>el.symbol));
-    }
     deleteItem(investmentId) {
         return event => {
             this.props.setLoading(true);
@@ -101,6 +98,8 @@ class DetailedExpansionPanel extends React.Component {
                             el => el.investment_id != investmentId
                         )
                     });
+                    this.props.fetchInvestments();
+                    this.props.checkPrices();
                 })
                 .catch(res => {
                     this.props.setLoading(false);
@@ -116,6 +115,11 @@ class DetailedExpansionPanel extends React.Component {
             <div className={classes.root}>
                 {this.props.outdatedPrices.length>0 ? (
                     <Warning message={"We are still missing price history for some of the coins in your portfolio: "+this.props.outdatedPrices.map(el=>el.symbol).join(", ")+". Some values may be inaccurate."} />
+                ) : (
+                    ""
+                )}
+                {this.props.outdatedPrices.length>0 && this.props.outdatedPrices.filter(currency => currency.no_market_data == 1).length>0 ? (
+                    <Warning message={"There is no market data for some of the coins in your portfolio: "+this.props.outdatedPrices.filter(currency => currency.no_market_data = 1).map(el=>el.symbol).join(", ")} />
                 ) : (
                     ""
                 )}
