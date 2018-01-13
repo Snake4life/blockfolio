@@ -78,9 +78,11 @@ class DetailedExpansionPanel extends React.Component {
         super(props);
         this.state = {
             data: this.props.data,
-            prices_up2date: true
         };
         this.deleteItem = this.deleteItem.bind(this);
+    }
+    componentDidUpdate() {
+        console.log(this.props.outdatedPrices.map(el=>el.symbol));
     }
     deleteItem(investmentId) {
         return event => {
@@ -112,8 +114,8 @@ class DetailedExpansionPanel extends React.Component {
 
         return (
             <div className={classes.root}>
-                {!this.props.pricesUp2Date ? (
-                    <Warning message="We are currently fetching some prices for your porfolio. Some values may be inaccurate." />
+                {this.props.outdatedPrices.length>0 ? (
+                    <Warning message={"We are still missing price history for some of the coins in your portfolio: "+this.props.outdatedPrices.map(el=>el.symbol).join(", ")+". Some values may be inaccurate."} />
                 ) : (
                     ""
                 )}
@@ -174,7 +176,7 @@ class DetailedExpansionPanel extends React.Component {
                                             textAlign: "right"
                                         }}
                                     >
-                                        Balance:<br />Price:<br />Value:<br /><br />Type:
+                                        Balance:<br />Price at the time:<br />Value:<br /><br />Type:
                                     </Typography>
                                 </div>
                                 <div className={classes.column}>

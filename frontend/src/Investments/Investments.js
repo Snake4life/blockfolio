@@ -41,7 +41,7 @@ class Investments extends React.Component {
             investments: [],
             chartData: {},
             loading: true,
-            prices_up2date: true
+            outdatedPrices: {}
         };
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
@@ -53,7 +53,7 @@ class Investments extends React.Component {
     }
     checkPrices() {
         this.props.setLoading(true);
-        fetch("/api/investments/pricesUp2Date", {
+        fetch("/api/investments/outdatedPrices", {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
@@ -65,8 +65,8 @@ class Investments extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                console.log(responseJson);
-                this.setState({ prices_up2date: responseJson.up_to_date });
+
+                this.setState({ outdatedPrices: responseJson.currencies });
             })
             .catch(res => {
                 this.props.setLoading(false);
@@ -114,7 +114,7 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 </div>
             );
-        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} pricesUp2Date={this.state.prices_up2date}/>;
+        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} outdatedPrices={this.state.outdatedPrices}/>;
     }
 }
 

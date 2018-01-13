@@ -10,10 +10,19 @@ var connection = mysql.createConnection({
     database: config.db.database,
     port: 3306,
     timezone: "+00:00",
-    dateStrings: 'date'
+    dateStrings: "date"
 });
 
-function convertDateToUTC(date) { return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); }
+function convertDateToUTC(date) {
+    return new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+    );
+}
 
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
@@ -27,7 +36,7 @@ function getDates(startDate, stopDate) {
     var currentDate = startDate;
     while (currentDate <= stopDate) {
         dateArray.push(moment.utc(currentDate));
-        currentDate = currentDate.add(1, 'days');
+        currentDate = currentDate.add(1, "days");
     }
     return dateArray;
 }
@@ -55,6 +64,19 @@ function getInvestmentCurrencies() {
     });
 }
 
+function checkLimits() {
+    return new Promise((resolve, reject) => {
+        request(
+            "https://min-api.cryptocompare.com/stats/rate/second/limit",
+            (err, response, body) => {
+                if (err) return reject(err);
+                var body = JSON.parse(body);
+                resolve(body);
+            }
+        );
+    });
+}
+
 function addPrices(requests) {
     var req = requests.shift();
 
@@ -68,39 +90,64 @@ function addPrices(requests) {
 
             var data = JSON.parse(body);
             console.log(
-                        "Adding price for " + currency.symbol + " on " + date.format() + " from url " + url
-                    );
-            
-            connection.query(
-                "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?)",
-                [
-                    currency.currency_id,
-                    date.valueOf()/1000,
-                    data[currency.symbol].USD,
-                    data[currency.symbol].EUR,
-                    data[currency.symbol].BTC,
-                ],
-                (err, rows, fields) => {
-                    if (err) throw new Error(err);
-                    console.log(
-                        "Added price for " + currency.symbol + " on " + date.format() + " from url " + url
-                    );
-                    if (requests.length > 0) {
-                        // check limits
-                        request(
-                            "https://min-api.cryptocompare.com/stats/rate/second/limit",
-                            (err, response, body) => {
-                                var body = JSON.parse(body);
-                                if (body["CallsLeft"] == 0)
-                                    setTimeout(addPrices(requests), 1);
-                                else addPrices(requests);
-                            }
-                        );
-                    } else {
-                        connection.end();
-                    }
-                }
+                "Adding price for " +
+                    currency.symbol +
+                    " on " +
+                    date.format() +
+                    " from url " +
+                    url
             );
+
+            var noData = false;
+            var price_usd = 0;
+            var price_btc = 0;
+            var price_btc = 0;
+            if (data.Response != "Error") {
+                connection.query(
+                    "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?)",
+                    [
+                        currency.currency_id,
+                        date.valueOf() / 1000,
+                        price_usd,
+                        price_eur,
+                        price_btc
+                    ],
+                    (err, rows, fields) => {
+                        if (err) throw new Error(err);
+                        console.log(
+                            "Added price for " +
+                                currency.symbol +
+                                " on " +
+                                date.format() +
+                                " from url " +
+                                url
+                        );
+                        if (requests.length > 0) {
+                            checkLimits()
+                                .then(res => {
+                                    if (res["CallsLeft"] == 0)
+                                        setTimeout(addPrices(requests), 1);
+                                    else addPrices(requests);
+                                })
+                                .catch(err => {
+                                    // there was an errror checking limits
+                                });
+                        } else {
+                            connection.end();
+                        }
+                    }
+                );
+            } else {
+                checkLimits()
+                    .then(res => {
+                        if (res["CallsLeft"] == 0)
+                            setTimeout(addPrices(requests), 1);
+                        else addPrices(requests);
+                    })
+                    .catch(err => {
+                        // there was an errror checking limits
+                    });
+            }
         });
     } else connection.end();
 }
@@ -143,10 +190,13 @@ function getUrls(currencies) {
             //         currency.symbol
             // );
             // for all those currencies, get dates between then and now
-            var dates = getDates(moment.utc(currency.mindate), moment.utc());
+            var dates = getDates(
+                moment.utc(currency.mindate),
+                moment.utc()
+            ).reverse();
             var datesProcessed = 0;
             // for each date, see if there is a price already for this coin, if no, add a url to query
-            
+
             dates.forEach(date => {
                 // console.log(
                 //     "Finding dates for which there are no prices for currency " +
@@ -154,7 +204,7 @@ function getUrls(currencies) {
                 //         " and date " +
                 //         date
                 // );
-                
+
                 getUrlToQuery(currency, date)
                     .then(url => {
                         if (url != null) {
@@ -193,11 +243,13 @@ function getUrls(currencies) {
 // get the currencies from investments table
 getInvestmentCurrencies()
     .then(currencies => {
-        getUrls(currencies).then(requests=>{
-            addPrices(requests);
-        }).catch(err => {
-            console.log(err);
-        });
+        getUrls(currencies)
+            .then(requests => {
+                addPrices(requests);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     })
     .catch(err => {
         console.error(err);

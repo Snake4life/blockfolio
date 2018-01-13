@@ -41,7 +41,7 @@ class Currency extends React.Component {
         this.state = {
             currency: this.props.currency,
             cryptocompare: {},
-            marketCap: 0
+            marketCap: 0,
         };
     }
     componentDidMount() {
@@ -56,12 +56,12 @@ class Currency extends React.Component {
                     cryptocompare: responseJson,
                     marketCap:
                         this.state.currency.price_usd *
-                        responseJson.Data.General.TotalCoinsMined
+                        responseJson.Data.General.TotalCoinsMined,
                 });
             })
             .catch(res => {
                 console.error(
-                    "Unable to fetch currency from the server: " + res.status
+                    "Unable to fetch currency from the server: " + res.error
                 );
             });
     }
@@ -102,6 +102,7 @@ class Currency extends React.Component {
                         </div>
                     </div>
                     <Divider />
+                    
                 </Paper>
             </div>
         );

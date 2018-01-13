@@ -40,7 +40,7 @@ router.get("/currency/:symbol", function(req, res, next) {
         });
 });
 
-router.get("/pricesUp2Date", (req,res,next) => {
+router.get("/outdatedPrices", (req,res,next) => {
     if(req.user==null) return sendStatus(401);
 
     winston.info("Checking if price history is up to date for user "+req.user.user_id);
