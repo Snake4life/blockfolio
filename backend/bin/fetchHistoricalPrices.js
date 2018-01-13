@@ -16,7 +16,7 @@ fs.stat(config.rootPath+"/fetchHistoricalPrices.lock", function(err, stat) {
     }
 });
 
-process.on("SIGTERM", function() {
+process.on("SIGINT", function() {
     fs.unlink(config.rootPath+"/fetchHistoricalPrices.lock");
 });
 
