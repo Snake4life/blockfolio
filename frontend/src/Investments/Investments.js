@@ -8,8 +8,8 @@ import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
-import InvestmentsPieChart from "./InvestmentsPieChart";
 
+import DetailedExpansionPanel from "./DetailedExpansionPanel";
 import InvestmentsList from "./InvestmentsList";
 
 const styles = theme => ({
@@ -87,7 +87,7 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 </div>
             );
-        else return <InvestmentsTable data={this.state.investments} />;
+        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} />;
     }
 }
 

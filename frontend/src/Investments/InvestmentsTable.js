@@ -36,21 +36,13 @@ const styles = theme => ({
     },
     tableRow: {
         textDecoration: "none",
-        height:"60px",
+        height: "60px",
         backgroundColor: theme.palette.background.default
     },
-    tableOddRow: {
-        
-    },
-    tableHead: {
-
-    },
-    minusRow: {
-        
-    },
-    plusRow: {
-        
-    },
+    tableOddRow: {},
+    tableHead: {},
+    minusRow: {},
+    plusRow: {},
     plus: {
         color: "lightgreen"
     },
@@ -66,14 +58,12 @@ const styles = theme => ({
         position: "fixed"
     },
     lastRow: {
-        height:"90px"
+        height: "90px"
     }
 });
 
 class InvestmentsTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+
     render() {
         const { classes, theme } = this.props;
 
@@ -100,9 +90,9 @@ class InvestmentsTable extends React.Component {
                                     key={index + 1}
                                     className={[
                                         classes.tableRow,
-                                        (n.amount > 0
-                                                    ? classes.plusRow
-                                                    : classes.minusRow),
+                                        n.amount > 0
+                                            ? classes.plusRow
+                                            : classes.minusRow,
                                         index % 2 === 0
                                             ? classes.tableOddRow
                                             : ""
@@ -174,7 +164,7 @@ class InvestmentsTable extends React.Component {
                                 </TableRow>
                             );
                         })}
-<TableRow className={classes.lastRow}/>
+                        <TableRow className={classes.lastRow} />
                         <Button
                             fab
                             color="primary"
