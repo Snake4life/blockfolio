@@ -40,7 +40,8 @@ class Investments extends React.Component {
         super(props);
         this.state = {
             investments: [],
-            chartData: {}
+            chartData: {},
+            loading: true
         };
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
@@ -50,7 +51,7 @@ class Investments extends React.Component {
     }
     fetchInvestments() {
         this.props.setLoading(true);
-
+        this.setState({loading:true});
         fetch("/api/investments", {
             credentials: "same-origin",
             headers: {
@@ -65,6 +66,7 @@ class Investments extends React.Component {
                 this.props.setLoading(false);
                 this.setState({
                     investments: responseJson.reverse(),
+                    loading: false
                 });
             })
             .catch(res => {
@@ -81,7 +83,7 @@ class Investments extends React.Component {
     render() {
         const { classes } = this.props;
 
-        if (this.props.isLoading())
+        if (this.state.loading)
             return (
                 <div className={classes.root}>
                     <LoadingMessage />

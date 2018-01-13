@@ -196,10 +196,6 @@ module.exports = {
     },
     delete: function(investmentId, userId) {
         return new Promise((resolve, reject) => {
-            winston.info(
-                "Deleting investment " + investmentId + " for user " + userId
-            );
-
             mysql.query(
                 "DELETE FROM investments WHERE investment_id = ? AND user_id = ?",
                 [investmentId, userId],

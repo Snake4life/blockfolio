@@ -73,8 +73,15 @@ const styles = theme => ({
 });
 
 class DetailedExpansionPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: this.props.data
+        }
+        this.deleteItem = this.deleteItem.bind(this);
+    }
     componentDidUpdate() {
-        console.log(this.props.data);
+        console.log(this.state.data);
     }
     deleteItem(investmentId) {
         return event => {
@@ -88,7 +95,7 @@ class DetailedExpansionPanel extends React.Component {
                 .then(res => {
                     if (!res.ok) throw res;
                     this.props.setLoading(false);
-                    return this.props.history.push("/investments");
+                    this.setState({data:this.state.data.filter(el => el.investment_id != investmentId)});
                 })
                 .catch(res => {
                     this.props.setLoading(false);
@@ -102,7 +109,7 @@ class DetailedExpansionPanel extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.props.data.map((n, index) => {
+                {this.state.data.map((n, index) => {
                     return (
                         <ExpansionPanel>
                             <ExpansionPanelSummary
@@ -147,7 +154,7 @@ class DetailedExpansionPanel extends React.Component {
                                 <div className={classes.iconColumn} />
                                 <div
                                     className={classes.column}
-                                    style={{ justifyContent: "flex-end" }}
+                                    style={{ justifyContent: "flex-end",alignSelf:"flex-start" }}
                                 >
                                     <Typography
                                         type="body1"
@@ -156,11 +163,12 @@ class DetailedExpansionPanel extends React.Component {
                                             textAlign: "right"
                                         }}
                                     >
-                                        Price:<br />Value:<br />Balance:<br />Value:
+                                        Balance:<br/>Price:<br />Value:<br />
                                     </Typography>
                                 </div>
                                 <div className={classes.column}>
                                     <Typography type="body1">
+                                    {n.balance} {n.symbol}<br/>
                                         {currencyFormatter("USD").format(
                                             n.price_usd
                                         )}
@@ -178,8 +186,8 @@ class DetailedExpansionPanel extends React.Component {
                                                     n.price_usd * n.amount
                                                 )}
                                         </span>
-                                        <br />
-                                        {n.balance} {n.symbol}
+                                       
+                                        
                                         <br />
                                         {"=" +
                                             currencyFormatter("USD").format(

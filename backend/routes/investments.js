@@ -71,7 +71,7 @@ router.get("/delete/:investmentId", function(req, res, next) {
             " for user " +
             req.user.user_id
     );
-
+    
     Investment.delete(req.params.investmentId, req.user.user_id)
         .then(response => {
             res.sendStatus(200);
