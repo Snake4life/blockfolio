@@ -13,7 +13,10 @@ import InvestmentsPieChart from "./InvestmentsPieChart";
 import InvestmentsList from "./InvestmentsList";
 
 const styles = theme => ({
-
+    root: {
+        width: "100%",
+        padding: theme.spacing.unit * 3
+    },
     button: {
         margin: 0,
         top: "auto",
@@ -22,10 +25,7 @@ const styles = theme => ({
         left: "auto",
         position: "fixed"
     },
-    
-    root: {
-        padding: 0,
-    }
+
 });
 
 var dynamicColors = function() {
@@ -40,9 +40,7 @@ class Investments extends React.Component {
         super(props);
         this.state = {
             investments: [],
-            loading: true,
-            chartData: {},
-            
+            chartData: {}
         };
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
@@ -65,7 +63,9 @@ class Investments extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ investments: responseJson, loading: false });
+                this.setState({
+                    investments: responseJson.reverse(),
+                });
             })
             .catch(res => {
                 if (res.status == 401) this.props.signOut();
@@ -81,25 +81,13 @@ class Investments extends React.Component {
     render() {
         const { classes } = this.props;
 
-        return (
-            <div className={classes.root}>
-                {this.state.loading ? (
+        if (this.props.isLoading())
+            return (
+                <div className={classes.root}>
                     <LoadingMessage />
-                ) : (
-                    <InvestmentsTable data={this.state.investments} />
-                )}
-                <Button
-                    fab
-                    color="primary"
-                    aria-label="add"
-                    className={classes.button}
-                    component={Link}
-                    to="/investments/add"
-                >
-                    <AddIcon />
-                </Button>
-            </div>
-        );
+                </div>
+            );
+        else return <InvestmentsTable data={this.state.investments} />;
     }
 }
 

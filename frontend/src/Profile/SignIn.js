@@ -8,8 +8,11 @@ import Button from "material-ui/Button";
 import { withRouter } from "react-router-dom";
 import { withCookies } from "react-cookie";
 
-const styles = () => ({
-    root: {}
+const styles = (theme) => ({
+    root: {
+        width: "100%",
+        padding: theme.spacing.unit * 3
+    }
 });
 
 class SignIn extends React.Component {
@@ -47,13 +50,11 @@ class SignIn extends React.Component {
                     path: "/"
                 });
                 const { location } = this.props;
-                if(location.pathname == "/profile/signIn") {
+                if (location.pathname == "/profile/signIn") {
                     this.props.history.replace("/");
-                }
-                else {
+                } else {
                     this.props.history.replace(location.pathname);
                 }
-
             },
             err => {
                 this.setState({ error: true });
@@ -93,10 +94,11 @@ class SignIn extends React.Component {
         return (
             <div className={classes.root}>
                 <form onSubmit={this.onFormSubmit}>
-                    
                     <FormControl className={classes.formControl}>
                         <FormHelperText>
-                        {this.props.requiresLoginInfo ? "The page you are trying to access requires signing in." : ""}
+                            {this.props.requiresLoginInfo
+                                ? "The page you are trying to access requires signing in."
+                                : "Please sign in using your credentials."}
                         </FormHelperText>
                         <TextField
                             id="username"
@@ -137,6 +139,6 @@ SignIn.propTypes = {
 };
 SignIn.defaultProps = {
     requiresLoginInfo: false
-}
+};
 
-export default withStyles(styles)(withRouter(withCookies(SignIn)));
+export default withStyles(styles, {withTheme:true})(withRouter(withCookies(SignIn)));

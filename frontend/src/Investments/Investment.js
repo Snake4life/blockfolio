@@ -7,8 +7,11 @@ import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
 import LoadingMessage from "../LoadingMessage";
 import humanDate from "human-date";
-const styles = () => ({
-    root: {},
+const styles = (theme) => ({
+    root: {
+        width: "100%",
+        padding: theme.spacing.unit * 3
+    },
     button: {
         margin: 0,
         top: "auto",
@@ -59,7 +62,7 @@ class Investment extends React.Component {
             .catch(res => {
                 this.props.setLoading(false);
                 if (res.status == 401) this.props.signOut();
-                console.error("Unable to fetch investment: "+res.error);
+                console.error("Unable to fetch investment: " + res.error);
             });
     }
     deleteInvestment() {
@@ -80,7 +83,7 @@ class Investment extends React.Component {
             .catch(res => {
                 this.props.setLoading(false);
                 if (res.status == 401) this.props.signOut();
-                console.error("Unable to delete investment: "+res.error);
+                console.error("Unable to delete investment: " + res.error);
             });
     }
     render() {
@@ -133,6 +136,7 @@ class Investment extends React.Component {
                             onClick={this.deleteInvestment}
                             raised
                             disabled={this.state.loading}
+                            color="primary"
                         >
                             Delete investment
                         </Button>
@@ -148,4 +152,4 @@ Investment.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(Investment));
+export default withStyles(styles, {withTheme:true})(withRouter(Investment));

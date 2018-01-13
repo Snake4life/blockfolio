@@ -4,17 +4,16 @@ import ResponsiveDrawer from "./ResponsiveDrawer";
 import "./App.css";
 import { withRouter } from "react-router-dom";
 import { createMuiTheme } from "material-ui/styles";
-import blue from "material-ui/colors/blue";
-import green from "material-ui/colors/green";
-import red from "material-ui/colors/red";
+import { blueGrey, green, orange, red } from 'material-ui/colors';
 import { CookiesProvider } from "react-cookie";
 
 const theme = createMuiTheme({
     palette: {
-        primary: blue,
+        primary: {
+            ...blueGrey
+        },
         secondary: {
-            ...green,
-            A400: "#00e677"
+            ...orange
         },
         error: red
     }

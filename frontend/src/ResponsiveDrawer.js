@@ -55,7 +55,11 @@ const styles = theme => ({
         }
     },
     drawerHeader: theme.mixins.toolbar,
+    drawerHeaderContent: {
+        paddingLeft: theme.spacing.unit * 3,
+    },
     drawerPaper: {
+        backgroundColor: theme.palette.background.default,
         width: 250,
         overflow: "scroll",
         [theme.breakpoints.up("md")]: {
@@ -134,7 +138,12 @@ class ResponsiveDrawer extends React.PureComponent {
 
         const drawerContent = (
             <div>
-                <div className={classes.drawerHeader} />
+                <div className={classes.drawerHeader} style={{display:"flex",alignItems:"center"}}>
+                    <div className={classes.drawerHeaderContent}>
+                        <Typography type="title" color="secondary">Growthfolio</Typography>
+                        <Typography type="subheading" color="secondary">v0.1</Typography>
+                    </div>
+                </div>
                 <Divider />
                 <MenuList onRequestClose={this.handleDrawerToggle} />
             </div>

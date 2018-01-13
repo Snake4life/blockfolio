@@ -14,16 +14,20 @@ class Currencies extends React.Component {
         super(props);
         this.state = {
             currencies: [],
-
+            loading: true
         };
+        this.getCurrencies = this.getCurrencies.bind(this);
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
     }
     componentDidMount() {
         this.fetchCurrencies();
     }
+    getCurrencies() {
+        return this.state.currencies;
+    }
     fetchCurrencies() {
         this.props.setLoading(true);
-        fetch("/api/currencies/mine", {
+        fetch("/api/currencies/list", {
             credentials: "same-origin",
             headers: {
                 "Cache-Control": "no-cache"
@@ -35,11 +39,10 @@ class Currencies extends React.Component {
             })
             .then(responseJson => {
                 this.props.setLoading(false);
-                this.setState({ currencies: responseJson });
+                this.setState({ currencies: responseJson, loading: false });
             })
             .catch(res => {
                 if (res.status == 401) this.props.signOut();
-                this.props.setLoading(false);
                 console.error(
                     "Unable to fetch currencies from the server: " + res.error
                 );
@@ -50,10 +53,10 @@ class Currencies extends React.Component {
 
         return (
             <div className={classes.root}>
-                {this.props.isLoading() ? (
+                {this.state.loading ? (
                     <LoadingMessage />
                 ) : (
-                    "Here is a list of your currencies!"
+                    <CurrenciesTable data={this.getCurrencies()} />
                 )}
             </div>
         );

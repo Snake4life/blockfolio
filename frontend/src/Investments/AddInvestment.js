@@ -11,7 +11,8 @@ import LoadingMessage from "../LoadingMessage";
 
 const styles = theme => ({
     root: {
-        width: "100%"
+        width: "100%",
+        padding: theme.spacing.unit * 3
     },
     container: {
         display: "flex",
@@ -138,58 +139,55 @@ class AddInvestment extends React.Component {
                 {this.props.isLoading() ? (
                     <LoadingMessage />
                 ) : (
-                    <div>
-                        <form className={classes.container} autoComplete="off">
+                    <form className={classes.container} autoComplete="off">
+                        <FormControl className={classes.formControl}>
+                            <CurrencyAutosuggest
+                                currencies={this.state.currencies}
+                                handleChange={this.handleCurrencyChange}
+                            />
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <TextField
+                                id="amount"
+                                label="Amount"
+                                value={this.state.amount}
+                                onChange={this.handleAmountChange}
+                                type="number"
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                margin="normal"
+                            />
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <TextField
+                                id="datetime"
+                                type="datetime-local"
+                                className={classes.textField}
+                                onChange={this.handleDatetimeChange}
+                                label="Date and time of the trade"
+                                defaultValue={currentDate("date") + "T00:00"}
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                error={!this.isDatetimeValid()}
+                            />
+                        </FormControl>
+                        <div>
                             <FormControl className={classes.formControl}>
-                                <CurrencyAutosuggest
-                                    currencies={this.state.currencies}
-                                    handleChange={this.handleCurrencyChange}
-                                />
+                                <Button
+                                    raised
+                                    className={classes.button}
+                                    onClick={this.handleAdd}
+                                    disabled={!this.isValid()}
+                                    color="primary"
+                                >
+                                    Add to portfolio
+                                </Button>
                             </FormControl>
-                            <FormControl className={classes.formControl}>
-                                <TextField
-                                    id="amount"
-                                    label="Amount"
-                                    value={this.state.amount}
-                                    onChange={this.handleAmountChange}
-                                    type="number"
-                                    className={classes.textField}
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                    margin="normal"
-                                />
-                            </FormControl>
-                            <FormControl className={classes.formControl}>
-                                <TextField
-                                    id="datetime"
-                                    type="datetime-local"
-                                    className={classes.textField}
-                                    onChange={this.handleDatetimeChange}
-                                    label="Date and time of the trade"
-                                    defaultValue={
-                                        currentDate("date") + "T00:00"
-                                    }
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                    error={!this.isDatetimeValid()}
-                                />
-                            </FormControl>
-                            <div>
-                                <FormControl className={classes.formControl}>
-                                    <Button
-                                        raised
-                                        className={classes.button}
-                                        onClick={this.handleAdd}
-                                        disabled={!this.isValid()}
-                                    >
-                                        Add to portfolio
-                                    </Button>
-                                </FormControl>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 )}
             </div>
         );

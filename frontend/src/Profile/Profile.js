@@ -76,6 +76,7 @@ class Profile extends React.Component {
                                 onClick={this.props.signOut}
                                 raised
                                 disabled={this.state.loading}
+                                color="primary"
                             >
                                 Sign out
                             </Button>

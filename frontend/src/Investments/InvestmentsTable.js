@@ -13,17 +13,20 @@ import humanDate from "human-date";
 import currencyFormatter from "../currencyFormatter";
 import dateformat from "dateformat";
 import moment from "moment";
+import Button from "material-ui/Button";
+import AddIcon from "material-ui-icons/Add";
 
 const styles = theme => ({
     root: {
         //marginTop: theme.spacing.unit,
         overflowX: "auto",
-        height: "calc(100vh - 180px)",
-        width:"100%"
+        //height: "calc(100vh - 180px)",
+        width: "100%"
     },
     table: {
-        width:"100%",
-        boxShadow:"none !important"
+        width: "100%",
+        minHeight: "calc(100vh - 60px)",
+        boxShadow: "none !important"
     },
     redColor: {
         color: "#ff0000"
@@ -32,16 +35,38 @@ const styles = theme => ({
         color: "#00aa00"
     },
     tableRow: {
-        textDecoration: "none"
+        textDecoration: "none",
+        height:"60px",
+        backgroundColor: theme.palette.background.default
     },
     tableOddRow: {
-        backgroundColor: "#fafafa"
+        
+    },
+    tableHead: {
+
+    },
+    minusRow: {
+        
+    },
+    plusRow: {
+        
     },
     plus: {
         color: "lightgreen"
     },
     minus: {
         color: "red"
+    },
+    button: {
+        margin: 0,
+        top: "auto",
+        right: 20,
+        bottom: 20,
+        left: "auto",
+        position: "fixed"
+    },
+    lastRow: {
+        height:"90px"
     }
 });
 
@@ -55,7 +80,7 @@ class InvestmentsTable extends React.Component {
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
-                    <TableHead>
+                    <TableHead className={classes.tableHead}>
                         <TableRow>
                             <TableCell padding="dense" />
                             <TableCell padding="none">Trade</TableCell>
@@ -75,6 +100,9 @@ class InvestmentsTable extends React.Component {
                                     key={index + 1}
                                     className={[
                                         classes.tableRow,
+                                        (n.amount > 0
+                                                    ? classes.plusRow
+                                                    : classes.minusRow),
                                         index % 2 === 0
                                             ? classes.tableOddRow
                                             : ""
@@ -99,8 +127,8 @@ class InvestmentsTable extends React.Component {
 
                                     <TableCell padding="none">
                                         {moment(n.datetime).format(
-                                        "DD-MM-YYYY HH:SS"
-                                    )}
+                                            "DD-MM-YYYY HH:SS"
+                                        )}
                                         <br />
                                         <span
                                             className={
@@ -117,11 +145,10 @@ class InvestmentsTable extends React.Component {
                                         </span>
                                     </TableCell>
                                     <TableCell padding="none">
-                                        
-                                        
                                         {currencyFormatter("USD").format(
                                             n.price_usd
-                                        )}<br/>
+                                        )}
+                                        <br />
                                         <span
                                             className={
                                                 n.amount > 0
@@ -138,16 +165,26 @@ class InvestmentsTable extends React.Component {
                                     </TableCell>
                                     <TableCell padding="none">
                                         {n.balance + " " + n.symbol}
-                                        <br/>{
-                                        "=" +
-                                        currencyFormatter("USD").format(
-                                            n.balance * n.price_usd
-                                        )
-                                    }
+                                        <br />
+                                        {"=" +
+                                            currencyFormatter("USD").format(
+                                                n.balance * n.price_usd
+                                            )}
                                     </TableCell>
                                 </TableRow>
                             );
                         })}
+<TableRow className={classes.lastRow}/>
+                        <Button
+                            fab
+                            color="primary"
+                            aria-label="add"
+                            className={classes.button}
+                            component={Link}
+                            to="/investments/add"
+                        >
+                            <AddIcon />
+                        </Button>
                     </TableBody>
                 </Table>
             </Paper>
