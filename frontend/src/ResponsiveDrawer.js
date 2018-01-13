@@ -97,6 +97,7 @@ class ResponsiveDrawer extends React.PureComponent {
         this.signOut = this.signOut.bind(this);
         this.fetchSettings = this.fetchSettings.bind(this);
         this.changeSetting = this.changeSetting.bind(this);
+        this.fetchUserData = this.fetchUserData.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false,
@@ -147,6 +148,29 @@ class ResponsiveDrawer extends React.PureComponent {
                 else console.error("Unable to load settings. " + res.error);
             });
     }
+    fetchUserData() {
+        this.props.setLoading(true);
+        fetch("/api/auth/info", {
+            credentials: "same-origin"
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                else throw res;
+            })
+            .then(responseJson => {
+                this.props.setLoading(false);
+                this.setState({
+                    user: responseJson.user,
+                    session: responseJson.session,
+                    loading: false
+                });
+            })
+            .catch(res => {
+                this.props.setLoading(false);
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to load profile data. " + res.error);
+            });
+    }
     changeSetting(name, value) {
         let settingsCopy = JSON.parse(JSON.stringify(this.state.settings));
         settingsCopy[name] = value;
@@ -154,6 +178,26 @@ class ResponsiveDrawer extends React.PureComponent {
         this.setState({
             settings: settingsCopy
         });
+
+        let settings = {};
+        settings[name] = value;
+
+        fetch("/api/settings", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({settings: settings})
+        })
+            .then(response => {
+                if (response.ok) return response;
+                else throw response;
+            })
+            .catch(res => {
+                console.log("Unable to save setting. "+res.error);
+            });
     }
     signOut() {
         this.setLoading(true);
@@ -263,7 +307,11 @@ class ResponsiveDrawer extends React.PureComponent {
         );
         const ChartsTabsComponent = () => <ChartsTabs {...commonProps} />;
         const SettingsComponent = () => (
-            <Settings {...commonProps} changeSetting={this.changeSetting} />
+            <Settings
+                {...commonProps}
+                changeSetting={this.changeSetting}
+                settings={this.state.settings}
+            />
         );
 
         return (

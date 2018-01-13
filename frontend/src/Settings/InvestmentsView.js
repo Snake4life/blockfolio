@@ -14,9 +14,14 @@ const styles = theme => ({
     }
 });
 
-const options = [
+const investmentsViewOptions = [
     "Cards",
     "Table"
+];
+
+const defaultCurrencyOptions = [
+    "USD",
+    "PLN"
 ];
 
 class InvestmentsView extends React.Component {
@@ -53,10 +58,11 @@ class InvestmentsView extends React.Component {
                         aria-label="Investments view type"
                         onClick={this.handleClickListItem}
                         className={classes.listItem}
+                        divider
                     >
                         <ListItemText
                             primary="Investments view type"
-                            secondary={options[this.state.selectedIndex]}
+                            secondary={investmentsViewOptions[this.state.selectedIndex]}
                         />
                     </ListItem>
                     <ListItem
@@ -66,11 +72,11 @@ class InvestmentsView extends React.Component {
                         aria-label="Currency conversion"
                         onClick={this.handleClickListItem}
                         className={classes.listItem}
-
+divider
                     >
                         <ListItemText
                             primary="Currency conversion"
-                            secondary={options[this.state.selectedIndex]}
+                            secondary={defaultCurrencyOptions[this.state.selectedIndex]}
                         />
                     </ListItem>
                 </List>
@@ -80,7 +86,7 @@ class InvestmentsView extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    {options.map((option, index) => (
+                    {investmentsViewOptions.map((option, index) => (
                         <MenuItem
                             key={option}
                             
@@ -99,7 +105,7 @@ class InvestmentsView extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    {options.map((option, index) => (
+                    {defaultCurrencyOptions.map((option, index) => (
                         <MenuItem
                             key={option}
                             

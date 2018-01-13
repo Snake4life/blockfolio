@@ -14,5 +14,18 @@ router.get("/", (req, res, next) => {
     }
 });
 
+router.post("/", (req, res, next) => {
+    var settings = req.body.settings;
+
+    winston.info("Changing settings for user " + req.user.username);
+
+    User.updateSettings(req.user.user_id, settings).then(()=>{
+        res.sendStatus(200);
+    }).catch(err=>{
+        winston.error("Error while updating settings. "+err);
+        res.sendStatus(500);
+    })
+
+});
 
 module.exports = router;

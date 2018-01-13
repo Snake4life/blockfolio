@@ -14,7 +14,6 @@ var connection = mysql.createConnection({
 
 module.exports = {
     authenticate: function(username, password) {
-
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM users WHERE users.username = ? AND users.password = SHA1(CONCAT(?,users.salt))",
@@ -25,7 +24,7 @@ module.exports = {
                         reject(500);
                         return;
                     }
-                    if (rows !=undefined && rows.length > 0) {
+                    if (rows != undefined && rows.length > 0) {
                         resolve(rows[0]);
                         return;
                     } else {
@@ -37,7 +36,6 @@ module.exports = {
         });
     },
     generateToken: function(userId) {
-
         return new Promise((resolve, reject) => {
             var timestamp = Math.floor(Date.now() / 1000);
             var sessionId = crypto
@@ -70,18 +68,17 @@ module.exports = {
         });
     },
     isAuthenticated: function(sessionId) {
-
         return new Promise((resolve, reject) => {
             connection.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
                 [sessionId],
                 (err, rows, fields) => {
-                    if(err) {
+                    if (err) {
                         winston.error(err);
                         reject(500);
                         return;
                     }
-                    if(rows.length>0) {
+                    if (rows.length > 0) {
                         resolve(rows[0]);
                         return;
                     } else {
@@ -98,18 +95,37 @@ module.exports = {
                 "SELECT * FROM users WHERE user_id = ?",
                 [userId],
                 (err, rows, fields) => {
-                    if(err) {
+                    if (err) {
                         winston.error(err);
                         reject(err);
                         return;
                     }
-                    if(rows !=undefined && rows.length>0) {
+                    if (rows != undefined && rows.length > 0) {
                         resolve(rows[0]);
                         return;
                     } else {
                         reject(404);
                         return;
                     }
+                }
+            );
+        });
+    },
+    updateSettings: function(userId, settings) {
+        return new Promise((resolve, reject) => {
+            let values = Object.keys(settings).map(el=>{
+                return connection.escapeId(el)+"="+connection.escape(settings[el]);
+            }).join();
+            winston.info(values.toString());
+            connection.query(
+                "UPDATE users SET " + values + " WHERE user_id = ?",
+                [userId],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error(err);
+                        reject(err);
+                        return;
+                    } else resolve();
                 }
             );
         });
