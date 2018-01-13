@@ -16,6 +16,7 @@ import { Link, withRouter } from "react-router-dom";
 import Button from "material-ui/Button";
 import AddIcon from "material-ui-icons/Add";
 import currencyFormatter from "../currencyFormatter";
+import Warning from "../Warning";
 
 const styles = theme => ({
     root: {
@@ -76,12 +77,10 @@ class DetailedExpansionPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: this.props.data
-        }
+            data: this.props.data,
+            prices_up2date: true
+        };
         this.deleteItem = this.deleteItem.bind(this);
-    }
-    componentDidUpdate() {
-        console.log(this.state.data);
     }
     deleteItem(investmentId) {
         return event => {
@@ -95,7 +94,11 @@ class DetailedExpansionPanel extends React.Component {
                 .then(res => {
                     if (!res.ok) throw res;
                     this.props.setLoading(false);
-                    this.setState({data:this.state.data.filter(el => el.investment_id != investmentId)});
+                    this.setState({
+                        data: this.state.data.filter(
+                            el => el.investment_id != investmentId
+                        )
+                    });
                 })
                 .catch(res => {
                     this.props.setLoading(false);
@@ -109,6 +112,11 @@ class DetailedExpansionPanel extends React.Component {
 
         return (
             <div className={classes.root}>
+                {!this.props.pricesUp2Date ? (
+                    <Warning message="We are currently fetching some prices for your porfolio. Some values may be inaccurate." />
+                ) : (
+                    ""
+                )}
                 {this.state.data.map((n, index) => {
                     return (
                         <ExpansionPanel>
@@ -121,8 +129,8 @@ class DetailedExpansionPanel extends React.Component {
                                             "https://www.cryptocompare.com/" +
                                             n.image_url
                                         }
-                                        width="32"
-                                        height="32"
+                                        width="36"
+                                        height="36"
                                         alt={n.symbol}
                                     />
                                 </div>
@@ -154,7 +162,10 @@ class DetailedExpansionPanel extends React.Component {
                                 <div className={classes.iconColumn} />
                                 <div
                                     className={classes.column}
-                                    style={{ justifyContent: "flex-end",alignSelf:"flex-start" }}
+                                    style={{
+                                        justifyContent: "flex-end",
+                                        alignSelf: "flex-start"
+                                    }}
                                 >
                                     <Typography
                                         type="body1"
@@ -163,12 +174,13 @@ class DetailedExpansionPanel extends React.Component {
                                             textAlign: "right"
                                         }}
                                     >
-                                        Balance:<br/>Price:<br />Value:<br />
+                                        Balance:<br />Price:<br />Value:<br /><br />Type:
                                     </Typography>
                                 </div>
                                 <div className={classes.column}>
                                     <Typography type="body1">
-                                    {n.balance} {n.symbol}<br/>
+                                        {n.balance} {n.symbol}
+                                        <br />
                                         {currencyFormatter("USD").format(
                                             n.price_usd
                                         )}
@@ -186,16 +198,15 @@ class DetailedExpansionPanel extends React.Component {
                                                     n.price_usd * n.amount
                                                 )}
                                         </span>
-                                       
-                                        
                                         <br />
                                         {"=" +
                                             currencyFormatter("USD").format(
                                                 n.balance * n.price_usd
-                                            )}
+                                            )}<br/>Trade
                                     </Typography>
                                 </div>
                             </ExpansionPanelDetails>
+
                             <Divider />
                             <ExpansionPanelActions>
                                 <Button

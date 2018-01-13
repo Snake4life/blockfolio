@@ -40,6 +40,20 @@ router.get("/currency/:symbol", function(req, res, next) {
         });
 });
 
+router.get("/pricesUp2Date", (req,res,next) => {
+    if(req.user==null) return sendStatus(401);
+
+    winston.info("Checking if price history is up to date for user "+req.user.user_id);
+
+    Investment.arePricesUp2Date(req.user.user_id)
+        .then(response => {
+            res.json(response);
+        })
+        .catch(err => {
+            winston.error("Unable to retrieve investments. " + err);
+        });
+});
+
 router.get("/investment/:investmentId", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
 

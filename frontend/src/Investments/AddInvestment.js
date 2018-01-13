@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 import CurrencyAutosuggest from "../CurrencyAutosuggestComponent";
 import currentDate from "current-date";
 import LoadingMessage from "../LoadingMessage";
+import moment from "moment";
 
 const styles = theme => ({
     root: {
@@ -39,7 +40,7 @@ class AddInvestment extends React.Component {
             currencies: [],
             loading: true,
             isValid: false,
-            datetime: currentDate("date") + "T00:00"
+            datetime: moment().format().substring(0,16)
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -123,7 +124,7 @@ class AddInvestment extends React.Component {
         return false;
     }
     isDatetimeValid() {
-        console.log(this.state.datetime);
+
         var d = new Date(this.state.datetime);
         var cd = new Date();
         var fd = new Date("17 Mar 2010");
@@ -166,7 +167,7 @@ class AddInvestment extends React.Component {
                                 className={classes.textField}
                                 onChange={this.handleDatetimeChange}
                                 label="Date and time of the trade"
-                                defaultValue={currentDate("date") + "T00:00"}
+                                defaultValue={moment().format().substring(0,16)}
                                 InputLabelProps={{
                                     shrink: true
                                 }}

@@ -48,6 +48,28 @@ module.exports = {
             );
         });
     },
+    getByUser: function(userId) {
+        return new Promise((resolve, reject) => {
+            mysql.query(
+                "SELECT * FROM investments as i LEFT JOIN currencies_cryptocompare as cc on i.currency_id = cc.currency_id WHERE i.user_id = ? GROUP BY i.currency_id ",
+                [userId],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error(err);
+                        reject(err);
+                        return;
+                    }
+                    if (rows != undefined && rows.length > 0) {
+                        resolve(rows);
+                        return;
+                    } else {
+                        reject(404);
+                        return;
+                    }
+                }
+            );
+        });
+    },
     getAll: function() {
         return new Promise((resolve, reject) => {
             winston.debug("Querying database for the list of currencies.");

@@ -8,7 +8,6 @@ import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
 import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
-
 import DetailedExpansionPanel from "./DetailedExpansionPanel";
 import InvestmentsList from "./InvestmentsList";
 
@@ -41,13 +40,39 @@ class Investments extends React.Component {
         this.state = {
             investments: [],
             chartData: {},
-            loading: true
+            loading: true,
+            prices_up2date: true
         };
         this.getInvestmentById = this.getInvestmentById.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
+        this.checkPrices = this.checkPrices.bind(this);
     }
     componentDidMount() {
         this.fetchInvestments();
+        this.checkPrices();
+    }
+    checkPrices() {
+        this.props.setLoading(true);
+        fetch("/api/investments/pricesUp2Date", {
+            credentials: "same-origin",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                else throw res;
+            })
+            .then(responseJson => {
+                this.props.setLoading(false);
+                console.log(responseJson);
+                this.setState({ prices_up2date: responseJson.up_to_date });
+            })
+            .catch(res => {
+                this.props.setLoading(false);
+                if (res.status == 401) this.props.signOut();
+                console.error("Unable to fetch price info data: " + res.error);
+            });
     }
     fetchInvestments() {
         this.props.setLoading(true);
@@ -89,7 +114,7 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 </div>
             );
-        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} />;
+        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} pricesUp2Date={this.state.prices_up2date}/>;
     }
 }
 

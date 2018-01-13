@@ -22,6 +22,24 @@ router.get("/list", function(req, res, next) {
         });
 });
 
+router.get("/mine", function(req, res, next) {
+    if (req.user == null) return res.sendStatus(401);
+
+    winston.debug("Getting a list of currencies for user");
+
+    // TODO update the list from coinmarketcap API in the background
+
+    Currency.getByUser(req.user.user_id)
+        .then(response => {
+            winston.info("Got a list of "+response.length+" currencies.");
+            res.json(response);
+        })
+        .catch(e => {
+            winston.error("Error getting currencies. " + e);
+            res.sendStatus(500);
+        });
+});
+
 router.get("/currency/:symbol", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
     

@@ -3,17 +3,17 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { withRouter } from "react-router-dom";
 import LoadingMessage from "../LoadingMessage";
+import Currency from "./Currency";
 
-const styles = (theme) => ({
-    root: {padding: theme.spacing.unit * 3,}
+const styles = theme => ({
+    root: { padding: theme.spacing.unit * 3 }
 });
 
 class Currencies extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currencies: [],
-
+            currencies: []
         };
         this.fetchCurrencies = this.fetchCurrencies.bind(this);
     }
@@ -52,7 +52,9 @@ class Currencies extends React.Component {
                 {this.props.isLoading() ? (
                     <LoadingMessage />
                 ) : (
-                    "Here is a list of your currencies!"
+                    this.state.currencies.map(el => {
+                        return (<Currency currency={el}/>);
+                    })
                 )}
             </div>
         );
@@ -63,4 +65,4 @@ Currencies.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, {withTheme:true})(withRouter(Currencies));
+export default withStyles(styles, { withTheme: true })(withRouter(Currencies));

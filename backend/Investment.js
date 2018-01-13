@@ -28,7 +28,30 @@ module.exports = {
             );
         });
     },
+    arePricesUp2Date: function(userId) {
+        return new Promise((resolve, reject)=> {
+            winston.info("Checking if prices for currencies of user "+userId+" are up to date");
 
+            mysql.query(
+                "SELECT cc.symbol,count(ph.currency_id)=tsdiff as prices_up2date FROM (SELECT user_id,currency_id,MIN(DATE(i.datetime)) as minDate,timestampdiff(DAY, MIN(i.datetime), NOW())+1 as tsdiff FROM investments as i WHERE user_id = ? GROUP BY currency_id) as t1 LEFT JOIN prices_history as ph ON ph.currency_id = t1.currency_id AND ph.date>=t1.minDate LEFT JOIN currencies_cryptocompare as cc ON t1.currency_id = cc.currency_id GROUP BY ph.currency_id ",
+                [userId],
+                (err, rows, fields) => {
+                    if (err) {
+                        winston.error(
+                            "Error while executing the query. " + err
+                        );
+                        return reject(err);
+                    } else {
+                        var up2date = true;
+                        rows.forEach(el=>{
+                            if(!el.prices_up2date) up2date = false;
+                        })
+                        return resolve({up_to_date: up2date, currencies: rows});
+                    }
+                }
+            );
+        });
+    },
     getSummaryForUser: function(userId) {
         return new Promise((resolve, reject) => {
             winston.info("Getting investments for user " + userId);
