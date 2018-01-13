@@ -147,7 +147,7 @@ function addPrices(requests) {
                         " from url " +
                         url
                 );
-                requests = requests.filter(el=>el.currency.currency_id != currency.currency_id));
+                requests = requests.filter(el=>el.currency.currency_id != currency.currency_id);
                 checkLimits()
                     .then(res => {
                         if (res["CallsLeft"] == 0)
