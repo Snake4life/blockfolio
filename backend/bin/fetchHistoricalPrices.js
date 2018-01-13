@@ -148,6 +148,7 @@ function addPrices(requests) {
                         url
                 );
                 requests = requests.filter(el=>el.currency.currency_id != currency.currency_id);
+                connnection.query("UPDATE currencies_cryptocompare SET no_market_data = 1 WHERE currency_id = ?", [currency.currency_id]);
                 checkLimits()
                     .then(res => {
                         if (res["CallsLeft"] == 0)
