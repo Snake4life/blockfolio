@@ -2,7 +2,7 @@ import React from "react";
 import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import { withCookies } from "react-cookie";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Button from "material-ui/Button";
 import humanDate from "human-date";
 import Tabs, { Tab } from "material-ui/Tabs";
@@ -70,7 +70,7 @@ class Profile extends React.Component {
                         <Typography type="title" gutterBottom>
                             Welcome, {this.state.user.username}
                         </Typography>
-
+                        <Typography type="body1">You can change your password <Link to="">here</Link>.</Typography>
                         <p>
                             <Button
                                 onClick={this.props.signOut}

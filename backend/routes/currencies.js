@@ -21,7 +21,15 @@ router.get("/list", function(req, res, next) {
             res.sendStatus(500);
         });
 });
-
+router.get("/fullSnapshot/:currencyId", (req, res, next) => {
+    // store the data in the database
+    // check if its older than one hour, if so update it from CC
+    request("https://www.cryptocompare.com/api/data/CoinSnapshotFullById/?id="+req.params.currencyId, (err, response, body) => {
+            if (err) throw new Error(err);
+            res.send(body);
+    });
+    
+});
 router.get("/mine", function(req, res, next) {
     if (req.user == null) return res.sendStatus(401);
 
