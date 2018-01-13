@@ -89,20 +89,21 @@ function addPrices(requests) {
             if (err) throw new Error(err);
 
             var data = JSON.parse(body);
-            console.log(
-                "Adding price for " +
-                    currency.symbol +
-                    " on " +
-                    date.format() +
-                    " from url " +
-                    url
-            );
 
-            var noData = false;
-            var price_usd = 0;
-            var price_btc = 0;
-            var price_btc = 0;
             if (data.Response != "Error") {
+                console.log(
+                    "Adding price for " +
+                        currency.symbol +
+                        " on " +
+                        date.format() +
+                        " from url " +
+                        url
+                );
+
+                var price_usd = data[currency.symbol].USD;
+                var price_eur = data[currency.symbol].EUR;
+                var price_btc = data[currency.symbol].BTC;
+
                 connection.query(
                     "INSERT INTO prices_history (currency_id, date, price_usd, price_eur, price_btc) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?)",
                     [
@@ -138,6 +139,14 @@ function addPrices(requests) {
                     }
                 );
             } else {
+                console.log(
+                    "Not adding price for " +
+                        currency.symbol +
+                        " on " +
+                        date.format() +
+                        " from url " +
+                        url
+                );
                 checkLimits()
                     .then(res => {
                         if (res["CallsLeft"] == 0)
