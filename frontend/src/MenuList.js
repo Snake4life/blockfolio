@@ -8,6 +8,7 @@ import ShowChartIcon from "material-ui-icons/ShowChart";
 import PieChartIcon from "material-ui-icons/PieChart";
 import ChartIcon from "material-ui-icons/InsertChart";
 import AccountIcon from "material-ui-icons/AccountBox";
+import SettingsIcon from "material-ui-icons/Settings";
 import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
 
@@ -42,6 +43,9 @@ class MenuList extends React.Component {
                     >
                         <ListItem button component={Link} to="/">
                             <AccountIcon /> <ListItemText primary="Profile" />
+                        </ListItem>
+                        <ListItem button component={Link} to="/settings">
+                            <SettingsIcon /> <ListItemText primary="Settings" />
                         </ListItem>
                         <ListItem button component={Link} to="/currencies">
                             <MoneyIcon /> <ListItemText primary="Currencies" />

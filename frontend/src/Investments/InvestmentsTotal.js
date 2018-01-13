@@ -76,7 +76,8 @@ class InvestmentsTotal extends React.Component {
                 var labels = [];
                 var backgroundColors = [];
                 Object.keys(currencies).forEach(key => {
-                    data.push(currencies[key] / total * 100);
+                    //data.push(currencies[key] / total * 100);
+                    data.push(currencies[key]);
                     labels.push(key);
                     backgroundColors.push(dynamicColors());
                 });
@@ -116,7 +117,7 @@ class InvestmentsTotal extends React.Component {
                             
                             {currencyFormatter("USD").format(this.state.total)}{" "}
                             ({currencyFormatter("PLN").format(
-                                this.state.total * 3.51
+                                this.state.total * 3.42
                             )})
                         </Typography>
 

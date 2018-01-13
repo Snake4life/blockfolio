@@ -8,6 +8,7 @@ var index = require("./routes/index");
 var config = require("./config");
 var currencies = require("./routes/currencies");
 var investments = require("./routes/investments");
+var settings = require("./routes/settings");
 var auth = require("./routes/auth");
 var authenticate = require("./authenticate");
 var app = express();
@@ -39,6 +40,7 @@ app.use("/api", index);
 app.use("/api/auth", authenticate, auth);
 app.use("/api/currencies", authenticate, currencies);
 app.use("/api/investments", authenticate, investments);
+app.use("/api/settings", authenticate, settings);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

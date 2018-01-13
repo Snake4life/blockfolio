@@ -23,8 +23,7 @@ const styles = theme => ({
         bottom: 20,
         left: "auto",
         position: "fixed"
-    },
-
+    }
 });
 
 var dynamicColors = function() {
@@ -76,7 +75,7 @@ class Investments extends React.Component {
     }
     fetchInvestments() {
         this.props.setLoading(true);
-        this.setState({loading:true});
+        this.setState({ loading: true });
         fetch("/api/investments", {
             credentials: "same-origin",
             headers: {
@@ -114,7 +113,29 @@ class Investments extends React.Component {
                     <LoadingMessage />
                 </div>
             );
-        else return <DetailedExpansionPanel data={this.state.investments} setLoading={this.props.setLoading} outdatedPrices={this.state.outdatedPrices} fetchInvestments={this.fetchInvestments} checkPrices={this.checkPrices}/>;
+        else {
+            if (this.props.settings.investments_view=="cards") {
+                return (
+                    <DetailedExpansionPanel
+                        data={this.state.investments}
+                        setLoading={this.props.setLoading}
+                        outdatedPrices={this.state.outdatedPrices}
+                        fetchInvestments={this.fetchInvestments}
+                        checkPrices={this.checkPrices}
+                    />
+                );
+            } else {
+                return (
+                    <InvestmentsTable
+                        data={this.state.investments}
+                        setLoading={this.props.setLoading}
+                        outdatedPrices={this.state.outdatedPrices}
+                        fetchInvestments={this.fetchInvestments}
+                        checkPrices={this.checkPrices}
+                    />
+                );
+            }
+        }
     }
 }
 

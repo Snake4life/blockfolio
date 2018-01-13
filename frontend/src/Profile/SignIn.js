@@ -5,12 +5,12 @@ import { FormControl, FormHelperText } from "material-ui/Form";
 import TextField from "material-ui/TextField";
 
 import Button from "material-ui/Button";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
+import Typography from "material-ui/Typography";
 
 const styles = (theme) => ({
     root: {
-        width: "100%",
         padding: theme.spacing.unit * 3
     }
 });
@@ -129,6 +129,8 @@ class SignIn extends React.Component {
                         {this.state.error ? "Invalid credentials" : ""}
                     </FormControl>
                 </form>
+                <Typography type="body1">Not a member? Sign up <Link to="/register">here</Link>.</Typography>
+                <Typography type="body1">Don't remember your password? <Link to="/register">Recover it here</Link>.</Typography>
             </div>
         );
     }

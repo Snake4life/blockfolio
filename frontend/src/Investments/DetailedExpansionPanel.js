@@ -180,7 +180,7 @@ class DetailedExpansionPanel extends React.Component {
                                             textAlign: "right"
                                         }}
                                     >
-                                        Balance:<br />Price at the time:<br />Value:<br /><br />Type:
+                                        Balance:<br />Price:<br />Value:<br /><br />Type:
                                     </Typography>
                                 </div>
                                 <div className={classes.column}>

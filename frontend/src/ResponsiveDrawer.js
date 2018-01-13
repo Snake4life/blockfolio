@@ -25,6 +25,8 @@ import Investment from "./Investments/Investment";
 import InvestmentsTotal from "./Investments/InvestmentsTotal";
 import InvestmentsGrowth from "./Investments/InvestmentsGrowth";
 import ChartsTabs from "./Charts/ChartsTabs.js";
+import NotFound from "./NotFound";
+import Settings from "./Settings/Settings";
 
 const drawerWidth = 240;
 
@@ -56,7 +58,7 @@ const styles = theme => ({
     },
     drawerHeader: theme.mixins.toolbar,
     drawerHeaderContent: {
-        paddingLeft: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing.unit * 3
     },
     drawerPaper: {
         backgroundColor: theme.palette.background.default,
@@ -93,11 +95,17 @@ class ResponsiveDrawer extends React.PureComponent {
         this.setLoading = this.setLoading.bind(this);
         this.isLoading = this.isLoading.bind(this);
         this.signOut = this.signOut.bind(this);
+        this.fetchSettings = this.fetchSettings.bind(this);
+        this.changeSetting = this.changeSetting.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false,
-            signedIn: false
+            signedIn: false,
+            settings: []
         };
+    }
+    componentDidMount() {
+        this.fetchSettings();
     }
     setLoading(loading) {
         this.setState({ loading: loading });
@@ -117,6 +125,35 @@ class ResponsiveDrawer extends React.PureComponent {
             return true;
         }
         return false;
+    }
+    fetchSettings() {
+        this.setLoading(true);
+        fetch("/api/settings", {
+            credentials: "same-origin"
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                else throw res;
+            })
+            .then(responseJson => {
+                this.setLoading(false);
+                this.setState({
+                    settings: responseJson
+                });
+            })
+            .catch(res => {
+                this.setLoading(false);
+                if (res.status == 401) this.props.signOut();
+                else console.error("Unable to load settings. " + res.error);
+            });
+    }
+    changeSetting(name, value) {
+        let settingsCopy = JSON.parse(JSON.stringify(this.state.settings));
+        settingsCopy[name] = value;
+
+        this.setState({
+            settings: settingsCopy
+        });
     }
     signOut() {
         this.setLoading(true);
@@ -138,10 +175,17 @@ class ResponsiveDrawer extends React.PureComponent {
 
         const drawerContent = (
             <div>
-                <div className={classes.drawerHeader} style={{display:"flex",alignItems:"center"}}>
+                <div
+                    className={classes.drawerHeader}
+                    style={{ display: "flex", alignItems: "center" }}
+                >
                     <div className={classes.drawerHeaderContent}>
-                        <Typography type="title" color="secondary">Growthfolio</Typography>
-                        <Typography type="subheading" color="secondary">v0.1</Typography>
+                        <Typography type="title" color="secondary">
+                            Growthfolio
+                        </Typography>
+                        <Typography type="subheading" color="secondary">
+                            v0.1
+                        </Typography>
                     </div>
                 </div>
                 <Divider />
@@ -172,11 +216,17 @@ class ResponsiveDrawer extends React.PureComponent {
             document.title = "Charts :: Growthfolio";
             return <div>Charts</div>;
         };
+        const SettingsTitle = () => {
+            document.title = "Settings :: Growthfolio";
+            return <div>Settings</div>;
+        };
 
         const commonProps = {
             setLoading: this.setLoading,
             isLoading: this.isLoading,
-            signOut: this.signOut
+            signOut: this.signOut,
+            settings: this.state.settings,
+            fetchSettings: this.fetchSettings
         };
 
         const SignInComponent = requiresLoginInfo => {
@@ -212,10 +262,8 @@ class ResponsiveDrawer extends React.PureComponent {
             <CurrencyDetails {...commonProps} />
         );
         const ChartsTabsComponent = () => <ChartsTabs {...commonProps} />;
-        const NotFoundComponent = () => (
-            <div>
-                <h2>404</h2>Not found
-            </div>
+        const SettingsComponent = () => (
+            <Settings {...commonProps} changeSetting={this.changeSetting} />
         );
 
         return (
@@ -255,6 +303,11 @@ class ResponsiveDrawer extends React.PureComponent {
                                     <Route
                                         path="/charts"
                                         component={ChartsTitle}
+                                    />
+
+                                    <Route
+                                        path="/settings"
+                                        component={SettingsTitle}
                                     />
 
                                     <Route component={ErrorTitle} />
@@ -354,11 +407,16 @@ class ResponsiveDrawer extends React.PureComponent {
                             />
 
                             <Route
+                                path="/settings"
+                                render={RequiresLogin(SettingsComponent)}
+                            />
+
+                            <Route
                                 exact
                                 path="/"
                                 component={SignInComponent(false)}
                             />
-                            <Route component={NotFoundComponent} />
+                            <Route component={NotFound} />
                         </Switch>
                     </main>
                 </div>
