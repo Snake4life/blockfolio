@@ -5,9 +5,10 @@ import Typography from "material-ui/Typography";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Menu, { MenuItem } from "material-ui/Menu";
 import Button from "material-ui/Button";
+import InvestmentsView from "./InvestmentsView";
 
 const styles = theme => ({
-    root: { padding: theme.spacing.unit * 3 }
+    root: { }
 });
 
 class Settings extends React.Component {
@@ -29,8 +30,8 @@ class Settings extends React.Component {
 
         return (
             <div className={classes.root}>
-                Investments view: {this.props.settings.investments_view}
-                <Button onClick={this.changeInvestmentView}>Change</Button>
+                <InvestmentsView onClick={this.changeInvestmentView}/>
+                
             </div>
         );
     }
