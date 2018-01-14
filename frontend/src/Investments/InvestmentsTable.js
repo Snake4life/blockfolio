@@ -15,6 +15,7 @@ import dateformat from "dateformat";
 import moment from "moment";
 import Button from "material-ui/Button";
 import AddIcon from "material-ui-icons/Add";
+import Warning from "../Warning";
 
 const styles = theme => ({
     root: {
@@ -69,6 +70,16 @@ class InvestmentsTable extends React.Component {
 
         return (
             <Paper className={classes.root}>
+            {this.props.outdatedPrices.length>0 ? (
+                    <Warning message={"We are still missing price history for some of the coins in your portfolio: "+this.props.outdatedPrices.map(el=>el.symbol).join(", ")+". Some values may be inaccurate."} />
+                ) : (
+                    ""
+                )}
+                {this.props.outdatedPrices.length>0 && this.props.outdatedPrices.filter(currency => currency.no_market_data == 1).length>0 ? (
+                    <Warning message={"There is no market data for some of the coins in your portfolio: "+this.props.outdatedPrices.filter(currency => currency.no_market_data == 1).map(el=>el.symbol).join(", ")+"."} />
+                ) : (
+                    ""
+                )}
                 <Table className={classes.table}>
                     <TableHead className={classes.tableHead}>
                         <TableRow>

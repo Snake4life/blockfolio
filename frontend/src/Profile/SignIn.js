@@ -44,12 +44,15 @@ class SignIn extends React.Component {
         this.signIn(
             { username: this.state.username, password: this.state.password },
             res => {
+
                 this.setState({ error: false });
                 const { cookies } = this.props;
                 cookies.set("session", res.session, {
                     path: "/"
                 });
+                this.props.fetchUserData();
                 const { location } = this.props;
+
                 if (location.pathname == "/profile/signIn") {
                     this.props.history.replace("/");
                 } else {

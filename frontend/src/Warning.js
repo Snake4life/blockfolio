@@ -9,18 +9,18 @@ const styles = theme => ({
     root: theme.mixins.gutters({
         paddingTop: 16,
         paddingBottom: 16,
-        marginBottom: theme.spacing.unit * 3
+        background:theme.palette.warning[200],
     })
 });
 
 function Warning(props) {
-    const { classes } = props;
+    const { classes, theme } = props;
     return (
         <div>
             <Paper className={classes.root} elevation={4}>
                 <Typography component="p">
                     {" "}
-                    <WarningIcon /> {props.message}
+                    {props.message}
                 </Typography>
             </Paper>
         </div>
@@ -31,4 +31,4 @@ Warning.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Warning);
+export default withStyles(styles, {withTheme:true})(Warning);

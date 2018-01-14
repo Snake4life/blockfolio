@@ -16,7 +16,11 @@ const styles = theme => ({
     root: {
         width: "100%",
         maxWidth: 360,
-        height: "100%",
+        height: "100%"
+    },
+
+    list: {
+        paddingTop: 0
     }
 });
 
@@ -44,20 +48,35 @@ class MenuList extends React.Component {
                         <ListItem button component={Link} to="/">
                             <AccountIcon /> <ListItemText primary="Profile" />
                         </ListItem>
-                        <ListItem button component={Link} to="/settings">
+                        <ListItem
+                            
+                            button
+                            component={Link}
+                            to="/settings"
+                        >
                             <SettingsIcon /> <ListItemText primary="Settings" />
                         </ListItem>
-                        <ListItem button component={Link} to="/currencies">
+                        <ListItem
+                            
+                            button
+                            component={Link}
+                            to="/currencies"
+                        >
                             <MoneyIcon /> <ListItemText primary="Currencies" />
                         </ListItem>
-                        <ListItem button component={Link} to="/investments">
+
+                        <ListItem
+                            
+                            button
+                            component={Link}
+                            to="/investments"
+                        >
                             <InvestmentsIcon />{" "}
                             <ListItemText primary="My investments" />
                         </ListItem>
                         
                         <ListItem button component={Link} to="/charts">
-                            <ChartIcon />{" "}
-                            <ListItemText primary="Charts" />
+                            <ChartIcon /> <ListItemText primary="Charts" />
                         </ListItem>
                     </List>
                 </div>

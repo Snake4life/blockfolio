@@ -28,9 +28,15 @@ const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.default,
         width: "100%",
-        height: "100%"
+        height: "100%",
+        
     },
-    appBar: {background:theme.palette.background.default}
+    appBar: {
+        position:"fixed"
+    },
+    swipeableViews: {
+        paddingTop:"48px"
+    }
 });
 
 class ChartsTabs extends React.Component {
@@ -73,18 +79,18 @@ class ChartsTabs extends React.Component {
                     >
                         <Tab
                             label="Totals"
-                            icon={<PieChartIcon />}
+                            
                             
                         />
                         <Tab
                             label="Growth"
-                            icon={<ShowChartIcon />}
+                            
                             
                         />
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
-                    containerStyle={styles}
+                    className={classes.swipeableViews}
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                     index={this.state.value}
                     onChangeIndex={this.handleChangeIndex}

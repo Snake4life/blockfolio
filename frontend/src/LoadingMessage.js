@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import { CircularProgress } from 'material-ui/Progress';
 
 const styles = theme => ({});
 
@@ -9,9 +10,7 @@ class LoadingMessage extends React.Component {
         const { classes } = this.props;
 
         return (
-            <Typography type="body1" gutterBottom>
-                Please wait while we load stuff...
-            </Typography>
+            <CircularProgress className={classes.progress} />
         );
     }
 }

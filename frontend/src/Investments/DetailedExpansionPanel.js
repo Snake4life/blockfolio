@@ -119,7 +119,7 @@ class DetailedExpansionPanel extends React.Component {
                     ""
                 )}
                 {this.props.outdatedPrices.length>0 && this.props.outdatedPrices.filter(currency => currency.no_market_data == 1).length>0 ? (
-                    <Warning message={"There is no market data for some of the coins in your portfolio: "+this.props.outdatedPrices.filter(currency => currency.no_market_data = 1).map(el=>el.symbol).join(", ")} />
+                    <Warning message={"There is no market data for some of the coins in your portfolio: "+this.props.outdatedPrices.filter(currency => currency.no_market_data == 1).map(el=>el.symbol).join(", ")} />
                 ) : (
                     ""
                 )}

@@ -10,6 +10,7 @@ import Dialog, {
 } from "material-ui/Dialog";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormControlLabel } from "material-ui/Form";
+import LoadingMessage from "../LoadingMessage";
 
 const options = ["Cards", "Table"];
 
@@ -117,10 +118,18 @@ class Settings extends React.Component {
             open: false,
             value: undefined
         };
+        this.updateState = this.updateState.bind(this);
+    }
+
+    componentDidUpdate() {
+        this.updateState();
     }
 
     componentDidMount() {
-        console.log(this.props.settings);
+        this.updateState();
+    }
+
+    updateState() {
         if (!this.state.value) {
             if (this.props.settings.investments_view == "cards")
                 this.setState({ value: "Cards" });
@@ -147,35 +156,39 @@ class Settings extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.root}>
-                <List>
-                    <ListItem
-                        button
-                        divider
-                        aria-haspopup="true"
-                        aria-controls="investments-view-menu"
-                        aria-label="Investments view"
-                        onClick={this.handleClickListItem}
-                    >
-                        <ListItemText
-                            primary="Investments view"
-                            secondary={this.state.value}
+                {this.props.isLoading() ? (
+                    <LoadingMessage />
+                ) : (
+                    <List>
+                        <ListItem
+                            button
+                            divider
+                            aria-haspopup="true"
+                            aria-controls="investments-view-menu"
+                            aria-label="Investments view"
+                            onClick={this.handleClickListItem}
+                        >
+                            <ListItemText
+                                primary="Investments view"
+                                secondary={this.state.value}
+                            />
+                        </ListItem>
+                        <ListItem button divider disabled>
+                            <ListItemText
+                                primary="Default currency"
+                                secondary="USD"
+                            />
+                        </ListItem>
+                        <ConfirmationDialog
+                            classes={{
+                                paper: classes.dialog
+                            }}
+                            open={this.state.open}
+                            onClose={this.handleClose}
+                            value={this.state.value}
                         />
-                    </ListItem>
-                    <ListItem button divider disabled>
-                        <ListItemText
-                            primary="Default currency"
-                            secondary="USD"
-                        />
-                    </ListItem>
-                    <ConfirmationDialog
-                        classes={{
-                            paper: classes.dialog
-                        }}
-                        open={this.state.open}
-                        onClose={this.handleClose}
-                        value={this.state.value}
-                    />
-                </List>
+                    </List>
+                )}
             </div>
         );
     }

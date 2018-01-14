@@ -97,18 +97,39 @@ class ResponsiveDrawer extends React.PureComponent {
         this.signOut = this.signOut.bind(this);
         this.fetchSettings = this.fetchSettings.bind(this);
         this.changeSetting = this.changeSetting.bind(this);
+        this.fetchUserData = this.fetchUserData.bind(this);
+        this.isComponentLoading = this.isComponentLoading.bind(this);
+        this.setComponentLoading = this.setComponentLoading.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false,
+            loadingComponents: {},
             signedIn: false,
-            settings: []
+            settings: [],
+            user: undefined,
+            session: undefined
         };
     }
     componentDidMount() {
-        if(this.isSignedIn()) this.fetchSettings();
+        console.log(this.props.theme);
+        if (this.isSignedIn()) {
+            this.fetchSettings();
+            this.fetchUserData();
+        }
     }
     setLoading(loading) {
         this.setState({ loading: loading });
+    }
+    setComponentLoading(component, value) {
+        let lcCopy = JSON.parse(JSON.stringify(this.state.loadingComponents));
+        lcCopy[component] = value;
+
+        this.setState({
+            loadingComponents: lcCopy
+        });
+    }
+    isComponentLoading(component) {
+        return this.state.loadingComponents[component] || false;
     }
     isLoading() {
         return this.state.loading;
@@ -128,6 +149,7 @@ class ResponsiveDrawer extends React.PureComponent {
     }
     fetchSettings() {
         this.setLoading(true);
+        this.setComponentLoading("settings", true);
         fetch("/api/settings", {
             credentials: "same-origin"
         })
@@ -137,14 +159,39 @@ class ResponsiveDrawer extends React.PureComponent {
             })
             .then(responseJson => {
                 this.setLoading(false);
+                this.setComponentLoading("settings", false);
                 this.setState({
                     settings: responseJson
                 });
             })
             .catch(res => {
-                this.setLoading(false);
+                this.setComponentLoading("settings", false);
                 if (res.status == 401) this.props.signOut();
                 else console.error("Unable to load settings. " + res.error);
+            });
+    }
+    fetchUserData() {
+        this.setLoading(true);
+        this.setComponentLoading("userData", true);
+        fetch("/api/auth/info", {
+            credentials: "same-origin"
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                else throw res;
+            })
+            .then(responseJson => {
+                this.setState({
+                    user: responseJson.user,
+                    session: responseJson.session,
+                    loading: false
+                });
+                this.setComponentLoading("userData", false);
+            })
+            .catch(res => {
+                this.setComponentLoading("userData", false);
+                if (res.status == 401) this.signOut();
+                console.error("Unable to load profile data. " + res.error);
             });
     }
     changeSetting(name, value) {
@@ -165,14 +212,14 @@ class ResponsiveDrawer extends React.PureComponent {
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({settings: settings})
+            body: JSON.stringify({ settings: settings })
         })
             .then(response => {
                 if (response.ok) return response;
                 else throw response;
             })
             .catch(res => {
-                console.log("Unable to save setting. "+res.error);
+                console.log("Unable to save setting. " + res.error);
             });
     }
     signOut() {
@@ -184,9 +231,10 @@ class ResponsiveDrawer extends React.PureComponent {
                 "Cache-Control": "no-cache"
             }
         }).then(res => {
-            this.setLoading(false);
             document.cookie =
                 "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            this.setState({user: undefined, session:undefined})
+            this.setLoading(false);
             this.props.history.push("/profile/signIn");
         });
     }
@@ -201,10 +249,10 @@ class ResponsiveDrawer extends React.PureComponent {
                 >
                     <div className={classes.drawerHeaderContent}>
                         <Typography type="title" color="secondary">
-                            Growthfolio
+                            {this.state.user ? this.state.user.username : ""}
                         </Typography>
                         <Typography type="subheading" color="secondary">
-                            v0.1
+                            Growthfolio v0.1
                         </Typography>
                     </div>
                 </div>
@@ -246,7 +294,11 @@ class ResponsiveDrawer extends React.PureComponent {
             isLoading: this.isLoading,
             signOut: this.signOut,
             settings: this.state.settings,
-            fetchSettings: this.fetchSettings
+            fetchSettings: this.fetchSettings,
+            user: this.state.user,
+            session: this.state.session,
+            isComponentLoading: this.isComponentLoading,
+            setComponentLoading: this.setComponentLoading
         };
 
         const SignInComponent = requiresLoginInfo => {
@@ -254,6 +306,7 @@ class ResponsiveDrawer extends React.PureComponent {
                 <SignIn
                     {...commonProps}
                     requiresLoginInfo={requiresLoginInfo}
+                    fetchUserData={this.fetchUserData}
                 />
             );
         };
@@ -292,7 +345,6 @@ class ResponsiveDrawer extends React.PureComponent {
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? <LinearProgress /> : ""}
                 <div className={classes.appFrame}>
                     <AppBar className={classes.appBar}>
                         <Toolbar>

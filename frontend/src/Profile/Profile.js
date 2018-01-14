@@ -26,6 +26,7 @@ class Profile extends React.Component {
             }
         };
         this.fetchUserData = this.fetchUserData.bind(this);
+        this.handleSignOut = this.handleSignOut.bind(this);
     }
     fetchUserData() {
         this.props.setLoading(true);
@@ -51,29 +52,35 @@ class Profile extends React.Component {
             });
     }
     componentDidMount() {
-        this.fetchUserData();
+        this.setState({user:this.props.user,loading:false,session:this.props.session});
+    }
+    componentDidUpdate() {
+        console.log(this.props.isComponentLoading("userData"));
     }
     handleTabChange = (event, tabValue) => {
         this.setState({ tabValue });
         this.props.history.push("/profile/" + tabValue);
     };
-
+    handleSignOut() {
+        this.setState({loading:true});
+        this.props.signOut();
+    }
     render() {
         const { classes } = this.props;
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? (
+                {this.props.isComponentLoading("userData") ? (
                     <LoadingMessage />
                 ) : (
                     <div>
                         <Typography type="title" gutterBottom>
-                            Welcome, {this.state.user.username}
+                            Welcome, {this.props.user ? this.props.user.username : ""}
                         </Typography>
                         <Typography type="body1">You can change your password <Link to="">here</Link>.</Typography>
                         <p>
                             <Button
-                                onClick={this.props.signOut}
+                                onClick={this.handleSignOut}
                                 raised
                                 disabled={this.state.loading}
                                 color="primary"
