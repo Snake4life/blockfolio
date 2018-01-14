@@ -63,6 +63,7 @@ class InvestmentsGrowth extends React.Component {
                 else throw res;
             })
             .then(responseJson => {
+                
                 this.props.setLoading(false);
                 this.setState({ loading: false });
                 this.setState({

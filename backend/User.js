@@ -3,19 +3,12 @@ var mysql = require("mysql");
 var config = require("./config");
 var crypto = require("crypto");
 var winston = require("winston");
-
-var connection = mysql.createConnection({
-    host: config.db.host,
-    user: config.db.user,
-    password: config.db.password,
-    database: config.db.database,
-    port: 3306
-});
+var mysql = require("./mysql-connection");
 
 module.exports = {
     authenticate: function(username, password) {
         return new Promise((resolve, reject) => {
-            connection.query(
+            mysql.query(
                 "SELECT * FROM users WHERE users.username = ? AND users.password = SHA1(CONCAT(?,users.salt))",
                 [username, password],
                 (err, rows, fields) => {
@@ -43,7 +36,7 @@ module.exports = {
                 .update(timestamp + config.session.secret)
                 .digest("hex");
             var expires = timestamp + config.session.expires;
-            connection.query(
+            mysql.query(
                 "INSERT INTO sessions(user_id, session_id, expires) VALUES (?, ?, FROM_UNIXTIME(?))",
                 [userId, sessionId, expires],
                 (err, rows, fields) => {
@@ -69,7 +62,7 @@ module.exports = {
     },
     isAuthenticated: function(sessionId) {
         return new Promise((resolve, reject) => {
-            connection.query(
+            mysql.query(
                 "SELECT * FROM sessions WHERE session_id = ? AND expires > NOW()",
                 [sessionId],
                 (err, rows, fields) => {
@@ -91,7 +84,7 @@ module.exports = {
     },
     findOne: function(userId) {
         return new Promise((resolve, reject) => {
-            connection.query(
+            mysql.query(
                 "SELECT * FROM users WHERE user_id = ?",
                 [userId],
                 (err, rows, fields) => {
@@ -114,10 +107,10 @@ module.exports = {
     updateSettings: function(userId, settings) {
         return new Promise((resolve, reject) => {
             let values = Object.keys(settings).map(el=>{
-                return connection.escapeId(el)+"="+connection.escape(settings[el]);
+                return mysql.escapeId(el)+"="+mysql.escape(settings[el]);
             }).join();
             winston.info(values.toString());
-            connection.query(
+            mysql.query(
                 "UPDATE users SET " + values + " WHERE user_id = ?",
                 [userId],
                 (err, rows, fields) => {

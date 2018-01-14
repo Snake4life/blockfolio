@@ -97,7 +97,6 @@ class ResponsiveDrawer extends React.PureComponent {
         this.signOut = this.signOut.bind(this);
         this.fetchSettings = this.fetchSettings.bind(this);
         this.changeSetting = this.changeSetting.bind(this);
-        this.fetchUserData = this.fetchUserData.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false,
@@ -106,7 +105,7 @@ class ResponsiveDrawer extends React.PureComponent {
         };
     }
     componentDidMount() {
-        this.fetchSettings();
+        if(this.isSignedIn()) this.fetchSettings();
     }
     setLoading(loading) {
         this.setState({ loading: loading });
@@ -146,29 +145,6 @@ class ResponsiveDrawer extends React.PureComponent {
                 this.setLoading(false);
                 if (res.status == 401) this.props.signOut();
                 else console.error("Unable to load settings. " + res.error);
-            });
-    }
-    fetchUserData() {
-        this.props.setLoading(true);
-        fetch("/api/auth/info", {
-            credentials: "same-origin"
-        })
-            .then(res => {
-                if (res.ok) return res.json();
-                else throw res;
-            })
-            .then(responseJson => {
-                this.props.setLoading(false);
-                this.setState({
-                    user: responseJson.user,
-                    session: responseJson.session,
-                    loading: false
-                });
-            })
-            .catch(res => {
-                this.props.setLoading(false);
-                if (res.status == 401) this.props.signOut();
-                else console.error("Unable to load profile data. " + res.error);
             });
     }
     changeSetting(name, value) {
