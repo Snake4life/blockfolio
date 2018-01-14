@@ -10,10 +10,38 @@ import currencyFormatter from "../currencyFormatter";
 import LoadingMessage from "../LoadingMessage";
 import InvestmentsLineChart from "./InvestmentsLineChart";
 import moment from "moment";
+import Tabs, { Tab } from "material-ui/Tabs";
+import Typography from "material-ui/Typography";
+import SwipeableViews from "react-swipeable-views";
+import AppBar from "material-ui/AppBar";
 
-const styles = (theme) => ({
+function TabContainer({ children, dir }) {
+    return (
+        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+            {children}
+        </Typography>
+    );
+}
+
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+    dir: PropTypes.string.isRequired
+};
+
+const styles = theme => ({
     table: {
         minWidth: 700
+    },
+    root: {
+        backgroundColor: theme.palette.background.default,
+        width: "100%",
+        height: "100%"
+    },
+    appBar: {
+        position: "fixed"
+    },
+    swipeableViews: {
+        paddingTop: "48px"
     },
     button: {
         margin: 0,
@@ -30,23 +58,33 @@ const styles = (theme) => ({
 });
 
 class InvestmentsGrowth extends React.Component {
+    handleChange = (event, value) => {
+        this.setState({ value });
+        //this.props.history.push("/charts/" + this.state.values[value]);
+    };
+
+    handleChangeIndex = index => {
+        this.setState({ value: index });
+    };
     constructor(props) {
         super(props);
         this.state = {
             investments: [],
             loading: true,
-            chartData: {}
+            chartData: {},
+            value: 0,
+            values: ["7 days", "30 days", "All time", "Custom"]
         };
         this.getInvestments = this.getInvestments.bind(this);
         this.fetchInvestments = this.fetchInvestments.bind(this);
+        this.getChartData = this.getChartData.bind(this);
     }
     componentDidMount() {
         this.fetchInvestments();
     }
     fetchInvestments() {
         this.props.setLoading(true);
-        console.log(this.props.match.params.symbol);
-        console.log(this.props.match.params.dateFrom);
+
         if (this.props.match.params.symbol)
             var url =
                 "/api/investments/growth/currency/" +
@@ -63,27 +101,11 @@ class InvestmentsGrowth extends React.Component {
                 else throw res;
             })
             .then(responseJson => {
-                
                 this.props.setLoading(false);
                 this.setState({ loading: false });
                 this.setState({
-                    lineChartData: {
-                        labels: Object.keys(responseJson).map(el=>moment(el).format("MM-DD-YY")),
-                        datasets: [
-                            {
-                                label: "Total value of investments",
-                                data: Object.values(responseJson),
-                                backgroundColor: ["rgba(0, 0, 132, 0.2)"],
-                                borderColor: ["rgba(100,100,132,1)"],
-                                borderWidth: 1,
-                                lineTension: 0,
-                                pointStyle: "cross",
-                                pointRadius: 0
-                            }
-                        ]
-                    }
+                    data: responseJson
                 });
-
             })
             .catch(res => {
                 if (res.status == 401) this.props.signOut();
@@ -93,26 +115,119 @@ class InvestmentsGrowth extends React.Component {
                     );
             });
     }
+    getChartData(days) {
+        if (this.state.data)
+            return {
+                labels: Object.keys(this.state.data)
+                    .slice(-days)
+                    .map(el => moment(el).format("MM-DD-YY")),
+                datasets: [
+                    {
+                        label: "Total value of investments",
+                        data: Object.values(this.state.data).slice(-days),
+                        backgroundColor: ["rgba(0, 0, 132, 0.2)"],
+                        borderColor: ["rgba(100,100,132,1)"],
+                        borderWidth: 1,
+                        lineTension: 0,
+                        pointStyle: "cross",
+                        pointRadius: 0
+                    }
+                ]
+            };
+        return {};
+    }
     getInvestments() {
         return this.state.investments;
     }
     render() {
-        const { classes } = this.props;
+        const { classes, theme } = this.props;
 
         return (
             <div className={classes.root}>
-                {this.state.loading ? (
-                    <LoadingMessage />
-                ) : (
-                    <div>
-                        
-                        <div className={classes.lineChart}>
-                            <InvestmentsLineChart
-                                data={this.state.lineChartData}
-                            />
-                        </div>
-                    </div>
-                )}
+                <div>
+                    <AppBar
+                        position="static"
+                        color="default"
+                        className={classes.appBar}
+                    >
+                        <Tabs
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            fullWidth
+                        >
+                            <Tab label="7 days" />
+                            <Tab label="30 days" />
+                            <Tab label="All time" />
+                            <Tab label="Custom" />
+                        </Tabs>
+                    </AppBar>
+                    <SwipeableViews
+                        className={classes.swipeableViews}
+                        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                        index={this.state.value}
+                        onChangeIndex={this.handleChangeIndex}
+                    >
+                        <TabContainer dir={theme.direction}>
+                            <div className={classes.lineChart}>
+                                {this.state.loading ? (
+                                    <LoadingMessage />
+                                ) : (
+                                    <InvestmentsLineChart
+                                        data={this.getChartData(7)}
+                                        options={{
+                                            legend: {
+                                                display: false
+                                            },
+                                            tooltips: {
+                                                callbacks: {
+                                                    label: function(
+                                                        tooltipItem
+                                                    ) {
+                                                        return tooltipItem.yLabel;
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            <div className={classes.lineChart}>
+                                {this.state.loading ? (
+                                    <LoadingMessage />
+                                ) : (
+                                    <InvestmentsLineChart
+                                        data={this.getChartData(30)}
+                                        options={{
+                                            legend: {
+                                                display: false
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            <div className={classes.lineChart}>
+                                {this.state.loading ? (
+                                    <LoadingMessage />
+                                ) : (
+                                    <InvestmentsLineChart
+                                        data={this.getChartData(0)}
+                                        options={{
+                                            legend: {
+                                                display: false
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        </TabContainer>
+                    </SwipeableViews>
+                </div>
             </div>
         );
     }
@@ -122,4 +237,6 @@ InvestmentsGrowth.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, {withTheme:true})(withRouter(withCookies(InvestmentsGrowth)));
+export default withStyles(styles, { withTheme: true })(
+    withRouter(withCookies(InvestmentsGrowth))
+);

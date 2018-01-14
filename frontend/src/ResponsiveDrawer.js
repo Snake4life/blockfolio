@@ -100,6 +100,7 @@ class ResponsiveDrawer extends React.PureComponent {
         this.fetchUserData = this.fetchUserData.bind(this);
         this.isComponentLoading = this.isComponentLoading.bind(this);
         this.setComponentLoading = this.setComponentLoading.bind(this);
+        this.userSignedIn = this.userSignedIn.bind(this);
         this.state = {
             mobileOpen: false,
             loading: false,
@@ -147,6 +148,10 @@ class ResponsiveDrawer extends React.PureComponent {
         }
         return false;
     }
+    userSignedIn() {
+        this.fetchSettings();
+        this.fetchUserData();
+    }
     fetchSettings() {
         this.setLoading(true);
         this.setComponentLoading("settings", true);
@@ -158,11 +163,13 @@ class ResponsiveDrawer extends React.PureComponent {
                 else throw res;
             })
             .then(responseJson => {
-                this.setLoading(false);
-                this.setComponentLoading("settings", false);
                 this.setState({
                     settings: responseJson
                 });
+                this.setLoading(false);
+                this.setComponentLoading("settings", false);
+
+                console.log(this.state.settings);
             })
             .catch(res => {
                 this.setComponentLoading("settings", false);
@@ -233,7 +240,7 @@ class ResponsiveDrawer extends React.PureComponent {
         }).then(res => {
             document.cookie =
                 "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            this.setState({user: undefined, session:undefined})
+            this.setState({ user: undefined, session: undefined });
             this.setLoading(false);
             this.props.history.push("/profile/signIn");
         });
@@ -306,7 +313,7 @@ class ResponsiveDrawer extends React.PureComponent {
                 <SignIn
                     {...commonProps}
                     requiresLoginInfo={requiresLoginInfo}
-                    fetchUserData={this.fetchUserData}
+                    userSignedIn={this.userSignedIn}
                 />
             );
         };

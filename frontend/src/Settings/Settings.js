@@ -9,8 +9,10 @@ import Dialog, {
     DialogTitle
 } from "material-ui/Dialog";
 import Radio, { RadioGroup } from "material-ui/Radio";
-import { FormControlLabel } from "material-ui/Form";
+
 import LoadingMessage from "../LoadingMessage";
+import Switch from "material-ui/Switch";
+import { FormControlLabel, FormGroup } from "material-ui/Form";
 
 const options = ["Cards", "Table"];
 
@@ -119,6 +121,7 @@ class Settings extends React.Component {
             value: undefined
         };
         this.updateState = this.updateState.bind(this);
+        this.handleInvestmentsView = this.handleInvestmentsView.bind(this);
     }
 
     componentDidUpdate() {
@@ -151,34 +154,64 @@ class Settings extends React.Component {
             this.props.changeSetting("investments_view", "table");
         this.setState({ value, open: false });
     };
-
+    handleInvestmentsView() {
+        if (this.props.settings.investments_view == "cards")
+            this.props.changeSetting("investments_view", "table");
+        else this.props.changeSetting("investments_view", "cards");
+    }
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.root}>
-                {this.props.isLoading() ? (
+                {this.props.isComponentLoading("settings") ? (
                     <LoadingMessage />
                 ) : (
                     <List>
-                        <ListItem
-                            button
-                            divider
-                            aria-haspopup="true"
-                            aria-controls="investments-view-menu"
-                            aria-label="Investments view"
-                            onClick={this.handleClickListItem}
-                        >
-                            <ListItemText
-                                primary="Investments view"
-                                secondary={this.state.value}
-                            />
-                        </ListItem>
                         <ListItem button divider disabled>
                             <ListItemText
                                 primary="Default currency"
                                 secondary="USD"
                             />
                         </ListItem>
+                        <ListItem divider disabled>
+                            <ListItemText
+                                primary="Dark theme"
+                                secondary="Light"
+                            />
+                            <FormGroup>
+                                <FormControlLabel control={<Switch />} />
+                            </FormGroup>
+                        </ListItem>
+                        <ListItem
+                            button
+                            divider
+                            aria-haspopup="true"
+                            aria-controls="investments-view-menu"
+                            aria-label="Investments cards"
+                            onClick={this.handleInvestmentsView}
+                        >
+                            <ListItemText
+                                primary="Investments view"
+                                secondary={
+                                                this.props.settings
+                                                    .investments_view == "cards" ? "Show investments as cards" : "Show investments as a table"
+                                            }
+                            />
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={
+                                                this.props.settings
+                                                    .investments_view == "cards"
+                                            }
+                                            aria-label="cardsChecked"
+                                        />
+                                    }
+                                />
+                            </FormGroup>
+                        </ListItem>
+
                         <ConfirmationDialog
                             classes={{
                                 paper: classes.dialog

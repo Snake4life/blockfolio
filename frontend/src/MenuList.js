@@ -75,8 +75,12 @@ class MenuList extends React.Component {
                             <ListItemText primary="My investments" />
                         </ListItem>
                         
-                        <ListItem button component={Link} to="/charts">
-                            <ChartIcon /> <ListItemText primary="Charts" />
+                        <ListItem button component={Link} to="/investments/growth">
+                            <ShowChartIcon /> <ListItemText primary="Growth" />
+                        </ListItem>
+
+                        <ListItem button component={Link} to="/investments/total">
+                            <PieChartIcon /> <ListItemText primary="Statistics" />
                         </ListItem>
                     </List>
                 </div>

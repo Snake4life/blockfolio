@@ -8,6 +8,7 @@ import Button from "material-ui/Button";
 import { withRouter, Link } from "react-router-dom";
 import { withCookies } from "react-cookie";
 import Typography from "material-ui/Typography";
+import { CircularProgress } from 'material-ui/Progress';
 
 const styles = (theme) => ({
     root: {
@@ -50,7 +51,7 @@ class SignIn extends React.Component {
                 cookies.set("session", res.session, {
                     path: "/"
                 });
-                this.props.fetchUserData();
+                this.props.userSignedIn();
                 const { location } = this.props;
 
                 if (location.pathname == "/profile/signIn") {

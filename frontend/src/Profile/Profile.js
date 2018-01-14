@@ -9,6 +9,8 @@ import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
 import AppBar from "material-ui/AppBar";
 import LoadingMessage from "../LoadingMessage";
+import { CircularProgress } from 'material-ui/Progress';
+
 const styles = (theme) => ({
     root: { width: "100%", padding: theme.spacing.unit * 3 }
 });
@@ -42,7 +44,8 @@ class Profile extends React.Component {
                 this.setState({
                     user: responseJson.user,
                     session: responseJson.session,
-                    loading: false
+                    loading: false,
+                    signingOut: false
                 });
             })
             .catch(res => {
@@ -62,11 +65,11 @@ class Profile extends React.Component {
         this.props.history.push("/profile/" + tabValue);
     };
     handleSignOut() {
-        this.setState({loading:true});
+        this.setState({signingOut:true});
         this.props.signOut();
     }
     render() {
-        const { classes } = this.props;
+        const { classes, theme } = this.props;
 
         return (
             <div className={classes.root}>
@@ -82,10 +85,10 @@ class Profile extends React.Component {
                             <Button
                                 onClick={this.handleSignOut}
                                 raised
-                                disabled={this.state.loading}
+                                disabled={this.state.signingOut}
                                 color="primary"
                             >
-                                Sign out
+                                {this.state.signingOut ? <CircularProgress size={20}/> : "Sign out"} 
                             </Button>
                         </p>
                     </div>
