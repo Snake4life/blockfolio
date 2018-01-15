@@ -17,7 +17,7 @@ import AppBar from "material-ui/AppBar";
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir}>
+        <Typography component="div" dir={dir} style={{height:"100%"}}>
             {children}
         </Typography>
     );
@@ -42,6 +42,7 @@ const styles = theme => ({
     },
     tabsView: {
         paddingTop: "48px",
+        height:"calc(100% - 92px)"
     },
     button: {
         margin: 0,
@@ -55,8 +56,11 @@ const styles = theme => ({
         maxWidth: "600px"
     },
     lineChart: {
-        height:"calc(100vh - 122px)",
+        height:"100%",
         marginTop:"10px"
+    },
+    container: {
+        height:"100%"
     }
 });
 
@@ -147,7 +151,7 @@ class InvestmentsGrowth extends React.Component {
 
         return (
             <div className={classes.root}>
-                <div>
+                <div className={classes.container}>
                     <AppBar
                         position="static"
                         color="default"
