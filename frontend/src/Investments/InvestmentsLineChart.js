@@ -2,31 +2,11 @@ import React from "react";
 import { Line, Chart } from "react-chartjs-2";
 
 class InvestmentsLineChart extends React.Component {
-    componentWillMount() {
-        Chart.pluginService.register({
-            afterDraw: function(chart, easing) {
-                var ctx = chart.chart.ctx;
-                var chartArea = chart.chartArea;
-
-                if (window.tooltipItem) var x = window.tooltipItem.x;
-
-                if (!isNaN(x)) {
-                    ctx.save();
-                    ctx.strokeStyle = "black";
-                    ctx.moveTo(x, chartArea.bottom);
-                    ctx.lineTo(x, chartArea.top);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-        });
-    }
     render() {
         return (
             <Line
-                styles={{height:"100vh"}}
+                styles={{ height: "1200px" }}
                 responsive={false}
-
                 data={this.props.data}
                 options={{
                     legend: {
@@ -45,10 +25,45 @@ class InvestmentsLineChart extends React.Component {
                             }
                         }
                     },
-                    options: {
-                         maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        xAxes: [
+                            // {   display:false,
+                            //     ticks: {
+                            //         display: false
+                            //     }
+                            // }
+                        ],
+                        yAxes: [
+                            // {display:false,
+                            //     ticks: {
+                            //         display: false
+                            //     }
+                            // }
+                        ]
                     }
                 }}
+                plugins={[
+                    {
+                        afterDraw: function(chart, easing) {
+                            var ctx = chart.chart.ctx;
+                            var chartArea = chart.chartArea;
+
+                            if (window.tooltipItem)
+                                var x = window.tooltipItem.x;
+
+                            if (!isNaN(x)) {
+                                ctx.save();
+                                ctx.strokeStyle = "black";
+                                ctx.moveTo(x, chartArea.bottom);
+                                ctx.lineTo(x, chartArea.top);
+                                ctx.stroke();
+                                ctx.restore();
+                            }
+                        }
+                    }
+                ]}
             />
         );
     }

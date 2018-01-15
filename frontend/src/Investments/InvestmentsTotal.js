@@ -12,7 +12,10 @@ import InvestmentsPieChart from "./InvestmentsPieChart";
 import InvestmentsLineChart from "./InvestmentsLineChart";
 import Typography from "material-ui/Typography";
 
-const styles = () => ({
+const styles = (theme) => ({
+    root: {
+        padding: theme.spacing.unit * 3
+    },
     table: {
         minWidth: 700
     },
@@ -136,4 +139,4 @@ InvestmentsTotal.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(withRouter(withCookies(InvestmentsTotal)));
+export default withStyles(styles, {withTheme:true})(withRouter(withCookies(InvestmentsTotal)));

@@ -17,7 +17,7 @@ import AppBar from "material-ui/AppBar";
 
 function TabContainer({ children, dir }) {
     return (
-        <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+        <Typography component="div" dir={dir}>
             {children}
         </Typography>
     );
@@ -40,7 +40,7 @@ const styles = theme => ({
     appBar: {
         position: "fixed"
     },
-    swipeableViews: {
+    tabsView: {
         paddingTop: "48px",
     },
     button: {
@@ -54,7 +54,10 @@ const styles = theme => ({
     pieChart: {
         maxWidth: "600px"
     },
-    lineChart: {}
+    lineChart: {
+        height:"calc(100vh - 122px)",
+        marginTop:"10px"
+    }
 });
 
 class InvestmentsGrowth extends React.Component {
@@ -163,28 +166,26 @@ class InvestmentsGrowth extends React.Component {
                             <Tab label="Custom" />
                         </Tabs>
                     </AppBar>
-                    <SwipeableViews
-                        className={classes.swipeableViews}
-                        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                        index={this.state.value}
-                        onChangeIndex={this.handleChangeIndex}
-                    >
+                    <div className={classes.tabsView}>
+                        {this.state.value==0 ? (
                         <TabContainer dir={theme.direction}>
                             <div className={classes.lineChart}>
                                 {this.state.loading ? (
-                                    <LoadingMessage />
+                                    <LoadingMessage withPadding/>
                                 ) : (
                                     <InvestmentsLineChart
+                                        className={classes.lineChart}
                                         data={this.getChartData(7)}
  
                                     />
                                 )}
                             </div>
-                        </TabContainer>
+                        </TabContainer>) : ""}
+                        {this.state.value==1 ? (
                         <TabContainer dir={theme.direction}>
                             <div className={classes.lineChart}>
                                 {this.state.loading ? (
-                                    <LoadingMessage />
+                                    <LoadingMessage withPadding />
                                 ) : (
                                     <InvestmentsLineChart
                                         data={this.getChartData(30)}
@@ -192,11 +193,12 @@ class InvestmentsGrowth extends React.Component {
                                     />
                                 )}
                             </div>
-                        </TabContainer>
+                        </TabContainer>) : ""}
+                        {this.state.value==2 ? (
                         <TabContainer dir={theme.direction}>
                             <div className={classes.lineChart}>
                                 {this.state.loading ? (
-                                    <LoadingMessage />
+                                    <LoadingMessage withPadding />
                                 ) : (
                                     <InvestmentsLineChart
                                         data={this.getChartData(0)}
@@ -204,8 +206,8 @@ class InvestmentsGrowth extends React.Component {
                                     />
                                 )}
                             </div>
-                        </TabContainer>
-                    </SwipeableViews>
+                        </TabContainer>) : ""}
+                    </div>
                 </div>
             </div>
         );
