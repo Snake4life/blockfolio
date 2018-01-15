@@ -41,7 +41,7 @@ const styles = theme => ({
         position: "fixed"
     },
     swipeableViews: {
-        paddingTop: "48px"
+        paddingTop: "48px",
     },
     button: {
         margin: 0,
@@ -129,7 +129,7 @@ class InvestmentsGrowth extends React.Component {
                         borderColor: ["rgba(100,100,132,1)"],
                         borderWidth: 1,
                         lineTension: 0,
-                        pointStyle: "cross",
+                        pointStyle: "point",
                         pointRadius: 0
                     }
                 ]
@@ -176,20 +176,7 @@ class InvestmentsGrowth extends React.Component {
                                 ) : (
                                     <InvestmentsLineChart
                                         data={this.getChartData(7)}
-                                        options={{
-                                            legend: {
-                                                display: false
-                                            },
-                                            tooltips: {
-                                                callbacks: {
-                                                    label: function(
-                                                        tooltipItem
-                                                    ) {
-                                                        return tooltipItem.yLabel;
-                                                    }
-                                                }
-                                            }
-                                        }}
+ 
                                     />
                                 )}
                             </div>
@@ -201,11 +188,7 @@ class InvestmentsGrowth extends React.Component {
                                 ) : (
                                     <InvestmentsLineChart
                                         data={this.getChartData(30)}
-                                        options={{
-                                            legend: {
-                                                display: false
-                                            }
-                                        }}
+
                                     />
                                 )}
                             </div>
@@ -217,11 +200,7 @@ class InvestmentsGrowth extends React.Component {
                                 ) : (
                                     <InvestmentsLineChart
                                         data={this.getChartData(0)}
-                                        options={{
-                                            legend: {
-                                                display: false
-                                            }
-                                        }}
+
                                     />
                                 )}
                             </div>

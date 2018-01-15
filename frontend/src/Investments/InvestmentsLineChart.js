@@ -1,12 +1,56 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Chart } from "react-chartjs-2";
 
 class InvestmentsLineChart extends React.Component {
-    componentDidUpdate() {
-        console.log(this.props.data);
+    componentWillMount() {
+        Chart.pluginService.register({
+            afterDraw: function(chart, easing) {
+                var ctx = chart.chart.ctx;
+                var chartArea = chart.chartArea;
+
+                if (window.tooltipItem) var x = window.tooltipItem.x;
+
+                if (!isNaN(x)) {
+                    ctx.save();
+                    ctx.strokeStyle = "black";
+                    ctx.moveTo(x, chartArea.bottom);
+                    ctx.lineTo(x, chartArea.top);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        });
     }
     render() {
-        return <Line data={this.props.data} options={this.props.options}/>;
+        return (
+            <Line
+                styles={{height:"100vh"}}
+                responsive={false}
+
+                data={this.props.data}
+                options={{
+                    legend: {
+                        display: false
+                    },
+                    customLine: {
+                        color: "black"
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: "index",
+                        callbacks: {
+                            label: function(tooltipItem, chart) {
+                                window.tooltipItem = tooltipItem;
+                                return tooltipItem.yLabel;
+                            }
+                        }
+                    },
+                    options: {
+                         maintainAspectRatio: false,
+                    }
+                }}
+            />
+        );
     }
 }
 
